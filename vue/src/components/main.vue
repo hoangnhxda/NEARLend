@@ -53,9 +53,9 @@
   <button @click="login">login</button>
   <button @click="supply">supply</button>
   <button @click="increment">test1</button>
-  <button @click="getAmount">getAmount</button>
+  <button @click="get_total_pool_balance">get_total_pool_balance</button>
   <button @click="withdraw_supply">withdraw_supply</button>
-  <a-button type="primary"> Primary </a-button>
+  <button @click="get_account_supplied_balance">get_account_supplied_balance</button>
 </template>
 
 <script>
@@ -82,7 +82,6 @@ export default {
     },
 
     supply() {
-      console.log(this.contract, "aa");
       this.contract.supply({}, 100000000000000, 2).then(console.log);
     },
 
@@ -92,13 +91,18 @@ export default {
         "Rust Counter Example"
       );
     },
-    getAmount() {
+    
+    get_total_pool_balance() {
       this.contract.get_total_pool_balance().then(console.log);
+    },
+
+    get_account_supplied_balance() {
+      this.contract.get_account_supplied_balance().then(console.log);
     },
 
     withdraw_supply() {
       this.contract
-        .withdraw_supply({}, 100000000000000, 2000000000000000000000000)
+        .withdraw_supply({}, 100000000000000, 2)
         .then(console.log);
     },
 
@@ -121,14 +125,14 @@ export default {
         nearConfig.contractName,
         {
           // View methods are read-only – they don't modify the state, but usually return some value
-          viewMethods: ["get_num", "get_total_pool_balance", "get_account"],
+          viewMethods: ["get_num", "get_total_pool_balance", "get_account", "get_account_supplied_balance"],
           // Change methods can modify the state, but you don't receive the returned value when called
           changeMethods: [
             "increment",
             "decrement",
             "reset",
             "supply",
-            "withdraw_supply",
+            "withdraw_supply"
           ],
           // Sender is the account ID to initialize transactions.
           // getAccountId() will return empty string if user is still unauthorized
