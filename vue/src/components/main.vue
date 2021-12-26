@@ -5,6 +5,7 @@
         <div class="col-12">
           <header class="d-flex align-items-center">
             <!-- <img src="assets/images/nl.png" alt="" class="logo"> -->
+            <span class="text-white" style="margin-left: auto">Balance: {{ balance }} NEAR</span>
             <button v-if="!accountId" class="px-3 py-2" @click="connectWallet">
               Connect To Wallet
             </button>
@@ -74,6 +75,7 @@ export default {
       contract: null,
       near: null,
       accountId: "",
+      balance: 0
     };
   },
   methods: {
@@ -81,8 +83,10 @@ export default {
       this.contract.test1().then(console.log);
     },
 
-    supply() {
+    async supply() {
       this.contract.supply({}, 100000000000000, 2).then(console.log);
+      var tmpAvila = await this.walletConnection.account().getAccountBalance();
+      this.balance = tmpAvila.available / Math.pow(10, 24);
     },
 
     connectWallet() {
@@ -145,6 +149,8 @@ export default {
     await this.connect(this.nearConfig);
     if (this.walletConnection?.isSignedIn()) {
       this.accountId = this.walletConnection.getAccountId();
+      var tmpAvila = await this.walletConnection.account().getAccountBalance();
+      this.balance = tmpAvila.available / Math.pow(10, 24);
     }
   },
 };
