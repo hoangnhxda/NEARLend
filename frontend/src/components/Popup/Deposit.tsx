@@ -79,13 +79,13 @@ const Deposit = ({ setTurnOff }: Props) => {
           // parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
           // onChange={onChange}
         />
-        <div className="position-relative slider-range">
+        <div id="slider-range" className="position-relative slider-range">
           <Slider
             marks={marks}
             step={1}
             tipFormatter={formatter}
             getTooltipPopupContainer={(): any =>
-              document?.getElementsByClassName("slider-range")[0]
+              document?.getElementById("slider-range")
             }
           />
         </div>

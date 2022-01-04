@@ -80,6 +80,17 @@ a {
   position: relative;
 }
 
+#not-found {
+  padding: 1rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 30px;
+  width: 100%;
+  text-align: center;
+}
+
 /* HEADER */
 .header {
   transition: 0.4s all;
@@ -361,6 +372,9 @@ a {
 }
 /* end BACKGROUND WAVE */
 
+/* POPUP */
+/* POPUP */
+/* POPUP */
 .wrap-popup {
   position: fixed;
   top: 0;
@@ -530,6 +544,10 @@ a {
 .wrap-popup .popup .btn:active {
   opacity: 0.7;
 }
+
+/* end POPUP */
+/* end POPUP */
+/* end POPUP */
 
 /* Switch */
 .switch {
