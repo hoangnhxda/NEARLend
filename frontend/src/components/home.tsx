@@ -3,7 +3,6 @@ import iconSol from "../images/icon-sol.png";
 import iconBitcoin from "../images/icon-bitcoin.png";
 import iconShib from "../images/icon-shib.png";
 import iconDoge from "../images/icon-doge.png";
-import iconClose from "../images/icon-close.png";
 import "../App.css";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
@@ -14,8 +13,6 @@ import {
   _contract,
   checkIsSigned,
 } from "../services/connect";
-
-import { InputNumber, Slider, Space } from "antd";
 import { DepositPopup, BorrowPopup } from "./Popup";
 
 function Home() {

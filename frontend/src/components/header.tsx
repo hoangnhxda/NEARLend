@@ -52,10 +52,10 @@ export default function Header() {
         <nav>
           <ul>
             <li>
-              <Link to="/invoices">Invoices</Link>
+              <Link to="/">Introduct</Link>
             </li>
             <li>
-              <Link to="/expenses">Expenses</Link>
+              <Link to="/app">Apps</Link>
             </li>
             {isLogin ? (
               <li className="btn-connect">

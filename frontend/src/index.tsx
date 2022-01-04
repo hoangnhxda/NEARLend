@@ -3,9 +3,8 @@ import * as ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Intro from "./routes/intro";
 import reportWebVitals from "./reportWebVitals";
-import Expenses from "./routes/expenses";
-import Invoices from "./routes/invoices";
 import buffer from "buffer";
 global.Buffer = buffer.Buffer;
 
@@ -15,12 +14,11 @@ ReactDOM.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />}>
-        <Route path="expenses" element={<Expenses />} />
-        <Route path="invoices" element={<Invoices />} />
+        <Route path="/" element={<App />} />
         <Route
           path="*"
           element={
-            <main style={{ padding: "1rem" }}>
+            <main id='not-found' style={{ padding: "1rem" }}>
               <p>There's nothing here!</p>
             </main>
           }
