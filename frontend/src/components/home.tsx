@@ -305,6 +305,171 @@ function Home() {
               <button>Borrow</button>
             </div>
           </div>
+
+          <div className="wrap-pool">
+            <div className="mini asset market-flex">
+              <img
+                className="icon"
+                src={iconSol}
+                width={30}
+                height={30}
+                alt="Logo"
+              />
+              <div>
+                <p className="top coin color-white fwb">SOL</p>
+                <p>$124.5</p>
+              </div>
+            </div>
+            <div className="mini deposit">
+              <p className="top color-white fwb">129.04K</p>
+              <p>$124.5M</p>
+            </div>
+            <div className="mini deposit">
+              <p className="top color-white fwb">129.04K</p>
+              <p>$124.5M</p>
+            </div>
+            <div onClick={openPopupDeposit} className="action mini color-white">
+              <div className="market-flex apy">
+                <p>7.29% +</p>
+                <p className="icon-apy">
+                  <img src={iconSol} width={15} height={15} alt="Logo" />
+                </p>
+              </div>
+              <button>Deposit</button>
+            </div>
+            <div onClick={openPopupBorrow} className="action mini color-white">
+              <div className="market-flex apy">
+                <p>7.29% +</p>
+                <p className="icon-apy ">
+                  <img src={iconSol} width={15} height={15} alt="Logo" />
+                </p>
+              </div>
+              <button>Borrow</button>
+            </div>
+          </div>
+          <div className="wrap-pool">
+            <div className="mini asset market-flex">
+              <img
+                className="icon"
+                src={iconBitcoin}
+                width={30}
+                height={30}
+                alt="Logo"
+              />
+              <div>
+                <p className="top coin color-white fwb">BTC</p>
+                <p>$124.5</p>
+              </div>
+            </div>
+            <div className="mini deposit">
+              <p className="top color-white fwb">129.04K</p>
+              <p>$124.5M</p>
+            </div>
+            <div className="mini deposit">
+              <p className="top color-white fwb">129.04K</p>
+              <p>$124.5M</p>
+            </div>
+            <div onClick={openPopupDeposit} className="action mini color-white">
+              <div className="market-flex apy">
+                <p>7.29% +</p>
+                <p className="icon-apy">
+                  <img src={iconBitcoin} width={15} height={15} alt="Logo" />
+                </p>
+              </div>
+              <button>Deposit</button>
+            </div>
+            <div onClick={openPopupBorrow} className="action mini color-white">
+              <div className="market-flex apy">
+                <p>7.29% +</p>
+                <p className="icon-apy">
+                  <img src={iconBitcoin} width={15} height={15} alt="Logo" />
+                </p>
+              </div>
+              <button>Borrow</button>
+            </div>
+          </div>
+          <div className="wrap-pool">
+            <div className="mini asset market-flex">
+              <img
+                className="icon"
+                src={iconShib}
+                width={30}
+                height={30}
+                alt="Logo"
+              />
+              <div>
+                <p className="top coin color-white fwb">SHIB</p>
+                <p>$124.5</p>
+              </div>
+            </div>
+            <div className="mini deposit">
+              <p className="top color-white fwb">129.04K</p>
+              <p>$124.5M</p>
+            </div>
+            <div className="mini deposit">
+              <p className="top color-white fwb">129.04K</p>
+              <p>$124.5M</p>
+            </div>
+            <div onClick={openPopupDeposit} className="action mini color-white">
+              <div className="market-flex apy">
+                <p>7.29% +</p>
+                <p className="icon-apy">
+                  <img src={iconShib} width={15} height={15} alt="Logo" />
+                </p>
+              </div>
+              <button>Deposit</button>
+            </div>
+            <div onClick={openPopupBorrow} className="action mini color-white">
+              <div className="market-flex apy">
+                <p>7.29% +</p>
+                <p className="icon-apy">
+                  <img src={iconShib} width={15} height={15} alt="Logo" />
+                </p>
+              </div>
+              <button>Borrow</button>
+            </div>
+          </div>
+          <div className="wrap-pool">
+            <div className="mini asset market-flex">
+              <img
+                className="icon"
+                src={iconDoge}
+                width={30}
+                height={30}
+                alt="Logo"
+              />
+              <div>
+                <p className="top coin color-white fwb">DOGE</p>
+                <p>$124.5</p>
+              </div>
+            </div>
+            <div className="mini deposit">
+              <p className="top color-white fwb">129.04K</p>
+              <p>$124.5M</p>
+            </div>
+            <div className="mini deposit">
+              <p className="top color-white fwb">129.04K</p>
+              <p>$124.5M</p>
+            </div>
+            <div onClick={openPopupDeposit} className="action mini color-white">
+              <div className="market-flex apy">
+                <p>7.29% +</p>
+                <p className="icon-apy">
+                  <img src={iconDoge} width={15} height={15} alt="Logo" />
+                </p>
+              </div>
+              <button>Deposit</button>
+            </div>
+            <div onClick={openPopupBorrow} className="action mini color-white">
+              <div className="market-flex apy">
+                <p>7.29% +</p>
+                <p className="icon-apy">
+                  <img src={iconDoge} width={15} height={15} alt="Logo" />
+                </p>
+              </div>
+              <button>Borrow</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
