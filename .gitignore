@@ -10,4 +10,6 @@ Cargo.lock
 **/*.rs.bk
 
 /frontend/node_modules
+
+/vue/node_modules
 /vue/dist
