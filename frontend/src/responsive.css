@@ -1,0 +1,90 @@
+@media only screen and (max-width: 767px) {
+  .header {
+    padding: 0 20px;
+  }
+  .introduce-page .head {
+    background: url("./images/globe-block.png") no-repeat center center / cover;
+  }
+  .introduce-page .head h2 {
+    top: 50%;
+    width: auto;
+    font-size: 54px;
+  }
+
+  .introduce-page .section-2 {
+    padding: 100px 20px;
+  }
+  .introduce-page .section-2 .flex,
+  .introduce-page .section-2.section-3 .flex {
+    flex-direction: column;
+  }
+
+  .introduce-page .section-2.section-3 .content,
+  .introduce-page .section-2 .content {
+    text-align: center;
+  }
+  .introduce-page .section-2 .last {
+    padding-top: 40px;
+  }
+
+  .roadmap {
+    padding: 40px 0;
+  }
+
+  .roadmap .ship-1 {
+    position: relative;
+    top: -10px;
+    left: 30px;
+  }
+  .roadmap .ship-2 {
+    position: relative;
+    text-align: right;
+    right: 20px;
+    top: 0;
+    margin-bottom: -70px;
+  }
+
+  .roadmap .section-top .text {
+    text-align: left;
+  }
+  .roadmap .section-top .col .content {
+    width: auto;
+    margin: 40px 14px;
+  }
+
+  .roadmap .section-bot {
+    padding: 40px 0 80px;
+  }
+  .roadmap .section-bot .title {
+    /* text-align: left; */
+    margin: 0 14px 44px;
+  }
+
+  .roadmap .wrap-line::before,
+  .roadmap .wrap-line .wrap .planet {
+    left: 10%;
+    height: 73%;
+  }
+
+  .roadmap .wrap-line .phase,
+  .roadmap .wrap-line .phase.left {
+    width: auto;
+    margin: 0 14px 0 23%;
+  }
+
+  .roadmap .wrap-line .wrap {
+    padding-bottom: 60px;
+  }
+  .roadmap .wrap-line .phase.right h4 {
+    right: auto;
+  }
+
+  .roadmap .wrap-line .phase h4 {
+    margin-bottom: 14px;
+    position: relative;
+    left: auto;
+    right: auto;
+    width: auto;
+    display: inline-block;
+  }
+}

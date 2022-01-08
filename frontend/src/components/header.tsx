@@ -2,9 +2,12 @@ import { Link } from "react-router-dom";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 import { contractName } from "../utils";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import logo from '../images/nearlend.png';
 export default function Header() {
-  const { wallet }: any = hookState<any>(globalState);
+  const { wallet, contract }: any = hookState<any>(globalState);
+  const [isLogin, setIsLogin] = useState(false);
+  const [accountName, setAccountName] = useState("");
 
   const login = () => {
     wallet
@@ -24,6 +27,13 @@ export default function Header() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (contract.attach(Downgraded).get()?.account.accountId) {
+      setIsLogin(true);
+      setAccountName(contract.attach(Downgraded).get()?.account.accountId)
+    }
+  }, [contract]);
+
   const handleScoll = () => {
     const elementTopMenu: Element | null =
       window.document.getElementById("wrap-header-menu");
@@ -38,19 +48,25 @@ export default function Header() {
     <header id="wrap-header-menu" className="header">
       <div className="container">
         <h1>
-          <Link to="/">N E A R Lend</Link>
+          <Link to="/"><img alt="Nearlend" src={logo} width={45} height={45}  /></Link>
         </h1>
         <nav>
           <ul>
             <li>
-              <Link to="/invoices">Invoices</Link>
+              <Link to="/">Introduct</Link>
             </li>
             <li>
-              <Link to="/expenses">Expenses</Link>
+              <Link to="/app">Apps</Link>
             </li>
-            <li onClick={login} className="btn-connect">
-              Connect to Wallet
-            </li>
+            {isLogin ? (
+              <li className="btn-connect">
+                {accountName}
+              </li>
+            ) : (
+              <li onClick={login} className="btn-connect">
+                Connect to Wallet
+              </li>
+            )}
           </ul>
         </nav>
       </div>
