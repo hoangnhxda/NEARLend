@@ -1,11 +1,14 @@
 @media only screen and (max-width: 767px) {
-
+  .header {
+    padding: 0 20px;
+  }
   .introduce-page .head {
     background: url("./images/globe-block.png") no-repeat center center / cover;
   }
   .introduce-page .head h2 {
     top: 50%;
     width: auto;
+    font-size: 54px;
   }
 
   .introduce-page .section-2 {
