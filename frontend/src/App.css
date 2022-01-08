@@ -10,10 +10,15 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    sans-serif;
+  font-family: "Roboto", sans-serif;
+  letter-spacing: 0.07rem;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: local("Roboto"), url(./fonts/roboto-regular.woff2) format("woff");
+  /* other formats include: 'woff2', 'truetype, 'opentype',
+                            'embedded-opentype', and 'svg' */
 }
 
 .App {
@@ -32,7 +37,8 @@ h3,
 h4,
 h5,
 h6,
-p,ul {
+p,
+ul {
   color: #fff;
   margin: 0;
 }
@@ -72,12 +78,6 @@ a {
   to {
     transform: rotate(360deg);
   }
-}
-
-.container {
-  max-width: 1024px;
-  margin: auto;
-  position: relative;
 }
 
 #not-found {
@@ -263,6 +263,84 @@ a {
 
 /* end Home Page */
 
+/* Introduce Page */
+.introduce-page {
+  margin-bottom: -140px;
+  position: relative;
+  background: #150a33;
+}
+
+.introduce-page .head {
+  padding-top: 60px;
+  display: block;
+  min-height: 100vh;
+
+  position: relative;
+  background: url("./images/globe-block.png") no-repeat center bottom / contain;
+}
+.introduce-page .head h2 {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  font-size: 70px;
+  text-align: center;
+  width: 640px;
+}
+
+.introduce-page .section-2 {
+  padding: 100px 0;
+}
+
+.introduce-page .section-2 .title {
+  text-align: center;
+  font-size: 55px;
+  font-weight: bold;
+  padding-bottom: 20px;
+}
+
+.introduce-page .section-2 .img-background {
+  height: 500px;
+  background: url("./images/crypto.png") no-repeat -80px 0 / 1200px 1543px;
+  width: 500px;
+}
+.introduce-page .section-2 .wrapper {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.introduce-page .section-2 .flex {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.introduce-page .section-2 .content {
+  max-width: 500px;
+  font-size: 20px;
+  text-align: right;
+}
+.introduce-page .section-2.section-3 {
+  /* padding-bottom: 160px; */
+}
+
+.introduce-page .section-2.section-3 .flex {
+  flex-direction: row-reverse;
+}
+.introduce-page .section-2.section-3 .content {
+  text-align: left;
+}
+.introduce-page .section-2.section-3 .img-background {
+  background: url("./images/crypto.png") no-repeat -630px -470px / 1200px 1543px;
+}
+
+.introduce-page .section-2 .last {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+/* end Introduce Page */
+
 /* BACKGROUND WAVE */
 
 .waveWrapper {
@@ -282,22 +360,10 @@ a {
   height: 100%;
   bottom: -1px;
   background: rgb(39, 39, 60);
-  background: -moz-linear-gradient(
-    180deg,
-    rgba(39, 39, 60, 1) 0%,
-    rgba(55, 56, 116, 1) 100%
-  );
-  background: -webkit-linear-gradient(
-    180deg,
-    rgba(39, 39, 60, 1) 0%,
-    rgba(55, 56, 116, 1) 100%
-  );
-  background: linear-gradient(
-    180deg,
-    rgba(39, 39, 60, 1) 0%,
-    rgba(55, 56, 116, 1) 100%
-  );
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#27273c",endColorstr="#373874",GradientType=1);
+  background: -moz-linear-gradient(180deg, #0c0817 0%, #150a33 100%);
+  background: -webkit-linear-gradient(180deg, #0c0817 0%, #150a33 100%);
+  background: linear-gradient(180deg, #0c0817 0%, #150a33 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#0c0817",endColorstr="#150a33",GradientType=1);
   /* background: rgb(0, 0, 0);
   background: -moz-linear-gradient(
     180deg,
@@ -392,18 +458,14 @@ a {
   top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgb(0 0 0 / 80%);
+  background: #341d73;
   min-width: 400px;
   min-height: 520px;
-  /* border: 1px solid #2cffe4; */
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-  border-top: 5px solid #2cffe4;
-  border-left: 7px solid #000;
-  border-right: 7px solid #000;
-  border-bottom: 7px solid #0000;
+  border-top: 5px solid #462893;
   overflow: hidden;
-  padding: 10px;
+  padding: 14px;
   animation: popup 0.1s ease;
 }
 
@@ -445,12 +507,12 @@ a {
   text-align: center;
   font-size: 23px;
   position: relative;
-  color: var(--orange);
+  color: #1acab3;
   font-weight: bold;
 }
 
 .wrap-popup .popup .value-percent {
-  color: var(--orange);
+  color: #1acab3;
   position: relative;
   text-align: center;
   padding-top: 4px;
@@ -634,7 +696,7 @@ a {
   animation-fill-mode: forwards;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
-  fill: #2cffe4;
+  fill: var(--white);
 }
 
 @keyframes swell {
@@ -644,6 +706,148 @@ a {
   100% {
     transform: translateX(0%);
   }
+}
+
+.roadmap {
+  padding: 80px 0;
+  overflow-x: hidden;
+}
+
+.roadmap .title {
+  text-align: center;
+  font-size: 55px;
+  font-weight: bold;
+  padding-bottom: 20px;
+}
+
+.roadmap .section-top .text {
+  padding: 15px 0;
+}
+
+.roadmap .ship-1 {
+  position: absolute;
+  top: -66px;
+  left: -10px;
+  -webkit-animation: mover 1.5s infinite alternate;
+  animation: mover 1.5s infinite alternate;
+}
+.roadmap .section-top .col {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.roadmap .section-top .col .content {
+  position: relative;
+  width: 340px;
+  padding-left: 30px;
+  margin: 40px 0 0;
+}
+
+.roadmap .section-top .col .content.number::before {
+  content: "1";
+  position: absolute;
+  top: -6px;
+  left: 0;
+  font-size: 24px;
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.roadmap .section-top .col .content.number.number-2::before {
+  content: "2";
+}
+
+.roadmap .section-top .col .content.number.number-3::before {
+  content: "3";
+}
+
+.roadmap .section-top .col .content.number.number-4::before {
+  content: "4";
+}
+
+.roadmap .section-bot {
+  padding: 80px 0 80px;
+}
+
+.roadmap .deco-stones {
+  position: absolute;
+  right: 0;
+  bottom: 400px;
+}
+.roadmap .deco-big {
+  position: absolute;
+  top: -30px;
+  left: -400px;
+  width: 1410px;
+  height: 1034px;
+  /* background: url("/assets/bg-deco.png") no-repeat center center / contain; */
+}
+
+.roadmap .ship-2 {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  -webkit-animation: mover 1.5s infinite alternate;
+  animation: mover 1.5s infinite alternate;
+}
+
+.roadmap .wrap-line::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 80%;
+  background: #2cffe4;
+}
+.roadmap .wrap-line .phase {
+  position: relative;
+  width: 270px;
+  margin-bottom: 60px;
+}
+
+.roadmap .wrap-line .phase.left {
+  margin-left: auto;
+}
+.roadmap .wrap-line .phase.right {
+}
+
+.roadmap .wrap-line .phase.right h4 {
+  left: auto;
+  right: -170px;
+}
+
+.roadmap .wrap-line .phase h4 {
+  /* position: absolute; */
+  font-weight: lighter;
+  width: 100px;
+  text-align: center;
+  margin-bottom: 14px;
+  /* left: -180px; */
+  border: 1px solid #fff;
+  padding: 6px 15px;
+  border-radius: 20px;
+}
+.roadmap .wrap-line .phase h5 {
+  padding-bottom: 24px;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+.roadmap .wrap-line .phase .content p {
+  font-weight: lighter;
+  font-weight: normal;
+}
+
+.roadmap .wrap-line .wrap {
+  position: relative;
+}
+
+.roadmap .wrap-line .wrap .planet {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 /* REUSE */
@@ -661,5 +865,11 @@ a {
 }
 
 .position-relative {
+  position: relative;
+}
+
+.container {
+  max-width: 1024px;
+  margin: auto;
   position: relative;
 }

@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/iframe-has-title */
 import { useEffect, useState } from "react";
 import iconSol from "../images/icon-sol.png";
 import iconBitcoin from "../images/icon-bitcoin.png";
 import iconShib from "../images/icon-shib.png";
 import iconDoge from "../images/icon-doge.png";
 import "../App.css";
+import "../responsive.css";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 import { contractName } from "../utils";

@@ -3,6 +3,7 @@ import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 import { contractName } from "../utils";
 import { useEffect, useState } from "react";
+import logo from '../images/nearlend.png';
 export default function Header() {
   const { wallet, contract }: any = hookState<any>(globalState);
   const [isLogin, setIsLogin] = useState(false);
@@ -47,7 +48,7 @@ export default function Header() {
     <header id="wrap-header-menu" className="header">
       <div className="container">
         <h1>
-          <Link to="/">N E A R Lend</Link>
+          <Link to="/"><img alt="Nearlend" src={logo} width={45} height={45}  /></Link>
         </h1>
         <nav>
           <ul>
