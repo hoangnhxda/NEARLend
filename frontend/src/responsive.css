@@ -1,7 +1,49 @@
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 1042px) {
+  html {
+    overflow-x: hidden;
+  }
+  .homepage .wrap-total {
+    margin: 0 20px;
+  }
   .header {
     padding: 0 20px;
   }
+}
+
+@media screen and (max-width: 800px) {
+  /* .homepage .wrap-market .title {
+    position: absolute;
+  } */
+  .homepage .wrap-market {
+    max-height: 520px;
+  }
+
+  .homepage .wrap-market .pools {
+    max-height: 300px;
+    overflow-y: scroll;
+    padding-bottom: 100px;
+  }
+  .App {
+    padding-bottom: 0;
+  }
+
+  .waveWrapperInner {
+    width: 250%;
+    bottom: -15px;
+  }
+  .wrap-popup .popup {
+    top: 50%;
+  }
+
+  .wrap-popup .popup .wrap-white {
+    padding: 17px 0;
+  }
+  .Wave {
+    width: auto;
+  }
+}
+
+@media only screen and (max-width: 767px) {
   .introduce-page .head {
     background: url("./images/globe-block.png") no-repeat center center / cover;
   }
@@ -86,5 +128,39 @@
     right: auto;
     width: auto;
     display: inline-block;
+  }
+
+  /* Popup */
+  .wrap-popup .popup {
+    /* min-width: 100%; */
+    max-width: 400px;
+    margin: 0;
+  }
+  .popup-open {
+    overflow: hidden;
+  }
+  /* end Popup */
+}
+
+@media only screen and (max-width: 475px) {
+  /* Popup */
+  .wrap-popup .popup {
+    min-width: 100%;
+    max-width: 400px;
+    margin: 0;
+  }
+  .wrap-popup .popup .info p {
+    width: 50%;
+  }
+  /* end Popup */
+
+  .homepage .wrap-total {
+    display: block;
+    margin: 0 20px;
+    text-align: center;
+  }
+
+  .homepage .wrap-total .total.deposit {
+    border-bottom: 1px solid #fff;
   }
 }

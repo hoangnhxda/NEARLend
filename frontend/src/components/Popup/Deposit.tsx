@@ -66,51 +66,62 @@ const Deposit = ({ setTurnOff }: Props) => {
         </p>
         <p className="icon-name">Shiba</p>
         <p className="value-percent">0.03%</p>
-        <div className="info">
-          <p>Available: 99.9785 SHIB ($0.00)</p>
-          <p>1 SHIB = $16.9718</p>
-        </div>
-        <InputNumber
-          className="input-number"
-          defaultValue={1000}
-          formatter={(value) =>
-            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-          }
-          // parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-          // onChange={onChange}
-        />
-        <div id="slider-range" className="position-relative slider-range">
-          <Slider
-            marks={marks}
-            step={1}
-            tipFormatter={formatter}
-            getTooltipPopupContainer={(): any =>
-              document?.getElementById("slider-range")
-            }
-          />
-        </div>
-
-        <p className="position-relative total">Total Supply = $831.44</p>
-        <p className="position-relative rates-title fwb">Supply Rates</p>
-        <div className="position-relative flex">
-          <div className="left">Deposit APY</div>
-          <div className="right fwb">0.028533093636258104</div>
-        </div>
-        <div className="position-relative flex">
-          <div className="left">Collateral Factor</div>
-          <div className="right fwb">60%</div>
-        </div>
-        <div className="position-relative flex">
-          <div className="left">Use as Collateral</div>
-          <div className="right fwb">
-            <label className="switch">
-              <input className="input-slider" type="checkbox" />
-              <span className="slider round"></span>
-            </label>
+        <div className="bg-white position-relative wrap-white">
+          <div className="info bg-white pad-side-14">
+            <p>Available: 99.9785 SHIB ($0.00)</p>
+            <p className="tar">1 SHIB = $16.9718</p>
           </div>
-        </div>
+          <div className="pad-side-14">
+            <InputNumber
+              className="input-number"
+              defaultValue={1000}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              // parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+              // onChange={onChange}
+            />
+          </div>
+          <div
+            id="slider-range"
+            className="position-relative slider-range bg-white"
+          >
+            <Slider
+              marks={marks}
+              step={1}
+              tipFormatter={formatter}
+              getTooltipPopupContainer={(): any =>
+                document?.getElementById("slider-range")
+              }
+            />
+          </div>
 
-        <button className="position-relative btn">DEPOSIT</button>
+          <p className="position-relative total bg-white">
+            Total Supply = $831.44
+          </p>
+          <p className="position-relative rates-title fwb bg-white pad-side-14">
+            Supply Rates
+          </p>
+          <div className="position-relative flex bg-white pad-side-14">
+            <div className="left">Deposit APY</div>
+            <div className="right fwb">0.028533093636258104</div>
+          </div>
+          <div className="position-relative flex bg-white pad-side-14">
+            <div className="left">Collateral Factor</div>
+            <div className="right fwb">60%</div>
+          </div>
+          <div className="position-relative flex bg-white pad-side-14">
+            <div className="left">Use as Collateral</div>
+            <div className="right fwb">
+              <label className="switch">
+                <input className="input-slider" type="checkbox" />
+                <span className="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <button className="position-relative btn">DEPOSIT</button>
+        </div>
       </div>
     </div>
   );
