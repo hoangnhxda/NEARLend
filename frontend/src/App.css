@@ -231,7 +231,7 @@ footer {
 .homepage .wrap-market .wrap-label p {
   width: 100px;
   color: var(--space-gray);
-  /* text-align: center; */
+  text-align: center;
 }
 
 .homepage .wrap-market .wrap-pool {
@@ -271,6 +271,7 @@ footer {
 
 .homepage .wrap-market .wrap-pool .mini {
   width: 100px;
+  text-align: center;
 }
 
 .homepage .wrap-market .wrap-pool .apy {
@@ -309,6 +310,8 @@ footer {
 }
 
 .homepage .wrap-market .wrap-pool .asset {
+  justify-content: center;
+  text-align: left;
 }
 
 .homepage .wrap-market .market-flex {
@@ -334,6 +337,16 @@ footer {
   position: relative;
   background: url("./images/globe-block.png") no-repeat center bottom / contain;
 }
+
+.introduce-page .head .logo {
+  position: absolute;
+  top: -150px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 120px;
+  height: 120px;
+}
+
 .introduce-page .head h2 {
   position: absolute;
   top: 50%;
