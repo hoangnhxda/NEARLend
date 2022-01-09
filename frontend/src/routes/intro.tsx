@@ -6,12 +6,14 @@ import cryptoNft from "../images/crypto-nft.png";
 import cryptoNftLend from "../images/crypto-nft-lend.png";
 import crossChain from "../images/cross-chain.png";
 import daoGOV from "../images/dao.png";
+import logo from '../images/nearlend.png';
 
 export default function Intro() {
   return (
     <main className="introduce-page">
       <div className="head">
-        <h2>Let The World Be Transparent</h2>
+        
+        <h2><img className="logo" alt="Nearlend" src={logo} width={45} height={45} />Let The World Be Transparent</h2>
       </div>
 
       <div className="section-2">
@@ -133,7 +135,7 @@ export default function Intro() {
             </div>
           </div>
 
-          <div className="last">
+          {/* <div className="last">
             <p>
               Defi is a very new field, and there is a lot of knowledge that
               needs to be updated to build a test-net for Nearlend.
@@ -146,7 +148,7 @@ export default function Intro() {
               And the biggest challenge is the consensus of the founding members
               of Nearlend
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
 
