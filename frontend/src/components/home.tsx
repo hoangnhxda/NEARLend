@@ -154,16 +154,16 @@ function Home() {
               />
               <div>
                 <p className="top coin color-white fwb">SOL</p>
-                <p>$124.5</p>
+                <p className="color-space-gray">$124.5</p>
               </div>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div onClick={openPopupDeposit} className="action mini color-white">
               <div className="market-flex apy">
@@ -195,16 +195,16 @@ function Home() {
               />
               <div>
                 <p className="top coin color-white fwb">BTC</p>
-                <p>$124.5</p>
+                <p className="color-space-gray">$124.5</p>
               </div>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div onClick={openPopupDeposit} className="action mini color-white">
               <div className="market-flex apy">
@@ -236,16 +236,16 @@ function Home() {
               />
               <div>
                 <p className="top coin color-white fwb">SHIB</p>
-                <p>$124.5</p>
+                <p className="color-space-gray">$124.5</p>
               </div>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div onClick={openPopupDeposit} className="action mini color-white">
               <div className="market-flex apy">
@@ -277,16 +277,16 @@ function Home() {
               />
               <div>
                 <p className="top coin color-white fwb">DOGE</p>
-                <p>$124.5</p>
+                <p className="color-space-gray">$124.5</p>
               </div>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div onClick={openPopupDeposit} className="action mini color-white">
               <div className="market-flex apy">
@@ -319,16 +319,16 @@ function Home() {
               />
               <div>
                 <p className="top coin color-white fwb">SOL</p>
-                <p>$124.5</p>
+                <p className="color-space-gray">$124.5</p>
               </div>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div onClick={openPopupDeposit} className="action mini color-white">
               <div className="market-flex apy">
@@ -360,16 +360,16 @@ function Home() {
               />
               <div>
                 <p className="top coin color-white fwb">BTC</p>
-                <p>$124.5</p>
+                <p className="color-space-gray">$124.5</p>
               </div>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div onClick={openPopupDeposit} className="action mini color-white">
               <div className="market-flex apy">
@@ -401,16 +401,16 @@ function Home() {
               />
               <div>
                 <p className="top coin color-white fwb">SHIB</p>
-                <p>$124.5</p>
+                <p className="color-space-gray">$124.5</p>
               </div>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div onClick={openPopupDeposit} className="action mini color-white">
               <div className="market-flex apy">
@@ -442,16 +442,16 @@ function Home() {
               />
               <div>
                 <p className="top coin color-white fwb">DOGE</p>
-                <p>$124.5</p>
+                <p className="color-space-gray">$124.5</p>
               </div>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div className="mini deposit">
               <p className="top color-white fwb">129.04K</p>
-              <p>$124.5M</p>
+              <p className="color-space-gray">$124.5M</p>
             </div>
             <div onClick={openPopupDeposit} className="action mini color-white">
               <div className="market-flex apy">
