@@ -63,6 +63,14 @@ a {
   text-decoration: none;
 }
 
+footer {
+  padding: 40px;
+  background: #000;
+  color: #fff;
+  text-align: center;
+  font-style: italic;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -328,7 +336,7 @@ a {
 }
 .introduce-page .head h2 {
   position: absolute;
-  top: 40%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-weight: bold;
@@ -382,10 +390,44 @@ a {
   background: url("./images/crypto.png") no-repeat -630px -470px / 1200px 1543px;
 }
 
+.introduce-page .section-2 .flex-side {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: center;
+  padding-bottom: 60px;
+}
+
+.introduce-page .section-2 .flex-side .img {
+  max-width: 512px;
+  height: 445px;
+}
+.introduce-page .section-2 .flex-side .img > img {
+  object-fit: contain;
+}
+
+.introduce-page .section-2 .flex-side .label {
+  font-size: 24px;
+  font-weight: bold;
+  padding-bottom: 14px;
+  text-decoration: underline;
+}
+.introduce-page .section-2 .flex-side .content {
+  text-align: center;
+}
+.introduce-page .section-2 .flex-side .left {
+}
+.introduce-page .section-2 .flex-side .right {
+}
+
 .introduce-page .section-2 .last {
   text-align: center;
   font-size: 14px;
   font-weight: bold;
+}
+
+.introduce-page .section-2 .last p {
+  padding-bottom: 4px;
 }
 /* end Introduce Page */
 
@@ -788,11 +830,10 @@ a {
     transform: translateX(-50%);
   } */
 
-
   0% {
     transform: translateX(-50%);
   }
- 
+
   100% {
     transform: translateX(0%);
   }
@@ -888,7 +929,7 @@ a {
   left: 50%;
   transform: translateX(-50%);
   width: 1px;
-  height: 80%;
+  height: 100%;
   background: #2cffe4;
 }
 .roadmap .wrap-line .phase {
@@ -927,10 +968,21 @@ a {
 .roadmap .wrap-line .phase .content p {
   font-weight: lighter;
   font-weight: normal;
+  font-size: 16px;
 }
 
 .roadmap .wrap-line .wrap {
   position: relative;
+}
+
+.roadmap .wrap-line .wrap:last-child::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #150a33;
+  width: 100%;
+  height: 100%;
 }
 
 .roadmap .wrap-line .wrap .planet {
@@ -938,6 +990,12 @@ a {
   top: 0;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.roadmap .wrap-line .wrap .planet.grayscale {
+  filter: gray;
+  -webkit-filter: grayscale(1);
+  filter: grayscale(1);
 }
 
 /* REUSE */
