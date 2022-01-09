@@ -9,7 +9,18 @@
     padding: 0 20px;
   }
 }
+@media only screen and (max-width: 1024px) {
+  .introduce-page .section-2 .flex-side {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 0;
+  }
 
+  .introduce-page .section-2 .flex-side .flex-side__side {
+    padding-bottom: 60px;
+  }
+}
 @media screen and (max-width: 800px) {
   /* .homepage .wrap-market .title {
     position: absolute;
@@ -38,14 +49,19 @@
   .wrap-popup .popup .wrap-white {
     padding: 17px 0;
   }
+
   .Wave {
     width: auto;
+  }
+
+  .introduce-page .section-2 .title {
+    font-size: 38px;
   }
 }
 
 @media only screen and (max-width: 767px) {
   .introduce-page .head {
-    background: url("./images/globe-block.png") no-repeat center center / cover;
+    background: url("./images/globe-block.png") no-repeat center bottom / cover;
   }
   .introduce-page .head h2 {
     top: 50%;
@@ -105,7 +121,7 @@
   .roadmap .wrap-line::before,
   .roadmap .wrap-line .wrap .planet {
     left: 10%;
-    height: 73%;
+    height: 100%;
   }
 
   .roadmap .wrap-line .phase,
