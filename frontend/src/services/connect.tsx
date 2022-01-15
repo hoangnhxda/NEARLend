@@ -19,18 +19,16 @@ export const _walletConnection = function (_near: any) {
 export const _contract = function (wallet: any) {
   return new nearAPI.Contract(wallet.account(), contractName, {
     viewMethods: [
-      "get_num",
-      "get_total_pool_balance",
+      "get_assets_paged",
+      "get_assets_paged_detailed",
+      "get_asset",
+      "ft_metadata",
       "get_account",
-      "get_account_supplied_balance",
-      "test1",
     ],
     changeMethods: [
-      "increment",
-      "decrement",
-      "reset",
-      "supply",
-      "withdraw_supply",
+      "storage_deposit",
+      "ft_transfer",
+      "ft_transfer_call",
     ],
   });
 };
