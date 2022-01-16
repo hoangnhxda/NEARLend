@@ -8,7 +8,6 @@ import "../App.css";
 import "../responsive.css";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
-import { contractName } from "../utils";
 import {
   _near,
   _walletConnection,
@@ -18,63 +17,10 @@ import {
 import { DepositPopup, BorrowPopup } from "./Popup";
 
 function Home() {
-  const { near, wallet, contract, balance }: any = hookState<any>(globalState);
+  const { near, wallet, contract }: any = hookState<any>(globalState);
   const [isShowPopupDeposit, setIsShowPopupDeposit] = useState(false);
   const [isShowPopupBorrow, setIsShowPopupBorrow] = useState(false);
-
-  const login = () => {
-    wallet
-      .attach(Downgraded)
-      .get()
-      .requestSignIn(contractName, "Rust Counter Example");
-  };
-
-  const signOut = () => {
-    wallet.attach(Downgraded).get().signOut();
-    window.location.reload();
-  };
-
-  const supply = async () => {
-    contract
-      .attach(Downgraded)
-      .get()
-      .supply({}, 100000000000000, 2)
-      .then(console.log);
-    var tmpAvila = await wallet
-      .attach(Downgraded)
-      .get()
-      .account()
-      .getAccountBalance();
-    balance.set(tmpAvila.available / Math.pow(10, 24));
-  };
-
-  const get_total_pool_balance = () => {
-    contract
-      .attach(Downgraded)
-      .get()
-      .get_total_pool_balance()
-      .then(console.log);
-  };
-
-  const withdraw_supply = () => {
-    contract
-      .attach(Downgraded)
-      .get()
-      .withdraw_supply({}, 100000000000000, 2)
-      .then(console.log);
-  };
-
-  const get_account_supplied_balance = () => {
-    contract
-      .attach(Downgraded)
-      .get()
-      .get_account_supplied_balance()
-      .then(console.log);
-  };
-
-  const test = () => {
-    contract.attach(Downgraded).get().test1().then(console.log);
-  };
+  const [tokenList, setTokenList] = useState([]);
 
   async function initConnect() {
     const initNear = await _near();
@@ -101,8 +47,27 @@ function Home() {
   };
 
   useEffect(() => {
-    initConnect();
-  }, []);
+    if (!near || !wallet || !contract) {
+      initConnect();
+    }
+    const getTokenList = async () => {
+      if (contract.attach(Downgraded).get()) {
+        await contract
+          .attach(Downgraded)
+          .get()
+          .get_assets_paged({ from_index: 0, limit: 10 })
+          .then((res: any) => {
+            setTokenList(res);
+            return res;
+          })
+          .catch((err: any) => console.log(err));
+      }
+    };
+
+    setTimeout(() => {
+      getTokenList();
+    }, 500);
+  }, [contract, near, wallet, contract]);
 
   return (
     <div className="container homepage">
@@ -112,16 +77,6 @@ function Home() {
       {isShowPopupBorrow && (
         <BorrowPopup setTurnOff={() => setIsShowPopupBorrow(false)} />
       )}
-      {/* <button onClick={login}>login</button>
-      <button onClick={supply}>supply</button>
-      <button onClick={test}>test1</button>
-      <button onClick={get_total_pool_balance}>get_total_pool_balance</button>
-      <button onClick={withdraw_supply}>withdraw_supply</button>
-      <button onClick={get_account_supplied_balance}>
-        get_account_supplied_balance
-      </button>
-      <button onClick={signOut}>signOut</button> */}
-
       <div className="wrap-total">
         <div className="total deposit">
           <p className="title">Total Market Deposited</p>
@@ -143,6 +98,73 @@ function Home() {
           <p>Borrow APY</p>
         </div>
         <div className="pools">
+          {tokenList && tokenList.length > 0
+            ? tokenList.map((item: any, idx: number) => {
+                return (
+                  <div key={idx} className="wrap-pool">
+                    <div className="mini asset market-flex">
+                      <img
+                        className="icon"
+                        src={iconSol}
+                        width={30}
+                        height={30}
+                        alt="Logo"
+                      />
+                      <div>
+                        <p className="top coin color-white fwb">{item[0]}</p>
+                        <p className="color-space-gray">$124.5</p>
+                      </div>
+                    </div>
+                    <div className="mini deposit">
+                      <p className="top color-white fwb">
+                        {item[1].supplied.balance}
+                      </p>
+                      <p className="color-space-gray">$124.5M</p>
+                    </div>
+                    <div className="mini deposit">
+                      <p className="top color-white fwb">
+                        {item[1].borrowed.balance}
+                      </p>
+                      <p className="color-space-gray">$124.5M</p>
+                    </div>
+                    <div
+                      onClick={openPopupDeposit}
+                      className="action mini color-white"
+                    >
+                      <div className="market-flex apy">
+                        <p>7.29% +</p>
+                        <p className="icon-apy">
+                          <img
+                            src={iconSol}
+                            width={15}
+                            height={15}
+                            alt="Logo"
+                          />
+                        </p>
+                      </div>
+                      <button>Deposit</button>
+                    </div>
+                    <div
+                      onClick={openPopupBorrow}
+                      className="action mini color-white"
+                    >
+                      <div className="market-flex apy">
+                        <p>7.29% +</p>
+                        <p className="icon-apy ">
+                          <img
+                            src={iconSol}
+                            width={15}
+                            height={15}
+                            alt="Logo"
+                          />
+                        </p>
+                      </div>
+                      <button>Borrow</button>
+                    </div>
+                  </div>
+                );
+              })
+            : null}
           <div className="wrap-pool">
             <div className="mini asset market-flex">
               <img

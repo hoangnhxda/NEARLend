@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Home from "../routes/home";
 import Intro from "../routes/intro";
 import Header from "../components/header";
+import Port from "../components/portfolio";
 import waveTop from "../images/wave-top.png";
 import waveBot from "../images/wave-bot.png";
 import waveMid from "../images/wave-mid.png";
@@ -16,6 +17,8 @@ export default function Main() {
         return <Intro />;
       case "/app":
         return <Home />;
+      case "/portfolio":
+        return <Port />;
       default:
         return <Outlet />;
     }

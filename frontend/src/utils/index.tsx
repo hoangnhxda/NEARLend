@@ -1,4 +1,4 @@
-export const contractName = "sub.duyhoag.testnet";
+export const contractName = "nel.nthellious.testnet";
 
 export const nearConfig = {
     networkId: "testnet",

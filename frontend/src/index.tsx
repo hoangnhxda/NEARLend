@@ -3,7 +3,6 @@ import * as ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Intro from "./routes/intro";
 import reportWebVitals from "./reportWebVitals";
 import buffer from "buffer";
 global.Buffer = buffer.Buffer;

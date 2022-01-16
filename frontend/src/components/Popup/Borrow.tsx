@@ -35,6 +35,7 @@ const Deposit = ({ setTurnOff }: Props) => {
       const htmlEle = window.document.getElementsByTagName("html")[0];
       htmlEle.classList.remove("popup-open");
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
