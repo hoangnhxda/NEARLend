@@ -16,18 +16,7 @@ import icon_4 from "../images/icon-doge.png";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 import { useEffect, useState } from "react";
-
-const shortName = (str: string) => {
-  return str.slice(0, 10).toString() + "..";
-};
-
-const total = (arrayOject: any) => {
-  var result = arrayOject?.reduce((acc: any, obj: any) => {
-    return acc + parseInt(obj.balance);
-  }, 0);
-  console.log("total-result", result);
-  return result;
-};
+import { shortName, totalBalance } from "../utils";
 
 export default function Intro() {
   const { userBalance }: any = hookState<any>(globalState);
@@ -46,7 +35,7 @@ export default function Intro() {
           <div className="total deposit">
             <p className="title">My Total Deposits</p>
             <p className="value">
-              ${account?.supplied.length > 0 ? total(account?.supplied) : 0}
+              ${account?.supplied.length > 0 ? totalBalance(account?.supplied) : 0}
             </p>
           </div>
           <div className="total deposit">
@@ -56,7 +45,7 @@ export default function Intro() {
           <div className="total borrow">
             <p className="title">My Total Borrows</p>
             <p className="value">
-              ${account?.borrowed.length > 0 ? total(account?.borrowed) : 0}
+              ${account?.borrowed.length > 0 ? totalBalance(account?.borrowed) : 0}
             </p>
           </div>
         </div>
@@ -66,7 +55,7 @@ export default function Intro() {
         <div className="side">
           <div className="my-info">
             <h5>Deposited</h5>
-            <h5>${total(account?.supplied)}</h5>
+            <h5>${totalBalance(account?.supplied)}</h5>
           </div>
           <div className="detail">
             <div className="label">
@@ -106,7 +95,7 @@ export default function Intro() {
         <div className="side">
           <div className="my-info">
             <h5>Borrowed</h5>
-            <h5>${total(account?.borrowed)}</h5>
+            <h5>${totalBalance(account?.borrowed)}</h5>
           </div>
           <div className="detail">
             <div className="label">

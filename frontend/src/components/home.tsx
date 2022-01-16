@@ -21,6 +21,7 @@ function Home() {
   const [isShowPopupDeposit, setIsShowPopupDeposit] = useState(false);
   const [isShowPopupBorrow, setIsShowPopupBorrow] = useState(false);
   const [tokenList, setTokenList] = useState([]);
+  const [tokenId, setTokenId] = useState("");
 
   async function initConnect() {
     const initNear = await _near();
@@ -34,15 +35,15 @@ function Home() {
     return checkIsSigned(initWallet);
   }
 
-  const openPopupDeposit = (e: any) => {
+  const openPopupDeposit = (e: any, tokenId: string) => {
     e.preventDefault();
-    console.log("on");
+    setTokenId(tokenId);
     setIsShowPopupDeposit(true);
   };
 
-  const openPopupBorrow = (e: any) => {
+  const openPopupBorrow = (e: any, tokenId: string) => {
     e.preventDefault();
-    console.log("on");
+    setTokenId(tokenId);
     setIsShowPopupBorrow(true);
   };
 
@@ -72,10 +73,16 @@ function Home() {
   return (
     <div className="container homepage">
       {isShowPopupDeposit && (
-        <DepositPopup setTurnOff={() => setIsShowPopupDeposit(false)} />
+        <DepositPopup
+          tokenId={tokenId}
+          setTurnOff={() => setIsShowPopupDeposit(false)}
+        />
       )}
       {isShowPopupBorrow && (
-        <BorrowPopup setTurnOff={() => setIsShowPopupBorrow(false)} />
+        <BorrowPopup
+          tokenId={tokenId}
+          setTurnOff={() => setIsShowPopupBorrow(false)}
+        />
       )}
       <div className="wrap-total">
         <div className="total deposit">
@@ -128,7 +135,7 @@ function Home() {
                       <p className="color-space-gray">$124.5M</p>
                     </div>
                     <div
-                      onClick={openPopupDeposit}
+                      onClick={(e) => openPopupDeposit(e, item[0])}
                       className="action mini color-white"
                     >
                       <div className="market-flex apy">
@@ -145,7 +152,7 @@ function Home() {
                       <button>Deposit</button>
                     </div>
                     <div
-                      onClick={openPopupBorrow}
+                      onClick={(e) => openPopupBorrow(e, item[0])}
                       className="action mini color-white"
                     >
                       <div className="market-flex apy">
@@ -165,7 +172,7 @@ function Home() {
                 );
               })
             : null}
-          <div className="wrap-pool">
+          {/* <div className="wrap-pool">
             <div className="mini asset market-flex">
               <img
                 className="icon"
@@ -493,7 +500,7 @@ function Home() {
               </div>
               <button>Borrow</button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

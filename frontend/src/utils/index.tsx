@@ -10,3 +10,15 @@ export const nearConfig = {
       "Content-Type": "application/json",
     },
   };
+
+export const shortName = (str: string) => {
+  return str.slice(0, 10).toString() + "..";
+};
+
+export const totalBalance = (arrayOject: any) => {
+  var result = arrayOject?.reduce((acc: any, obj: any) => {
+    return acc + parseInt(obj.balance);
+  }, 0);
+  console.log("total-result", result);
+  return result;
+};

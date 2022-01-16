@@ -779,6 +779,7 @@ footer {
   position: relative;
   color: #1acab3;
   font-weight: bold;
+  text-transform: uppercase;
 }
 
 .wrap-popup .popup .value-percent {
@@ -804,6 +805,7 @@ footer {
 }
 .wrap-popup .popup .info p {
   color: var(--black);
+  width: 50%;
 }
 
 .wrap-popup .popup .input-number {

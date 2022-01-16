@@ -32,6 +32,24 @@ export const _contract = function (wallet: any) {
     ],
   });
 };
+
+export const _contractToken = function (wallet: any) {
+  return new nearAPI.Contract(wallet.account(), 'aurorax.testnet', {
+    viewMethods: [
+      "get_assets_paged",
+      "get_assets_paged_detailed",
+      "get_asset",
+      "ft_metadata",
+      "get_account",
+    ],
+    changeMethods: [
+      "storage_deposit",
+      "ft_transfer",
+      "ft_transfer_call",
+    ],
+  });
+};
+
 export const checkIsSigned = async function (wallet: any) {
   async function sup() {
     const accountId = wallet.getAccountId();
