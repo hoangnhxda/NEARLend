@@ -9,10 +9,14 @@ import globalState from "../../state/globalStore";
 type Props = {
   setTurnOff: Function;
   tokenId: string;
+  token: any;
 };
-const Deposit = ({ setTurnOff, tokenId }: Props) => {
-  const { contract }: any = hookState<any>(globalState);
+const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
+  const { contract, wallet }: any = hookState<any>(globalState);
   const [amountToken, setAmountToken] = useState(0);
+  const [amountTokenPercent, setAmountTokenPercent] = useState(0);
+  const [userTokenBalance, setUserTokenBalance] = useState(0);
+
   const marks = {
     0: "0%",
     25: "25%",
@@ -26,6 +30,25 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
   }
 
   useEffect(() => {
+    const getBalanceTokenUser = async () => {
+      const balance = await contract
+        .attach(Downgraded)
+        .get()
+        .account.viewFunction(token.tokenId, "ft_balance_of", {
+          account_id: wallet.attach(Downgraded).get().getAccountId(),
+        });
+
+      console.log(
+        "yayaya",
+        token.tokenId,
+        contract.attach(Downgraded).get().contractId,
+        balance / 10 ** token.decimals
+      );
+
+      setUserTokenBalance(balance / 10 ** token.decimals);
+    };
+
+    getBalanceTokenUser();
     if (typeof window !== "undefined") {
       const htmlEle = window.document.getElementsByTagName("html")[0];
       const popupEle = window.document.getElementsByTagName("wrap-popup")[0];
@@ -45,15 +68,16 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
   }, []);
 
   const handleBorrow = async () => {
+    const amount = amountToken * 10 ** token.decimals;
     const accountId = contract.attach(Downgraded).get().account.accountId;
     const contractID = contract.attach(Downgraded).get().contractId;
-    const tokenID = tokenId;
+    const tokenID = token.tokenId;
     const ONE_YOCTO = 1;
     const GAS = 200000000000000;
     const obj = {
       receiver_id: accountId,
       // sender_id: contractID,
-      amount: amountToken.toString(),
+      amount: amount.toLocaleString("fullwide", { useGrouping: false }),
       msg: `{"Execute": {"actions": [{"Borrow": {"token_id": ${tokenID}}}]}}`,
     };
 
@@ -65,10 +89,16 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
 
   const onChange = (e: any) => {
     setAmountToken(e);
+
+    setAmountToken(e);
+    setAmountTokenPercent(e / userTokenBalance * 100)
   };
 
   const sliderOnChange = (e: any) => {
     setAmountToken(e);
+
+    setAmountToken(e/100 * userTokenBalance)
+    setAmountTokenPercent(e);
   };
 
   return (
@@ -110,8 +140,8 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
         <p className="value-percent">0.03%</p>
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
-            <p>Available: 99.9785 {shortName(tokenId)} ($0.00)</p>
-            <p className="tar">1 {shortName(tokenId)} = $16.9718</p>
+          <p>Available: {userTokenBalance} {shortName(tokenId)} (${userTokenBalance * 23})</p>
+            <p className="tar">1 {shortName(tokenId)} = $23.00</p>
           </div>
           <div className="pad-side-14">
             <InputNumber
@@ -136,7 +166,7 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
               getTooltipPopupContainer={(): any =>
                 document?.getElementById("slider-range")
               }
-              value={amountToken || 0}
+              value={amountTokenPercent || 0}
               onChange={sliderOnChange}
             />
           </div>

@@ -17,11 +17,12 @@ import {
 import { DepositPopup, BorrowPopup } from "./Popup";
 
 function Home() {
-  const { near, wallet, contract }: any = hookState<any>(globalState);
+  const { near, wallet, contract, poolListToken }: any = hookState<any>(globalState);
   const [isShowPopupDeposit, setIsShowPopupDeposit] = useState(false);
   const [isShowPopupBorrow, setIsShowPopupBorrow] = useState(false);
   const [tokenList, setTokenList] = useState([]);
   const [tokenId, setTokenId] = useState("");
+  const [tokenChose, setTokenChose] = useState(null);
 
   async function initConnect() {
     const initNear = await _near();
@@ -35,20 +36,22 @@ function Home() {
     return checkIsSigned(initWallet);
   }
 
-  const openPopupDeposit = (e: any, tokenId: string) => {
+  const openPopupDeposit = (e: any, item:any) => {
     e.preventDefault();
-    setTokenId(tokenId);
+    setTokenId(item.tokenId);
+    setTokenChose(item)
     setIsShowPopupDeposit(true);
   };
 
-  const openPopupBorrow = (e: any, tokenId: string) => {
+  const openPopupBorrow = (e: any, item:any) => {
     e.preventDefault();
-    setTokenId(tokenId);
+    setTokenId(item.tokenId);
+    setTokenChose(item)
     setIsShowPopupBorrow(true);
   };
 
   useEffect(() => {
-    if (!near || !wallet || !contract) {
+    if (!contract) {
       initConnect();
     }
     const getTokenList = async () => {
@@ -58,7 +61,17 @@ function Home() {
           .get()
           .get_assets_paged({ from_index: 0, limit: 10 })
           .then((res: any) => {
-            setTokenList(res);
+            const fomat = res.map((item: any) => {
+              return {
+                tokenId: item[0],
+                ...item[1],
+              };
+            });
+            setTokenList(fomat);
+            console.log(res);
+            console.log('fomat', fomat);
+
+            poolListToken.set(fomat);
             return res;
           })
           .catch((err: any) => console.log(err));
@@ -68,19 +81,21 @@ function Home() {
     setTimeout(() => {
       getTokenList();
     }, 500);
-  }, [contract, near, wallet, contract]);
+  }, []);
 
   return (
     <div className="container homepage">
       {isShowPopupDeposit && (
         <DepositPopup
           tokenId={tokenId}
+          token={tokenChose}
           setTurnOff={() => setIsShowPopupDeposit(false)}
         />
       )}
       {isShowPopupBorrow && (
         <BorrowPopup
           tokenId={tokenId}
+          token={tokenChose}
           setTurnOff={() => setIsShowPopupBorrow(false)}
         />
       )}
@@ -118,24 +133,24 @@ function Home() {
                         alt="Logo"
                       />
                       <div>
-                        <p className="top coin color-white fwb">{item[0]}</p>
+                        <p className="top coin color-white fwb">{item.tokenId}</p>
                         <p className="color-space-gray">$124.5</p>
                       </div>
                     </div>
                     <div className="mini deposit">
                       <p className="top color-white fwb">
-                        {item[1].supplied.balance}
+                        {item?.supplied.balance}
                       </p>
                       <p className="color-space-gray">$124.5M</p>
                     </div>
                     <div className="mini deposit">
                       <p className="top color-white fwb">
-                        {item[1].borrowed.balance}
+                        {item?.borrowed.balance}
                       </p>
                       <p className="color-space-gray">$124.5M</p>
                     </div>
                     <div
-                      onClick={(e) => openPopupDeposit(e, item[0])}
+                      onClick={(e) => openPopupDeposit(e, item)}
                       className="action mini color-white"
                     >
                       <div className="market-flex apy">
@@ -152,7 +167,7 @@ function Home() {
                       <button>Deposit</button>
                     </div>
                     <div
-                      onClick={(e) => openPopupBorrow(e, item[0])}
+                      onClick={(e) => openPopupBorrow(e, item)}
                       className="action mini color-white"
                     >
                       <div className="market-flex apy">

@@ -12,7 +12,7 @@ export const nearConfig = {
   };
 
 export const shortName = (str: string) => {
-  return str.slice(0, 10).toString() + "..";
+  return str.slice(0, 6).toString() + "..";
 };
 
 export const totalBalance = (arrayOject: any) => {

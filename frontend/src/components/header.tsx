@@ -60,7 +60,7 @@ export default function Header() {
 
   useEffect(() => {
     setTimeout(async () => {
-      console.log(near.attach(Downgraded));
+      console.log(await contract.attach(Downgraded).get());
       const user = await contract
         .attach(Downgraded)
         .get()

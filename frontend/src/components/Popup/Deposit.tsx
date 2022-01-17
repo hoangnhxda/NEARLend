@@ -10,10 +10,14 @@ import { transactions, Contract } from "near-api-js";
 type Props = {
   setTurnOff: Function;
   tokenId: string;
+  token: any;
 };
-const Deposit = ({ setTurnOff, tokenId }: Props) => {
+const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
   const { contract, wallet, userBalance }: any = hookState<any>(globalState);
   const [amountToken, setAmountToken] = useState(0);
+  const [amountTokenPercent, setAmountTokenPercent] = useState(0);
+  const [userTokenBalance, setUserTokenBalance] = useState(0);
+
   const marks = {
     0: "0%",
     25: "25%",
@@ -29,39 +33,25 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
   }
 
   useEffect(() => {
-    const alo = async () => {
-      console.log("wallet======", wallet.attach(Downgraded).get());
-      const methodOptions = {
-        viewMethods: ["ft_balance_of"],
-        changeMethods: ["addMessage"],
-      };
+    const getBalanceTokenUser = async () => {
+      const balance = await contract
+        .attach(Downgraded)
+        .get()
+        .account.viewFunction(token.tokenId, "ft_balance_of", {
+          account_id: wallet.attach(Downgraded).get().getAccountId(),
+        });
 
       console.log(
         "yayaya",
-        tokenId,
+        token.tokenId,
         contract.attach(Downgraded).get().contractId,
-        await contract
-          .attach(Downgraded)
-          .get()
-          .account.viewFunction(tokenId, "ft_balance_of", {
-            account_id: userBalance.attach(Downgraded).get().account_id,
-          })
+        balance / 10 ** token.decimals
       );
 
-      const contrc: any = new Contract(
-        wallet.attach(Downgraded).get().account,
-        "aurorax.testnet",
-        methodOptions
-      );
-
-      console.log("contrc========", contrc.ft_balance_of());
+      setUserTokenBalance(balance / 10 ** token.decimals);
     };
 
-    // async viewFunction(contractId: string, methodName: string, args: any): Promise<any> {}
-
-    alo();
-
-    console.log("transactions", transactions);
+    getBalanceTokenUser();
     if (typeof window !== "undefined") {
       const htmlEle = window.document.getElementsByTagName("html")[0];
       htmlEle.classList.add("popup-open");
@@ -73,29 +63,31 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
   }, []);
 
   const handleDeposit = async () => {
-    console.log(amountToken.toString());
+    const amount = amountToken * 10 ** token.decimals;
     const contractID = contract.attach(Downgraded).get().contractId;
     const tokenID = tokenId;
     const ONE_YOCTO = 1;
     const GAS = 200000000000000;
-    const obj = {
+    const args = {
       receiver_id: contractID,
-      amount: amountToken.toString(),
+      amount: amount.toLocaleString('fullwide', {useGrouping:false}),
       msg: "",
     };
 
     return await contract
       .attach(Downgraded)
       .get()
-      .account.functionCall(tokenID, "ft_transfer_call", obj, GAS, ONE_YOCTO);
+      .account.functionCall(tokenID, "ft_transfer_call", args, GAS, ONE_YOCTO);
   };
 
   const onChange = (e: any) => {
     setAmountToken(e);
+    setAmountTokenPercent(e / userTokenBalance * 100)
   };
 
   const sliderOnChange = (e: any) => {
-    setAmountToken(e);
+    setAmountToken(e/100 * userTokenBalance)
+    setAmountTokenPercent(e);
   };
 
   return (
@@ -134,13 +126,13 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
         <p className="value-percent">0.03%</p>
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
-            <p>Available: 99.9785 {shortName(tokenId)} ($0.00)</p>
-            <p className="tar">1 {shortName(tokenId)} = $16.9718</p>
+            <p>Available: {userTokenBalance} {shortName(tokenId)} (${userTokenBalance * 23})</p>
+            <p className="tar">1 {shortName(tokenId)} = $23.00</p>
           </div>
           <div className="pad-side-14">
             <InputNumber
               className="input-number"
-              defaultValue={1000}
+              defaultValue={0}
               formatter={(value) =>
                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
@@ -160,7 +152,7 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
               getTooltipPopupContainer={(): any =>
                 document?.getElementById("slider-range")
               }
-              value={amountToken || 0}
+              value={amountTokenPercent || 0}
               onChange={sliderOnChange}
             />
           </div>

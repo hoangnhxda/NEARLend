@@ -6,6 +6,7 @@ const globalState: any = createState<any>({
   contract: null,
   balance: null,
   userBalance: null,
+  poolListToken: null,
 });
 
 
