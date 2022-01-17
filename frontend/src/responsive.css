@@ -10,6 +10,7 @@
   }
 }
 @media only screen and (max-width: 1024px) {
+  .introduce-page .section-2 .flex,
   .introduce-page .section-2 .flex-side {
     flex-direction: column;
     justify-content: center;
@@ -18,8 +19,16 @@
   }
 
   .introduce-page .section-2 .flex-side .flex-side__side {
-    padding-bottom: 60px;
+    padding-bottom: 100px;
   }
+
+  .introduce-page .section-2.section-top .content {
+    margin: 0;
+    text-align: center;
+    max-width: unset;
+  }
+
+  
 }
 @media screen and (max-width: 800px) {
   /* .homepage .wrap-market .title {
@@ -53,15 +62,23 @@
   .Wave {
     width: auto;
   }
+  .roadmap .section-bot .title,
+  .introduce-page .section-2 .title {
+    font-size: 34px;
+  }
 
   .introduce-page .section-2 .title {
-    font-size: 38px;
+    padding-bottom: 0;
   }
+
 }
 
 @media only screen and (max-width: 767px) {
   .introduce-page .head {
     background: url("./images/globe-block.png") no-repeat center bottom / cover;
+  }
+  .introduce-page .head .logo {
+    display: none;
   }
   .introduce-page .head h2 {
     top: 50%;
@@ -158,6 +175,11 @@
   /* end Popup */
 }
 
+@media only screen and (max-width: 600px) {
+.introduce-page .section-2 .flex-side .img {
+  height: 320px;
+}
+}
 @media only screen and (max-width: 475px) {
   /* Popup */
   .wrap-popup .popup {

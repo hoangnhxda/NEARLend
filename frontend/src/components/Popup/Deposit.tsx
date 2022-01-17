@@ -1,12 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import iconShib from "../../images/icon-shib.png";
 import iconClose from "../../images/icon-close.png";
 import { InputNumber, Slider } from "antd";
+import { shortName } from "../../utils";
+import { useState as hookState, Downgraded } from "@hookstate/core";
+import globalState from "../../state/globalStore";
 
 type Props = {
   setTurnOff: Function;
+  tokenId: string;
 };
-const Deposit = ({ setTurnOff }: Props) => {
+const Deposit = ({ setTurnOff, tokenId }: Props) => {
+  const { contract }: any = hookState<any>(globalState);
+  const [amountToken, setAmountToken] = useState(0);
   const marks = {
     0: "0%",
     25: "25%",
@@ -31,6 +37,32 @@ const Deposit = ({ setTurnOff }: Props) => {
       htmlEle.classList.remove("popup-open");
     };
   }, []);
+
+  const handleDeposit = async () => {
+    console.log(amountToken.toString())
+    const contractID = contract.attach(Downgraded).get().contractId;
+    const tokenID = tokenId;
+    const ONE_YOCTO = 1;
+    const GAS = 200000000000000;
+    const obj = {
+      receiver_id: contractID,
+      amount: amountToken.toString(),
+      msg: "",
+    };
+
+    return await contract
+      .attach(Downgraded)
+      .get()
+      .account.functionCall(tokenID, "ft_transfer_call", obj, GAS, ONE_YOCTO);
+  };
+ 
+  const onChange = (e: any) => {
+    setAmountToken(e);
+  };
+
+  const sliderOnChange = (e: any) => {
+    setAmountToken(e);
+  };
 
   return (
     <div className="wrap-popup">
@@ -64,12 +96,12 @@ const Deposit = ({ setTurnOff }: Props) => {
             alt="Logo"
           />
         </p>
-        <p className="icon-name">Shiba</p>
+        <p className="icon-name">{tokenId}</p>
         <p className="value-percent">0.03%</p>
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
-            <p>Available: 99.9785 SHIB ($0.00)</p>
-            <p className="tar">1 SHIB = $16.9718</p>
+            <p>Available: 99.9785 {shortName(tokenId)} ($0.00)</p>
+            <p className="tar">1 {shortName(tokenId)} = $16.9718</p>
           </div>
           <div className="pad-side-14">
             <InputNumber
@@ -78,8 +110,9 @@ const Deposit = ({ setTurnOff }: Props) => {
               formatter={(value) =>
                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
+              value={amountToken || 0}
               // parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-              // onChange={onChange}
+              onChange={onChange}
             />
           </div>
           <div
@@ -93,11 +126,13 @@ const Deposit = ({ setTurnOff }: Props) => {
               getTooltipPopupContainer={(): any =>
                 document?.getElementById("slider-range")
               }
+              value={amountToken || 0}
+              onChange={sliderOnChange}
             />
           </div>
 
           <p className="position-relative total bg-white">
-            Total Supply = $831.44
+            Total Supply = ${amountToken * 23}
           </p>
           <p className="position-relative rates-title fwb bg-white pad-side-14">
             Supply Rates
@@ -120,7 +155,9 @@ const Deposit = ({ setTurnOff }: Props) => {
             </div>
           </div>
 
-          <button className="position-relative btn">DEPOSIT</button>
+          <button className="position-relative btn" onClick={handleDeposit}>
+            DEPOSIT
+          </button>
         </div>
       </div>
     </div>

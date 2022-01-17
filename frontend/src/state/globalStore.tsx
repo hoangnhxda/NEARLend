@@ -5,6 +5,7 @@ const globalState: any = createState<any>({
   wallet: null,
   contract: null,
   balance: null,
+  userBalance: null,
 });
 
 
