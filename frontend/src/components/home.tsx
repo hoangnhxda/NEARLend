@@ -158,8 +158,8 @@ function Home() {
                         <p className="icon-apy">
                           <img
                             src={iconSol}
-                            width={15}
-                            height={15}
+                            width={18}
+                            height={18}
                             alt="Logo"
                           />
                         </p>
@@ -175,8 +175,8 @@ function Home() {
                         <p className="icon-apy ">
                           <img
                             src={iconSol}
-                            width={15}
-                            height={15}
+                            width={18}
+                            height={18}
                             alt="Logo"
                           />
                         </p>

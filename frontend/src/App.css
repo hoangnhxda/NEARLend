@@ -316,6 +316,7 @@ footer {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  margin-bottom: 4px;
 }
 .homepage .wrap-market .wrap-pool .apy .icon-apy {
   padding: 0 7px;
@@ -325,7 +326,7 @@ footer {
 .homepage .wrap-market .wrap-pool .apy .icon-apy img {
   background: #2cffe4;
   border-radius: 50%;
-  border: 1px solid #2cffe4;
+  border: 1px solid #1c887a;
 }
 
 .homepage .wrap-market .wrap-pool .action {
