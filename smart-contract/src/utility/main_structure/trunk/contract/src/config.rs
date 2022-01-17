@@ -58,14 +58,14 @@ impl Contract {
     /// - Requires one yoctoNEAR.
     /// - Requires to be called by the contract owner.
     #[payable]
-    pub fn add_asset(&mut self, token_id: ValidAccountId, decimal: u128, asset_config: AssetConfig) {
+    pub fn add_asset(&mut self, token_id: ValidAccountId, decimals: u128, asset_config: AssetConfig) {
         assert_one_yocto();
         asset_config.assert_valid();
         self.assert_owner();
         assert!(self.asset_ids.insert(token_id.as_ref()));
         self.internal_set_asset(
             token_id.as_ref(),
-            Asset::new(env::block_timestamp(), decimal, asset_config),
+            Asset::new(env::block_timestamp(), decimals, asset_config),
         )
     }
 
@@ -75,13 +75,13 @@ impl Contract {
     /// - Requires one yoctoNEAR.
     /// - Requires to be called by the contract owner.
     #[payable]
-    pub fn update_asset(&mut self, token_id: ValidAccountId, decimal: u128, asset_config: AssetConfig) {
+    pub fn update_asset(&mut self, token_id: ValidAccountId, decimals: u128, asset_config: AssetConfig) {
         assert_one_yocto();
         asset_config.assert_valid();
         self.assert_owner();
         let mut asset = self.internal_unwrap_asset(token_id.as_ref());
         asset.config = asset_config;
-        asset.asset_decimal = decimal;
+        asset.decimals = decimals;
         self.internal_set_asset(token_id.as_ref(), asset);
     }
 

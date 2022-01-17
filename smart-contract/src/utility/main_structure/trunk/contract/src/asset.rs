@@ -10,7 +10,7 @@ static ASSETS: Lazy<Mutex<HashMap<TokenId, Option<Asset>>>> =
 #[serde(crate = "near_sdk::serde")]
 pub struct Asset {
     // decimal number of the token
-    pub asset_decimal: u128,
+    pub decimals: u128,
     /// Total supplied including collateral, but excluding reserved.
     pub supplied: Pool,
     /// Total borrowed.
@@ -48,7 +48,7 @@ impl From<Asset> for VAsset {
 impl Asset {
     pub fn new(timestamp: Timestamp, decimal: u128, config: AssetConfig) -> Self {
         Self {
-            asset_decimal: decimal,
+            decimals: decimal,
             supplied: Pool::new(),
             borrowed: Pool::new(),
             reserved: 0,

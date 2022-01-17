@@ -2,7 +2,7 @@ export NEAR_ENV=testnet
 export OWNER_ID=hoangnh_xda.testnet
 export ORACLE_ID=hoangnh_xda.testnet
 export ACCOUNT_ID=hoangnh_xda.testnet
-export CONTRACT_ID=nearlend.hoangnh_xda.testnet
+export CONTRACT_ID=S
 export BOOSTER_TOKEN_ID=ref.fakes.testnet
 export WETH_TOKEN_ID=weth.fakes.testnet
 export DAI_TOKEN_ID=dai.fakes.testnet
@@ -36,19 +36,19 @@ near call $CONTRACT_ID get_asset '{"token_id": "'$BOOSTER_TOKEN_ID'"}' --account
 
 near view $AURORAX_TOKEN_ID ft_metadata
 
-near view $AURORAX_TOKEN_ID ft_balance_of '{"account_id": "'$ACCOUNT_ID'"}'
+near view $AURORAX_TOKEN_ID ft_balance_of '{"account_id": "'$CONTRACT_ID'"}'
 
 near view $NEL_TOKEN_ID ft_balance_of '{"account_id": "'$ACCOUNT_ID'"}'
 
 near view $NEL_TOKEN_ID storage_balance_bounds
 
-near call $AURORAX_TOKEN_ID storage_deposit '{"account_id": "'$CONTRACT_ID'"}' --accountId $ACCOUNT_ID --deposit $ONE_YOCTO
+near call $AURORAX_TOKEN_ID storage_deposit '{"account_id": "'$CONTRACT_ID'"}' --accountId $ACCOUNT_ID --deposit 0.00125
 
-near call $USDC_TOKEN_ID ft_transfer '{"receiver_id": "'$CONTRACT_ID'", "amount": "1"}' --accountId $ACCOUNT_ID --amount 0.000000000000000000000001
+// ham gui token truc tiep: near call $AURORAX_TOKEN_ID ft_transfer '{"receiver_id": "'$CONTRACT_ID'", "amount": "12"}' --accountId $ACCOUNT_ID --amount $ONE_YOCTO
 
 near call $CONTRACT_ID --accountId=$OWNER_ID add_asset '{
   "token_id": "'$AURORAX_TOKEN_ID'",
-  "decimal": 24,
+  "decimals": 24,
   "asset_config": {
     "reserve_ratio": 2500,
     "target_utilization": 8000,
@@ -63,10 +63,16 @@ near call $CONTRACT_ID --accountId=$OWNER_ID add_asset '{
   }
 }' --amount=$ONE_YOCTO --gas=$GAS
 
-near call $USDC_TOKEN_ID --accountId=$ACCOUNT_ID --gas=$GAS --amount=$ONE_YOCTO ft_transfer_call '{
+near call $AURORAX_TOKEN_ID --accountId=$ACCOUNT_ID --gas=$GAS --amount=$ONE_YOCTO ft_transfer_call '{
   "receiver_id": "'$CONTRACT_ID'",
   "amount": "1",
-  "msg": "{\"Execute\": {\"actions\": [{\"Borrow\": {\"token_id\": \"'$USDC_TOKEN_ID'\"}}]}}"
+  "msg": "{\"Execute\": {\"actions\": [{\"Withdraw\": {\"token_id\": \"'$AURORAX_TOKEN_ID'\", \"amount\": \"137\"}}]}}"
+}'
+
+near call $AURORAX_TOKEN_ID --accountId=$ACCOUNT_ID --gas=$GAS --amount=$ONE_YOCTO ft_transfer_call '{
+  "receiver_id": "'$CONTRACT_ID'",
+  "amount": "1",
+  "msg": "{\"Execute\": {\"actions\": [{\"Borrow\": {\"token_id\": \"'$AURORAX_TOKEN_ID'\", \"amount\": \"1000000000000000000000000\"}}], \"prices\": {\"'$AURORAX_TOKEN_ID'\": \"1\"}}}"
 }'
 
 near call $AURORAX_TOKEN_ID --accountId=$ACCOUNT_ID --gas=$GAS --amount=$ONE_YOCTO ft_transfer_call '{

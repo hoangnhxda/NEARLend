@@ -38,7 +38,7 @@ impl Contract {
         account: &mut Account,
         storage: &mut Storage,
         actions: Vec<Action>,
-        prices: Prices,
+        // prices: Prices,
     ) {
         let mut need_risk_check = false;
         let mut need_number_check = false;
@@ -123,7 +123,7 @@ impl Contract {
                         account_id,
                         account,
                         storage,
-                        &prices,
+                       // &prices,
                         liquidation_account_id.as_ref(),
                         in_assets,
                         out_assets,
@@ -134,9 +134,9 @@ impl Contract {
         if need_number_check {
             assert!(account.collateral.len() + account.borrowed.len() <= MAX_NUM_ASSETS);
         }
-        if need_risk_check {
-            assert!(self.compute_max_discount(account, &prices) == BigDecimal::zero());
-        }
+        // if need_risk_check {
+           // assert!(self.compute_max_discount(account, &prices) == BigDecimal::zero());
+        // }
 
         self.internal_account_apply_affected_farms(account, true);
     }
@@ -321,7 +321,7 @@ impl Contract {
         account_id: &AccountId,
         account: &mut Account,
         storage: &mut Storage,
-        prices: &Prices,
+        //prices: &Prices,
         liquidation_account_id: &AccountId,
         in_assets: Vec<AssetAmount>,
         out_assets: Vec<AssetAmount>,
@@ -329,11 +329,11 @@ impl Contract {
         let (mut liquidation_account, mut liquidation_storage) =
             self.internal_unwrap_account_with_storage(liquidation_account_id);
 
-        let max_discount = self.compute_max_discount(&liquidation_account, &prices);
-        assert!(
-            max_discount > BigDecimal::zero(),
-            "The liquidation account is not at risk"
-        );
+        // let max_discount = self.compute_max_discount(&liquidation_account, &prices);
+        // assert!(
+        //     max_discount > BigDecimal::zero(),
+        //     "The liquidation account is not at risk"
+        // );
 
         let mut borrowed_repaid_sum = BigDecimal::zero();
         let mut collateral_taken_sum = BigDecimal::zero();
@@ -516,7 +516,7 @@ impl Contract {
             &mut account,
             &mut storage,
             actions,
-            Prices::new(),
+            // Prices::new(), - temporary disable
         );
         self.internal_set_account(&account_id, account, storage);
     }
