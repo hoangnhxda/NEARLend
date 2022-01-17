@@ -3,7 +3,7 @@ import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 import { contractName } from "../utils";
 import { useEffect, useState } from "react";
-import logo from "../images/nearlend.png";
+import logo from "../images/nearlend-text.png";
 import arrow_down from "../images/arrow_down.png";
 import arrow_down_white from "../images/arrow_down_white.png";
 import { useLocation } from "react-router-dom";
@@ -94,7 +94,7 @@ export default function Header() {
       <div className="container">
         <h1>
           <Link to="/">
-            <img alt="Nearlend" src={logo} width={45} height={45} />
+            <img alt="Nearlend" src={logo} width={98} height={98} />
           </Link>
         </h1>
         <nav>

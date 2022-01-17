@@ -5,13 +5,14 @@ import { InputNumber, Slider } from "antd";
 import { shortName } from "../../utils";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../../state/globalStore";
+import { transactions, Contract } from "near-api-js";
 
 type Props = {
   setTurnOff: Function;
   tokenId: string;
 };
 const Deposit = ({ setTurnOff, tokenId }: Props) => {
-  const { contract }: any = hookState<any>(globalState);
+  const { contract, wallet, userBalance }: any = hookState<any>(globalState);
   const [amountToken, setAmountToken] = useState(0);
   const marks = {
     0: "0%",
@@ -28,6 +29,39 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
   }
 
   useEffect(() => {
+    const alo = async () => {
+      console.log("wallet======", wallet.attach(Downgraded).get());
+      const methodOptions = {
+        viewMethods: ["ft_balance_of"],
+        changeMethods: ["addMessage"],
+      };
+
+      console.log(
+        "yayaya",
+        tokenId,
+        contract.attach(Downgraded).get().contractId,
+        await contract
+          .attach(Downgraded)
+          .get()
+          .account.viewFunction(tokenId, "ft_balance_of", {
+            account_id: userBalance.attach(Downgraded).get().account_id,
+          })
+      );
+
+      const contrc: any = new Contract(
+        wallet.attach(Downgraded).get().account,
+        "aurorax.testnet",
+        methodOptions
+      );
+
+      console.log("contrc========", contrc.ft_balance_of());
+    };
+
+    // async viewFunction(contractId: string, methodName: string, args: any): Promise<any> {}
+
+    alo();
+
+    console.log("transactions", transactions);
     if (typeof window !== "undefined") {
       const htmlEle = window.document.getElementsByTagName("html")[0];
       htmlEle.classList.add("popup-open");
@@ -39,7 +73,7 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
   }, []);
 
   const handleDeposit = async () => {
-    console.log(amountToken.toString())
+    console.log(amountToken.toString());
     const contractID = contract.attach(Downgraded).get().contractId;
     const tokenID = tokenId;
     const ONE_YOCTO = 1;
@@ -55,7 +89,7 @@ const Deposit = ({ setTurnOff, tokenId }: Props) => {
       .get()
       .account.functionCall(tokenID, "ft_transfer_call", obj, GAS, ONE_YOCTO);
   };
- 
+
   const onChange = (e: any) => {
     setAmountToken(e);
   };

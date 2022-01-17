@@ -1,4 +1,6 @@
 /* @import "~antd/dist/antd.css"; */
+/* @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
 @import "~antd/dist/antd.css";
 
 :root {
@@ -12,15 +14,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Roboto", sans-serif;
+  font-family: "Fredoka One", sans-serif;
+  font-weight: normal;
+  font-style: normal;
   letter-spacing: 0.07rem;
-}
-
-@font-face {
-  font-family: "Roboto";
-  src: local("Roboto"), url(./fonts/roboto-regular.woff2) format("woff");
-  /* other formats include: 'woff2', 'truetype, 'opentype',
-                            'embedded-opentype', and 'svg' */
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -127,8 +124,7 @@ footer {
 }
 
 .header .container {
-  padding: 10px 0;
-
+  padding: 4px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -151,6 +147,7 @@ footer {
 
 .header nav a {
   color: var(--white);
+  font-family: "Fredoka One", sans-serif;
 }
 
 .header .btn-connect {
@@ -382,11 +379,9 @@ footer {
 
 .introduce-page .head .logo {
   position: absolute;
-  top: -150px;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, 0);
-  width: 120px;
-  height: 120px;
+  transform: translate(-50%, -50%);
 }
 
 .introduce-page .head h2 {
@@ -415,6 +410,7 @@ footer {
   font-size: 55px;
   font-weight: bold;
   padding-bottom: 20px;
+  font-family: "Fredoka One", sans-serif;
 }
 
 .introduce-page .section-2 .img-background {
@@ -519,7 +515,8 @@ footer {
 
 .portforlio .token-list {
   position: relative;
-  border: 1px solid #20948a;
+  /* border: 1px solid #20948a; */
+  background-color: rgb(0 0 0 / 40%);
   display: flex;
   justify-content: space-between;
   padding: 20px;
@@ -1031,6 +1028,7 @@ footer {
   font-size: 55px;
   font-weight: bold;
   padding-bottom: 20px;
+  font-family: "Fredoka One", sans-serif;
 }
 
 .roadmap .section-top .text {
@@ -1124,11 +1122,13 @@ footer {
   margin-left: auto;
 }
 .roadmap .wrap-line .phase.right {
+  text-align: right;
 }
 
 .roadmap .wrap-line .phase.right h4 {
   left: auto;
   right: -170px;
+  margin-left: auto;
 }
 
 .roadmap .wrap-line .phase h4 {

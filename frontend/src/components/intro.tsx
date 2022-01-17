@@ -6,7 +6,7 @@ import cryptoNft from "../images/crypto-nft.png";
 import cryptoNftLend from "../images/crypto-nft-lend.png";
 import crossChain from "../images/cross-chain.png";
 import daoGOV from "../images/dao.png";
-import logo from "../images/nearlend.png";
+import logo from "../images/nearlend-content.png";
 import PieChart from "../components/PieChart";
 
 export default function Intro() {
@@ -18,10 +18,9 @@ export default function Intro() {
             className="logo"
             alt="Nearlend"
             src={logo}
-            width={45}
-            height={45}
+            width={540}
+            height={540}
           />
-          Let The World Be Transparent
         </h2>
       </div>
 
@@ -163,7 +162,7 @@ export default function Intro() {
       {/* RoadMap 2 */}
       <div className="roadmap">
         <div className="container position-relative section-bot">
-          <h3 className="title tac fz34 mb-44 bold">ROAD MAP</h3>
+          <h3 className="title tac fz34 mb-44 bold">ROADMAP</h3>
           <div className="wrap-line position-relative">
             <div className="wrap">
               <p className="planet grayscale">

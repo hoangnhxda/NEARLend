@@ -4,6 +4,8 @@ import App from "./App";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
+import './fonts/Fredoka-one.woff2';
+import './fonts/Now-light.woff2';
 import buffer from "buffer";
 global.Buffer = buffer.Buffer;
 
