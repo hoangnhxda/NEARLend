@@ -1,6 +1,6 @@
 /* @import "~antd/dist/antd.css"; */
 /* @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap'); */
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
 @import "~antd/dist/antd.css";
 
 :root {
@@ -229,10 +229,9 @@ footer {
 .homepage .wrap-market {
   color: #c1c1c1;
   padding: 20px;
-  border-top: 1px solid #fff;
-  border-bottom: 1px solid #fff;
-  background: rgb(0 0 0 / 35%);
+  background: rgb(0 0 0 / 40%);
   margin: 60px 0;
+  border-radius: 5px;
   overflow-x: scroll;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -261,7 +260,7 @@ footer {
   grid-auto-flow: column;
   grid-row-gap: 40px;
   justify-content: space-around;
-  border-bottom: 1px solid #c1c1c1;
+  border-bottom: 1px solid #2cffe4;
   padding: 30px 0;
   margin-bottom: 30px;
   margin-top: 50px;
@@ -323,6 +322,12 @@ footer {
   /* margin-bottom: -5px; */
 }
 
+.homepage .wrap-market .wrap-pool .apy .icon-apy img {
+  background: #2cffe4;
+  border-radius: 50%;
+  border: 1px solid #2cffe4;
+}
+
 .homepage .wrap-market .wrap-pool .action {
   cursor: pointer;
   display: flex;
@@ -346,6 +351,9 @@ footer {
 
 .homepage .wrap-market .wrap-pool .icon {
   margin-right: 8px;
+  border: 1px solid #2cffe4;
+  background: #2cffe4;
+  border-radius: 50%;
 }
 
 .homepage .wrap-market .wrap-pool .asset {

@@ -13,7 +13,7 @@ type Props = {
   token: any;
 };
 const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
-  const { contract, wallet, userBalance }: any = hookState<any>(globalState);
+  const { contract, wallet }: any = hookState<any>(globalState);
   const [amountToken, setAmountToken] = useState(0);
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
   const [userTokenBalance, setUserTokenBalance] = useState(0);
@@ -136,7 +136,7 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
             <InputNumber
               className="input-number"
               defaultValue={0}
-              formatter={(value:any) => parseFloat(value).toFixed(6)}
+              formatter={(value: any) => parseFloat(value).toFixed(6)}
               value={amountToken || 0}
               onChange={onChange}
             />
@@ -158,7 +158,8 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
           </div>
 
           <p className="position-relative total bg-white">
-            Total Supply <span style={{fontSize: 22}}>&#8771;</span> ${(amountToken * 23).toFixed(1)}
+            Total Supply <span style={{ fontSize: 22 }}>&#8771;</span> $
+            {(amountToken * 23).toFixed(1)}
           </p>
           <p className="position-relative rates-title fwb bg-white pad-side-14">
             Supply Rates
