@@ -89,15 +89,11 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
 
   const onChange = (e: any) => {
     setAmountToken(e);
-
-    setAmountToken(e);
-    setAmountTokenPercent(e / userTokenBalance * 100)
+    setAmountTokenPercent((e / userTokenBalance) * 100);
   };
 
   const sliderOnChange = (e: any) => {
-    setAmountToken(e);
-
-    setAmountToken(e/100 * userTokenBalance)
+    setAmountToken((e / 100) * userTokenBalance);
     setAmountTokenPercent(e);
   };
 
@@ -140,17 +136,17 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
         <p className="value-percent">0.03%</p>
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
-          <p>Available: {userTokenBalance} {shortName(tokenId)} (${userTokenBalance * 23})</p>
+            <p>
+              Available: {userTokenBalance} {shortName(tokenId)} ($
+              {userTokenBalance * 23})
+            </p>
             <p className="tar">1 {shortName(tokenId)} = $23.00</p>
           </div>
           <div className="pad-side-14">
             <InputNumber
               className="input-number"
               defaultValue={1000}
-              formatter={(value) =>
-                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              }
-              // parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+              formatter={(value: any) => parseFloat(value).toFixed(6)}
               value={amountToken || 0}
               onChange={onChange}
             />
@@ -172,7 +168,8 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
           </div>
 
           <p className="position-relative total bg-white">
-            Total Supply = ${amountToken * 23}
+            Total Supply <span style={{ fontSize: 22 }}>&#8771;</span> $
+            {(amountToken * 23).toFixed(1)}
           </p>
           <p className="position-relative rates-title fwb bg-white pad-side-14">
             Supply Rates
