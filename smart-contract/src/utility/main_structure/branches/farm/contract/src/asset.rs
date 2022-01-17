@@ -6,6 +6,7 @@ static ASSETS: Lazy<Mutex<HashMap<TokenId, Option<Asset>>>> =
 #[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize, Clone)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Asset {
+    pub asset_decimal: u128;
     /// Total supplied including collateral, but excluding reserved.
     pub supplied: Pool,
     /// Total borrowed.
@@ -43,6 +44,7 @@ impl From<Asset> for VAsset {
 impl Asset {
     pub fn new(timestamp: Timestamp, config: AssetConfig) -> Self {
         Self {
+            asset_decimal: 0,
             supplied: Pool::new(),
             borrowed: Pool::new(),
             reserved: 0,
