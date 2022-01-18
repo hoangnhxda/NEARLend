@@ -9,10 +9,10 @@ import { transactions, Contract } from "near-api-js";
 
 type Props = {
   setTurnOff: Function;
-  tokenId: string;
+  tokenId?: string;
   token: any;
 };
-const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
+const Deposit = ({ setTurnOff, token }: Props) => {
   const { contract, wallet }: any = hookState<any>(globalState);
   const [amountToken, setAmountToken] = useState(0);
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
@@ -65,7 +65,7 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
   const handleDeposit = async () => {
     const amount = amountToken * 10 ** token.decimals;
     const contractID = contract.attach(Downgraded).get().contractId;
-    const tokenID = tokenId;
+    const tokenID = token.tokenId;
     const ONE_YOCTO = 1;
     const GAS = 200000000000000;
     const args = {
@@ -122,22 +122,25 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
             alt="Logo"
           />
         </p>
-        <p className="icon-name">{tokenId}</p>
+        <p className="icon-name">{token.tokenId}</p>
         <p className="value-percent">0.03%</p>
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
             <p>
-              Available: {userTokenBalance} {shortName(tokenId)} ($
+              Available: {userTokenBalance} {shortName(token.tokenId)} ($
               {userTokenBalance * 23})
             </p>
-            <p className="tar">1 {shortName(tokenId)} = $23.00</p>
+            <p className="tar">1 {shortName(token.tokenId)} = $23.00</p>
           </div>
           <div className="pad-side-14">
             <InputNumber
               className="input-number"
               defaultValue={0}
-              formatter={(value: any) => parseFloat(value).toFixed(6)}
-              value={amountToken || 0}
+              type="number" 
+              // formatter={(value) =>
+              //   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              // }
+              value={amountToken}
               onChange={onChange}
             />
           </div>

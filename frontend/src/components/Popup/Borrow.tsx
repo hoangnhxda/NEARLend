@@ -8,15 +8,15 @@ import globalState from "../../state/globalStore";
 
 type Props = {
   setTurnOff: Function;
-  tokenId: string;
+  tokenId?: string;
   token: any;
 };
-const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
+const Deposit = ({ setTurnOff, token }: Props) => {
   const { contract, wallet }: any = hookState<any>(globalState);
   const [amountToken, setAmountToken] = useState(0);
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
   const [userTokenBalance, setUserTokenBalance] = useState(0);
-
+  console.log("token", token);
   const marks = {
     0: "0%",
     25: "25%",
@@ -30,25 +30,6 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
   }
 
   useEffect(() => {
-    const getBalanceTokenUser = async () => {
-      const balance = await contract
-        .attach(Downgraded)
-        .get()
-        .account.viewFunction(token.tokenId, "ft_balance_of", {
-          account_id: wallet.attach(Downgraded).get().getAccountId(),
-        });
-
-      console.log(
-        "yayaya",
-        token.tokenId,
-        contract.attach(Downgraded).get().contractId,
-        balance / 10 ** token.decimals
-      );
-
-      setUserTokenBalance(balance / 10 ** token.decimals);
-    };
-
-    getBalanceTokenUser();
     if (typeof window !== "undefined") {
       const htmlEle = window.document.getElementsByTagName("html")[0];
       const popupEle = window.document.getElementsByTagName("wrap-popup")[0];
@@ -67,6 +48,31 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const getBalanceTokenUser = async () => {
+      try {
+        const balance = await contract
+          .attach(Downgraded)
+          .get()
+          .account.viewFunction(token.tokenId, "ft_balance_of", {
+            account_id: wallet.attach(Downgraded).get().getAccountId(),
+          });
+
+        console.log(
+          "yayaya",
+          token.tokenId,
+          contract.attach(Downgraded).get().contractId,
+          balance / 10 ** token.decimals
+        );
+
+        setUserTokenBalance(balance / 10 ** token.decimals);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getBalanceTokenUser();
+  }, []);
+
   const handleBorrow = async () => {
     const amount = amountToken * 10 ** token.decimals;
     const accountId = contract.attach(Downgraded).get().account.accountId;
@@ -74,7 +80,7 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
     const tokenID = token.tokenId;
     const ONE_YOCTO = 1;
     const GAS = 200000000000000;
-    const obj = {
+    const args = {
       receiver_id: accountId,
       // sender_id: contractID,
       amount: amount.toLocaleString("fullwide", { useGrouping: false }),
@@ -84,10 +90,11 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
     return await contract
       .attach(Downgraded)
       .get()
-      .account.functionCall(tokenID, "ft_transfer_call", obj, GAS, ONE_YOCTO);
+      .account.functionCall(tokenID, "ft_transfer_call", args, GAS, ONE_YOCTO);
   };
 
   const onChange = (e: any) => {
+    console.log("+++++e", e)
     setAmountToken(e);
     setAmountTokenPercent((e / userTokenBalance) * 100);
   };
@@ -132,22 +139,27 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
             alt="Logo"
           />
         </p>
-        <p className="icon-name">{tokenId}</p>
+        <p className="icon-name">{token.tokenId}</p>
         <p className="value-percent">0.03%</p>
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
             <p>
-              Available: {userTokenBalance} {shortName(tokenId)} ($
+              Available: {userTokenBalance} {shortName(token.tokenId)} ($
               {userTokenBalance * 23})
             </p>
-            <p className="tar">1 {shortName(tokenId)} = $23.00</p>
+            <p className="tar">1 {shortName(token.tokenId)} = $23.00</p>
           </div>
           <div className="pad-side-14">
             <InputNumber
               className="input-number"
-              defaultValue={1000}
-              formatter={(value: any) => parseFloat(value).toFixed(6)}
-              value={amountToken || 0}
+              defaultValue={0}
+              type="number"
+              // formatter={(value) => {
+              //   // const val = value?.toString();
+              //   return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              // }}
+              keyboard={true}
+              value={amountToken}
               onChange={onChange}
             />
           </div>
@@ -168,14 +180,14 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
           </div>
 
           <p className="position-relative total bg-white">
-            Total Supply <span style={{ fontSize: 22 }}>&#8771;</span> $
+            Total Borrow <span style={{ fontSize: 22 }}>&#8771;</span> $
             {(amountToken * 23).toFixed(1)}
           </p>
           <p className="position-relative rates-title fwb bg-white pad-side-14">
-            Supply Rates
+            Borrow Rates
           </p>
           <div className="position-relative flex bg-white pad-side-14">
-            <div className="left">Deposit APY</div>
+            <div className="left">Borrow APY</div>
             <div className="right fwb">0.028533093636258104</div>
           </div>
           <div className="position-relative flex bg-white pad-side-14">
@@ -193,7 +205,7 @@ const Deposit = ({ setTurnOff, tokenId, token }: Props) => {
           </div>
 
           <button className="position-relative btn" onClick={handleBorrow}>
-            DEPOSIT
+            BORROW
           </button>
         </div>
       </div>
