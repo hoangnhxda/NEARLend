@@ -86,10 +86,10 @@ export default function Intro() {
                   alt="Crypto 02"
                 />
               </p>
-              <h5 className="label">NFT for Rent</h5>
+              <h5 className="label">NFT for Rent &amp; Auctions</h5>
               <p className="content">
-                Transfer NFT’s commercial rights and receive recurring rental
-                fees.
+                NFT for rent and (or) NFTs will be listed on Nearlend in auction
+                format.
               </p>
             </div>
             <div className="flex-side__side right">
@@ -101,10 +101,9 @@ export default function Intro() {
                   alt="Crypto 02"
                 />
               </p>
-              <h5 className="label">NFT Lending</h5>
+              <h5 className="label">Community First</h5>
               <p className="content">
-                Put your NFT assets up as collateral for a loan, or offer loans
-                to other users on their non-fungible tokens.
+                Protocol's fees will be partially share for liquidity providers.
               </p>
             </div>
           </div>
@@ -162,7 +161,7 @@ export default function Intro() {
       {/* RoadMap 2 */}
       <div className="roadmap">
         <div className="container position-relative section-bot">
-          <h3 className="title tac fz34 mb-44 bold">ROADMAP</h3>
+          <h3 className="title tac fz34 mb-44 bold">The Roadmap</h3>
           <div className="wrap-line position-relative">
             <div className="wrap">
               <p className="planet grayscale">
