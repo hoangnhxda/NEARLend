@@ -238,9 +238,9 @@ export default function Intro() {
       </div>
 
       <footer>
-        "a small group of young developers from Vietnam decided to gather and
-        jointly develop Nearlend - Dapp that provides lending and borrowing
-        services on Near Protocol."
+        "Inspired by the ideas of DeFi, Web3 and DAO, a small group of young
+        developers from Vietnam decided to jointly develop Nearlend - Dapp for
+        lending and borrowing assets in Near Protocol."
       </footer>
     </main>
   );
