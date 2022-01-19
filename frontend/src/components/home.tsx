@@ -139,13 +139,13 @@ function Home() {
                     </div>
                     <div className="mini deposit">
                       <p className="top color-white fwb">
-                        {item?.supplied.balance}
+                        {item?.supplied.balance / (10 ** item.config.extra_decimals)}
                       </p>
                       <p className="color-space-gray">$124.5M</p>
                     </div>
                     <div className="mini deposit">
                       <p className="top color-white fwb">
-                        {item?.borrowed.balance}
+                        {item?.borrowed.balance / (10 ** item.config.extra_decimals)}
                       </p>
                       <p className="color-space-gray">$124.5M</p>
                     </div>
