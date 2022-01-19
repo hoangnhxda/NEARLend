@@ -16,10 +16,11 @@ import icon_4 from "../images/icon-doge.png";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 import { useEffect, useState } from "react";
-import { shortName, totalBalance } from "../utils";
+import { shortName, totalBalance, fomatBalance } from "../utils";
+import { tokenFomat } from "../utils/token";
 
 export default function Intro() {
-  const { userBalance }: any = hookState<any>(globalState);
+  const { userBalance, contract, wallet }: any = hookState<any>(globalState);
   const [account, setAccount] = useState<any>(null);
 
   useEffect(() => {
@@ -35,7 +36,10 @@ export default function Intro() {
           <div className="total deposit">
             <p className="title">My Total Deposits</p>
             <p className="value">
-              ${account?.supplied.length > 0 ? totalBalance(account?.supplied) : 0}
+              $
+              {account?.supplied.length > 0
+                ? totalBalance(account?.supplied) * 23
+                : 0}
             </p>
           </div>
           <div className="total deposit">
@@ -45,7 +49,10 @@ export default function Intro() {
           <div className="total borrow">
             <p className="title">My Total Borrows</p>
             <p className="value">
-              ${account?.borrowed.length > 0 ? totalBalance(account?.borrowed) : 0}
+              $
+              {account?.borrowed.length > 0
+                ? totalBalance(account?.borrowed) * 23
+                : 0}
             </p>
           </div>
         </div>
@@ -55,7 +62,7 @@ export default function Intro() {
         <div className="side">
           <div className="my-info">
             <h5>Deposited</h5>
-            <h5>${totalBalance(account?.supplied)}</h5>
+            <h5>${totalBalance(account?.supplied) * 23}</h5>
           </div>
           <div className="detail">
             <div className="label">
@@ -66,22 +73,27 @@ export default function Intro() {
             </div>
             {account?.supplied.length > 0 ? (
               account?.supplied.map((item: any, idx: number) => {
+                console.log(item);
+                const decimals = tokenFomat[item.token_id].decimals;
+                const icon = tokenFomat[item.token_id].icon;
+                const symbol = tokenFomat[item.token_id].symbol;
+                const balance = fomatBalance(item.balance, decimals);
                 return (
                   <div key={idx} className="label label__token">
                     <div className="label__token-mini token__logo">
                       <img
                         className="icon"
-                        src={icon_1}
+                        src={icon}
                         width={30}
                         height={30}
                         alt="Logo"
                       />
                       <div className="token__price">
-                        <p className="token_name">{shortName(item.token_id)}</p>
-                        <p className="color-space-gray">$169</p>
+                        <p className="token_name">{symbol}</p>
+                        <p className="color-space-gray">$23</p>
                       </div>
                     </div>
-                    <p className="label__token-mini">{item.balance}</p>
+                    <p className="label__token-mini">{(+balance * 23).toFixed(1)}</p>
                     <p className="label__token-mini">{item.apr}%</p>
                     {/* <p className="label__token-mini">Actions</p> */}
                   </div>
@@ -95,7 +107,7 @@ export default function Intro() {
         <div className="side">
           <div className="my-info">
             <h5>Borrowed</h5>
-            <h5>${totalBalance(account?.borrowed)}</h5>
+            <h5>${totalBalance(account?.borrowed) * 23}</h5>
           </div>
           <div className="detail">
             <div className="label">
@@ -106,22 +118,26 @@ export default function Intro() {
             </div>
             {account?.borrowed.length > 0 ? (
               account?.borrowed.map((item: any, idx: number) => {
+                const decimals = tokenFomat[item.token_id].decimals;
+                const icon = tokenFomat[item.token_id].icon;
+                const symbol = tokenFomat[item.token_id].symbol;
+                const balance = fomatBalance(item.balance, decimals);
                 return (
                   <div key={idx} className="label label__token">
                     <div className="label__token-mini token__logo">
                       <img
                         className="icon"
-                        src={icon_2}
+                        src={icon}
                         width={30}
                         height={30}
                         alt="Logo"
                       />
                       <div className="token__price">
-                        <p className="token_name">{shortName(item.token_id)}</p>
-                        <p className="color-space-gray">$169</p>
+                        <p className="token_name">{symbol}</p>
+                        <p className="color-space-gray">$23</p>
                       </div>
                     </div>
-                    <p className="label__token-mini">{item.balance}</p>
+                    <p className="label__token-mini">{(+balance * 23).toFixed(1)}</p>
                     <p className="label__token-mini">{item.apr}%</p>
                     {/* <p className="label__token-mini">Actions</p> */}
                   </div>

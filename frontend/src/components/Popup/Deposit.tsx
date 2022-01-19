@@ -6,6 +6,7 @@ import { shortName } from "../../utils";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../../state/globalStore";
 import { transactions, Contract } from "near-api-js";
+import { tokenFomat } from "../../utils/token";
 
 type Props = {
   setTurnOff: Function;
@@ -17,6 +18,8 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   const [amountToken, setAmountToken] = useState(0);
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
   const [userTokenBalance, setUserTokenBalance] = useState(0);
+  const icon = tokenFomat[token.tokenId].icon;
+  const tokenName = tokenFomat[token.tokenId].name;
 
   const marks = {
     0: "0%",
@@ -48,7 +51,8 @@ const Deposit = ({ setTurnOff, token }: Props) => {
         balance / 10 ** token.decimals
       );
 
-      setUserTokenBalance(balance / 10 ** token.decimals);
+      const fomatBalance = balance / 10 ** token.config.extra_decimals;
+      setUserTokenBalance(fomatBalance);
     };
 
     getBalanceTokenUser();
@@ -63,7 +67,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   }, []);
 
   const handleDeposit = async () => {
-    const amount = amountToken * (10 ** token.config.extra_decimals);
+    const amount = amountToken * 10 ** token.config.extra_decimals;
     const contractID = contract.attach(Downgraded).get().contractId;
     const tokenID = token.tokenId;
     const ONE_YOCTO = 1;
@@ -114,15 +118,9 @@ const Deposit = ({ setTurnOff, token }: Props) => {
         </div>
         <h4 className="title">DEPOSIT</h4>
         <p className="icon">
-          <img
-            className="icon"
-            src={iconShib}
-            width={54}
-            height={54}
-            alt="Logo"
-          />
+          <img className="icon" src={icon} width={54} height={54} alt="Logo" />
         </p>
-        <p className="icon-name">{token.tokenId}</p>
+        <p className="icon-name">{tokenName}</p>
         <p className="value-percent">0.03%</p>
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
@@ -136,7 +134,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
             <InputNumber
               className="input-number"
               defaultValue={0}
-              type="number" 
+              type="number"
               // formatter={(value) =>
               //   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               // }

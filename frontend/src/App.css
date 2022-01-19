@@ -441,7 +441,7 @@ footer {
 .introduce-page .section-2 .content {
   max-width: 500px;
   font-size: 20px;
-  text-align: right;
+  text-align: justify;
   margin: auto;
 }
 .introduce-page .section-2.section-3 {
@@ -777,6 +777,12 @@ footer {
 .wrap-popup .popup .icon {
   text-align: center;
   position: relative;
+  width: auto;
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .wrap-popup .popup .icon-name {

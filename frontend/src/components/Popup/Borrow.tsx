@@ -5,6 +5,7 @@ import { InputNumber, Slider } from "antd";
 import { shortName } from "../../utils";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../../state/globalStore";
+import { tokenFomat } from "../../utils/token";
 
 type Props = {
   setTurnOff: Function;
@@ -17,6 +18,9 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
   const [userTokenBalance, setUserTokenBalance] = useState(0);
   console.log("token", token);
+  const icon = tokenFomat[token.tokenId].icon;
+  const tokenName = tokenFomat[token.tokenId].name;
+
   const marks = {
     0: "0%",
     25: "25%",
@@ -133,13 +137,13 @@ const Deposit = ({ setTurnOff, token }: Props) => {
         <p className="icon">
           <img
             className="icon"
-            src={iconShib}
+            src={icon}
             width={54}
             height={54}
             alt="Logo"
           />
         </p>
-        <p className="icon-name">{token.tokenId}</p>
+        <p className="icon-name">{tokenName}</p>
         <p className="value-percent">0.03%</p>
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
