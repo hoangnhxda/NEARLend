@@ -5,7 +5,6 @@ use crate::*;
 #[serde(crate = "near_sdk::serde")]
 pub struct AssetDetailedView {
     pub token_id: TokenId,
-    pub decimals: u128,
     /// Total supplied including collateral, but excluding reserved.
     pub supplied: Pool,
     /// Total borrowed.
@@ -52,7 +51,6 @@ impl Contract {
         let supply_apr = asset.get_supply_apr();
         let borrow_apr = asset.get_borrow_apr();
         let Asset {
-            decimals,
             supplied,
             borrowed,
             reserved,
@@ -61,7 +59,6 @@ impl Contract {
         } = asset;
         AssetDetailedView {
             token_id,
-            decimals,
             supplied,
             borrowed,
             reserved,

@@ -84,7 +84,7 @@ impl Contract {
                 }
                 Action::Borrow(asset_amount) => {
                     need_number_check = true;
-                    need_risk_check = true;
+                    need_risk_check = false;
                     account.add_affected_farm(FarmId::Supplied(asset_amount.token_id.clone()));
                     account.add_affected_farm(FarmId::Borrowed(asset_amount.token_id.clone()));
                     let amount = self.internal_borrow(account, &asset_amount);
@@ -147,15 +147,25 @@ impl Contract {
         token_id: &TokenId,
         amount: Balance,
     ) -> Shares {
+        //log!("prepare asset");
         let mut asset = self.internal_unwrap_asset(token_id);
+
+        //log!("prepare account_asset");
         let mut account_asset = account.internal_get_asset_or_default(token_id);
 
+        //log!("prepare shares");
         let shares: Shares = asset.supplied.amount_to_shares(amount, false);
 
+        //log!("prepare account_asset.deposit_shares");
         account_asset.deposit_shares(shares);
+
+        //log!("prepare internal_set_asset");
         account.internal_set_asset(&token_id, account_asset);
 
+        //log!("asset.supplied.deposit");
         asset.supplied.deposit(shares, amount);
+
+        //log!("self.internal_set_asset");
         self.internal_set_asset(token_id, asset);
 
         shares
@@ -243,14 +253,21 @@ impl Contract {
         account: &mut Account,
         asset_amount: &AssetAmount,
     ) -> Balance {
-        let mut asset = self.internal_unwrap_asset(&asset_amount.token_id);
-        assert!(asset.config.can_borrow, "Thi asset can't be used borrowed");
 
+        //log!("internal_borrow prepare asset");
+        let mut asset = self.internal_unwrap_asset(&asset_amount.token_id);
+        assert!(asset.config.can_borrow, "This asset can't be used borrowed");
+
+        //log!("internal_borrow prepare account_asset");
         let mut account_asset = account.internal_get_asset_or_default(&asset_amount.token_id);
 
+        //log!("internal_borrow prepare available_amount");
         let available_amount = asset.available_amount();
+
+        //log!("internal_borrow prepare max_borrow_shares");
         let max_borrow_shares = asset.borrowed.amount_to_shares(available_amount, false);
 
+        //log!("internal_borrow prepare borrowed_shares, amount");
         let (borrowed_shares, amount) =
             asset_amount_to_shares(&asset.borrowed, max_borrow_shares, &asset_amount, true);
 
@@ -261,17 +278,28 @@ impl Contract {
             &asset_amount.token_id
         );
 
+        //log!("internal_borrow prepare supplied_shares");
         let supplied_shares: Shares = asset.supplied.amount_to_shares(amount, false);
 
+        //log!("internal_borrow asset.borrowed.deposit");
         asset.borrowed.deposit(borrowed_shares, amount);
+
+        //log!("internal_borrow asset.supplied.deposit");
         asset.supplied.deposit(supplied_shares, amount);
+
+        //log!("internal_borrow self.internal_set_asset");
         self.internal_set_asset(&asset_amount.token_id, asset);
 
+        //log!("internal_borrow account.increase_borrowed");
         account.increase_borrowed(&asset_amount.token_id, borrowed_shares);
 
+        //log!("internal_borrow account_asset.deposit_shares");
         account_asset.deposit_shares(supplied_shares);
+
+        //log!("internal_borrow account.internal_set_asset");
         account.internal_set_asset(&asset_amount.token_id, account_asset);
 
+        //log!("internal_borrow return");
         amount
     }
 

@@ -63,7 +63,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   }, []);
 
   const handleDeposit = async () => {
-    const amount = amountToken * 10 ** token.decimals;
+    const amount = amountToken * (10 ** token.decimals);
     const contractID = contract.attach(Downgraded).get().contractId;
     const tokenID = token.tokenId;
     const ONE_YOCTO = 1;

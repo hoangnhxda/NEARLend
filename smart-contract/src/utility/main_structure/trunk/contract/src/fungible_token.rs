@@ -34,8 +34,10 @@ impl FungibleTokenReceiver for Contract {
             "Deposits for this asset are not enabled"
         );
 
-        let amount = amount.0 * 10u128.pow(asset.config.extra_decimals as u32);
+        //let amount = amount.0 * 10u128.pow(asset.config.extra_decimals as u32);
 
+        let amount = amount.0;
+        
         // TODO: We need to be careful that only whitelisted tokens can call this method with a
         //     given set of actions. Or verify which actions are possible to do.
         let actions: Vec<Action> = if msg.is_empty() {
@@ -71,8 +73,9 @@ impl FungibleTokenReceiver for Contract {
             actions,
             Prices::new(),
         );
+        log!("Execute borrow done");
         self.internal_set_account(sender_id.as_ref(), account, storage);
-
+        log!("internal_set_account done -> ft_on_transfer return");
         PromiseOrValue::Value(U128(0))
     }
 }
