@@ -88,7 +88,8 @@ impl Contract {
         amount: Balance,
     ) -> Promise {
         let asset = self.internal_unwrap_asset(token_id);
-        let ft_amount = amount / 10u128.pow(asset.config.extra_decimals as u32);
+        // let ft_amount = amount / 10u128.pow(asset.config.extra_decimals as u32);
+        let ft_amount = amount;
         ext_fungible_token::ft_transfer(
             account_id.clone(),
             ft_amount.into(),
