@@ -1,6 +1,6 @@
 import { tokenFomat } from "./token";
 
-export const contractName = "nel.nthellious.testnet";
+export const contractName = "nearlend.hoangnh_xda.testnet";
 
 export const nearConfig = {
   networkId: "testnet",

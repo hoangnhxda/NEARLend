@@ -38,7 +38,7 @@ export default function Intro() {
             <p className="value">
               $
               {account?.supplied.length > 0
-                ? totalBalance(account?.supplied) * 23
+                ? (totalBalance(account?.supplied) * 23).toFixed(0)
                 : 0}
             </p>
           </div>
@@ -51,7 +51,7 @@ export default function Intro() {
             <p className="value">
               $
               {account?.borrowed.length > 0
-                ? totalBalance(account?.borrowed) * 23
+                ? (totalBalance(account?.borrowed) * 23).toFixed(0)
                 : 0}
             </p>
           </div>
@@ -62,7 +62,7 @@ export default function Intro() {
         <div className="side">
           <div className="my-info">
             <h5>Deposited</h5>
-            <h5>${totalBalance(account?.supplied) * 23}</h5>
+            <h5>$ {(totalBalance(account?.supplied) * 23).toFixed(0)}</h5>
           </div>
           <div className="detail">
             <div className="label">
@@ -93,8 +93,8 @@ export default function Intro() {
                         <p className="color-space-gray">$23</p>
                       </div>
                     </div>
-                    <p className="label__token-mini">{(+balance * 23).toFixed(1)}</p>
-                    <p className="label__token-mini">{item.apr}%</p>
+                    <p className="label__token-mini">{Number(balance).toFixed(1)}</p>
+                    <p className="label__token-mini">{(Number(item.apr) * 100).toFixed(3)}%</p>
                     {/* <p className="label__token-mini">Actions</p> */}
                   </div>
                 );
@@ -107,7 +107,7 @@ export default function Intro() {
         <div className="side">
           <div className="my-info">
             <h5>Borrowed</h5>
-            <h5>${totalBalance(account?.borrowed) * 23}</h5>
+            <h5>$ {(totalBalance(account?.borrowed) * 23).toFixed(0)}</h5>
           </div>
           <div className="detail">
             <div className="label">
@@ -137,8 +137,8 @@ export default function Intro() {
                         <p className="color-space-gray">$23</p>
                       </div>
                     </div>
-                    <p className="label__token-mini">{(+balance * 23).toFixed(1)}</p>
-                    <p className="label__token-mini">{item.apr}%</p>
+                    <p className="label__token-mini">{Number(balance).toFixed(1)}</p>
+                    <p className="label__token-mini">{(Number(item.apr) * 100).toFixed(3)}%</p>
                     {/* <p className="label__token-mini">Actions</p> */}
                   </div>
                 );
