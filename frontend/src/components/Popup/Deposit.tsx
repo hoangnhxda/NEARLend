@@ -5,7 +5,6 @@ import { InputNumber, Slider } from "antd";
 import { shortName } from "../../utils";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../../state/globalStore";
-import { transactions, Contract } from "near-api-js";
 import { tokenFomat } from "../../utils/token";
 
 type Props = {
@@ -31,31 +30,28 @@ const Deposit = ({ setTurnOff, token }: Props) => {
 
   // should debounce
   function formatter(value: any) {
-    // console.log(value)
     return `${value.toString()}%`;
   }
 
   useEffect(() => {
     const getBalanceTokenUser = async () => {
-      const balance = await contract
-        .attach(Downgraded)
-        .get()
-        .account.viewFunction(token.tokenId, "ft_balance_of", {
-          account_id: wallet.attach(Downgraded).get().getAccountId(),
-        });
-
-      console.log(
-        "yayaya",
-        token.tokenId,
-        contract.attach(Downgraded).get().contractId,
-        balance / 10 ** token.decimals
-      );
-
-      const fomatBalance = balance / 10 ** token.config.extra_decimals;
-      setUserTokenBalance(fomatBalance);
+      try {
+        const balance = await contract
+          .attach(Downgraded)
+          .get()
+          .account.viewFunction(token.tokenId, "ft_balance_of", {
+            account_id: wallet.attach(Downgraded).get().getAccountId(),
+          });
+        const fomatBalance = +balance / 10 ** token.config.extra_decimals;
+        setUserTokenBalance(fomatBalance);
+      } catch (err) {
+        console.log(err);
+      }
     };
-
     getBalanceTokenUser();
+  }, [userTokenBalance]);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
       const htmlEle = window.document.getElementsByTagName("html")[0];
       htmlEle.classList.add("popup-open");
@@ -64,7 +60,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
       const htmlEle = window.document.getElementsByTagName("html")[0];
       htmlEle.classList.remove("popup-open");
     };
-  }, []);
+  }, [userTokenBalance]);
 
   const handleDeposit = async () => {
     const amount = amountToken * 10 ** token.config.extra_decimals;
@@ -125,8 +121,9 @@ const Deposit = ({ setTurnOff, token }: Props) => {
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
             <p>
-              Available: {userTokenBalance} {shortName(token.tokenId)} ($
-              {userTokenBalance * 23})
+              Available: {userTokenBalance.toFixed(1)}{" "}
+              {shortName(token.tokenId)} ($
+              {(userTokenBalance * 23).toFixed(1)})
             </p>
             <p className="tar">1 {shortName(token.tokenId)} = $23.00</p>
           </div>

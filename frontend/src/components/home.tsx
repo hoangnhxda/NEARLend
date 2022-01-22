@@ -28,17 +28,6 @@ function Home() {
   const [tokenId, setTokenId] = useState("");
   const [tokenChose, setTokenChose] = useState(null);
 
-  async function initConnect() {
-    const initNear = await _near();
-    const initWallet = _walletConnection(initNear);
-    const initContract = _contract(initWallet);
-
-    near.set(initNear);
-    wallet.set(initWallet);
-    contract.set(initContract);
-
-    return checkIsSigned(initWallet);
-  }
 
   const openPopupDeposit = (e: any, item: any) => {
     e.preventDefault();
@@ -55,9 +44,6 @@ function Home() {
   };
 
   useEffect(() => {
-    if (!contractState) {
-      initConnect();
-    }
     const getTokenList = async () => {
       if (contractState) {
         await contractState

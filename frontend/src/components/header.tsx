@@ -17,6 +17,8 @@ import {
 export default function Header() {
   const { near, wallet, contract, userBalance }: any =
     hookState<any>(globalState);
+  const contractState = contract.attach(Downgraded).get();
+  const userBalanceState = userBalance.attach(Downgraded).get();
   const [isLoginMore, setIsLoginMore] = useState(false);
   const { pathname } = useLocation();
   const path = pathname.toString();
@@ -25,7 +27,6 @@ export default function Header() {
   const [accountName, setAccountName] = useState("");
 
   const login = () => {
-    console.log("aaaa");
     console.log(wallet.attach(Downgraded));
     wallet
       .attach(Downgraded)
@@ -36,17 +37,19 @@ export default function Header() {
   async function initConnect() {
     const initNear = await _near();
     const initWallet = _walletConnection(initNear);
-    const initContract = _contract(initWallet);
+    const initContract: any = _contract(initWallet);
 
     near.set(initNear);
     wallet.set(initWallet);
     contract.set(initContract);
 
-    return checkIsSigned(initWallet);
+    return checkIsSigned(initWallet, initContract);
   }
 
   useEffect(() => {
-    initConnect();
+    if (!contractState && !userBalanceState) {
+      initConnect();
+    }
     if (typeof window !== "undefined") {
       window.document
         .getElementsByTagName("html")[0]
@@ -60,7 +63,6 @@ export default function Header() {
 
   useEffect(() => {
     setTimeout(async () => {
-      console.log(await contract.attach(Downgraded).get());
       const user = await contract
         .attach(Downgraded)
         .get()
@@ -68,7 +70,6 @@ export default function Header() {
           account_id: wallet.attach(Downgraded).get().getAccountId(),
         });
       userBalance.set(user);
-      console.log("user", user);
     }, 100);
   }, []);
 

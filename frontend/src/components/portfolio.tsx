@@ -16,11 +16,11 @@ import icon_4 from "../images/icon-doge.png";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 import { useEffect, useState } from "react";
-import { shortName, totalBalance, fomatBalance } from "../utils";
+import { totalBalance, fomatBalance } from "../utils";
 import { tokenFomat } from "../utils/token";
 
 export default function Intro() {
-  const { userBalance, contract, wallet }: any = hookState<any>(globalState);
+  const { userBalance }: any = hookState<any>(globalState);
   const [account, setAccount] = useState<any>(null);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function Intro() {
             <p className="value">
               $
               {account?.supplied.length > 0
-                ? (totalBalance(account?.supplied) * 23).toFixed(0)
+                ? (totalBalance(account?.supplied) * 23).toFixed(1)
                 : 0}
             </p>
           </div>

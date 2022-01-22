@@ -61,24 +61,16 @@ const Deposit = ({ setTurnOff, token }: Props) => {
           .account.viewFunction(token.tokenId, "ft_balance_of", {
             account_id: wallet.attach(Downgraded).get().getAccountId(),
           });
-
-        console.log(
-          "yayaya",
-          token.tokenId,
-          contract.attach(Downgraded).get().contractId,
-          balance / 10 ** token.decimals
-        );
-
-        setUserTokenBalance(balance / 10 ** token.decimals);
+        setUserTokenBalance(+balance / 10 ** token.config.extra_decimals);
       } catch (err) {
         console.log(err);
       }
     };
     getBalanceTokenUser();
-  }, []);
+  }, [userTokenBalance]);
 
   const handleBorrow = async () => {
-    const amount = amountToken * 10 ** token.decimals;
+    const amount = amountToken * 10 ** token.config.extra_decimals;
     const accountId = contract.attach(Downgraded).get().account.accountId;
     const contractID = contract.attach(Downgraded).get().contractId;
     const tokenID = token.tokenId;
@@ -98,7 +90,6 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   };
 
   const onChange = (e: any) => {
-    console.log("+++++e", e)
     setAmountToken(e);
     setAmountTokenPercent((e / userTokenBalance) * 100);
   };
@@ -135,21 +126,16 @@ const Deposit = ({ setTurnOff, token }: Props) => {
         </div>
         <h4 className="title">Borrow</h4>
         <p className="icon">
-          <img
-            className="icon"
-            src={icon}
-            width={54}
-            height={54}
-            alt="Logo"
-          />
+          <img className="icon" src={icon} width={54} height={54} alt="Logo" />
         </p>
         <p className="icon-name">{tokenName}</p>
         <p className="value-percent">0.03%</p>
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
             <p>
-              Available: {userTokenBalance} {shortName(token.tokenId)} ($
-              {userTokenBalance * 23})
+              Available: {userTokenBalance.toFixed(1)}{" "}
+              {shortName(token.tokenId)} ($
+              {(userTokenBalance * 23).toFixed(1)})
             </p>
             <p className="tar">1 {shortName(token.tokenId)} = $23.00</p>
           </div>
