@@ -8,73 +8,25 @@ import "../App.css";
 import "../responsive.css";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
-import { contractName } from "../utils";
 import {
   _near,
   _walletConnection,
   _contract,
   checkIsSigned,
 } from "../services/connect";
+import { fomatBalance } from "../utils";
 import { DepositPopup, BorrowPopup } from "./Popup";
+import { tokenFomat } from "../utils/token";
 
 function Home() {
-  const { near, wallet, contract, balance }: any = hookState<any>(globalState);
+  const { near, wallet, contract, poolListToken }: any =
+    hookState<any>(globalState);
+  const contractState = contract.attach(Downgraded).get();
   const [isShowPopupDeposit, setIsShowPopupDeposit] = useState(false);
   const [isShowPopupBorrow, setIsShowPopupBorrow] = useState(false);
-
-  const login = () => {
-    wallet
-      .attach(Downgraded)
-      .get()
-      .requestSignIn(contractName, "Rust Counter Example");
-  };
-
-  const signOut = () => {
-    wallet.attach(Downgraded).get().signOut();
-    window.location.reload();
-  };
-
-  const supply = async () => {
-    contract
-      .attach(Downgraded)
-      .get()
-      .supply({}, 100000000000000, 2)
-      .then(console.log);
-    var tmpAvila = await wallet
-      .attach(Downgraded)
-      .get()
-      .account()
-      .getAccountBalance();
-    balance.set(tmpAvila.available / Math.pow(10, 24));
-  };
-
-  const get_total_pool_balance = () => {
-    contract
-      .attach(Downgraded)
-      .get()
-      .get_total_pool_balance()
-      .then(console.log);
-  };
-
-  const withdraw_supply = () => {
-    contract
-      .attach(Downgraded)
-      .get()
-      .withdraw_supply({}, 100000000000000, 2)
-      .then(console.log);
-  };
-
-  const get_account_supplied_balance = () => {
-    contract
-      .attach(Downgraded)
-      .get()
-      .get_account_supplied_balance()
-      .then(console.log);
-  };
-
-  const test = () => {
-    contract.attach(Downgraded).get().test1().then(console.log);
-  };
+  const [tokenList, setTokenList] = useState([]);
+  const [tokenId, setTokenId] = useState("");
+  const [tokenChose, setTokenChose] = useState(null);
 
   async function initConnect() {
     const initNear = await _near();
@@ -88,40 +40,67 @@ function Home() {
     return checkIsSigned(initWallet);
   }
 
-  const openPopupDeposit = (e: any) => {
+  const openPopupDeposit = (e: any, item: any) => {
     e.preventDefault();
-    console.log("on");
+    setTokenId(item.tokenId);
+    setTokenChose(item);
     setIsShowPopupDeposit(true);
   };
 
-  const openPopupBorrow = (e: any) => {
+  const openPopupBorrow = (e: any, item: any) => {
     e.preventDefault();
-    console.log("on");
+    setTokenId(item.tokenId);
+    setTokenChose(item);
     setIsShowPopupBorrow(true);
   };
 
   useEffect(() => {
-    initConnect();
-  }, []);
+    if (!contractState) {
+      initConnect();
+    }
+    const getTokenList = async () => {
+      if (contractState) {
+        await contractState
+          .get_assets_paged({ from_index: 0, limit: 10 })
+          .then((res: any) => {
+            const fomat = res.map((item: any) => {
+              return {
+                tokenId: item[0],
+                ...item[1],
+              };
+            });
+            setTokenList(fomat);
+            console.log(res);
+            console.log("fomat", fomat);
+
+            poolListToken.set(fomat);
+            return res;
+          })
+          .catch((err: any) => console.log(err));
+      }
+    };
+
+    setTimeout(() => {
+      getTokenList();
+    }, 500);
+  }, [contractState]);
 
   return (
     <div className="container homepage">
       {isShowPopupDeposit && (
-        <DepositPopup setTurnOff={() => setIsShowPopupDeposit(false)} />
+        <DepositPopup
+          tokenId={tokenId}
+          token={tokenChose}
+          setTurnOff={() => setIsShowPopupDeposit(false)}
+        />
       )}
       {isShowPopupBorrow && (
-        <BorrowPopup setTurnOff={() => setIsShowPopupBorrow(false)} />
+        <BorrowPopup
+          tokenId={tokenId}
+          token={tokenChose}
+          setTurnOff={() => setIsShowPopupBorrow(false)}
+        />
       )}
-      {/* <button onClick={login}>login</button>
-      <button onClick={supply}>supply</button>
-      <button onClick={test}>test1</button>
-      <button onClick={get_total_pool_balance}>get_total_pool_balance</button>
-      <button onClick={withdraw_supply}>withdraw_supply</button>
-      <button onClick={get_account_supplied_balance}>
-        get_account_supplied_balance
-      </button>
-      <button onClick={signOut}>signOut</button> */}
-
       <div className="wrap-total">
         <div className="total deposit">
           <p className="title">Total Market Deposited</p>
@@ -143,7 +122,74 @@ function Home() {
           <p>Borrow APY</p>
         </div>
         <div className="pools">
-          <div className="wrap-pool">
+          {tokenList && tokenList.length > 0
+            ? tokenList.map((item: any, idx: number) => {
+                const { tokenId } = item;
+                const icon = tokenFomat[tokenId.toString()]?.icon;
+                const tokenSymbol = tokenFomat[tokenId.toString()]?.symbol;
+                const supplied: any = fomatBalance(
+                  item?.supplied.balance,
+                  item.config.extra_decimals
+                );
+                const borrowed: any = fomatBalance(
+                  item?.borrowed.balance,
+                  item.config.extra_decimals
+                );
+
+                return (
+                  <div key={idx} className="wrap-pool">
+                    <div className="mini asset market-flex">
+                      <img
+                        className="icon"
+                        src={icon}
+                        width={30}
+                        height={30}
+                        alt="Logo"
+                      />
+                      <div>
+                        <p className="top coin color-white fwb">
+                          {tokenSymbol}
+                        </p>
+                        <p className="color-space-gray">$23</p>
+                      </div>
+                    </div>
+                    <div className="mini deposit">
+                      <p className="top color-white fwb">{supplied}</p>
+                      <p className="color-space-gray">${supplied * 23}</p>
+                    </div>
+                    <div className="mini deposit">
+                      <p className="top color-white fwb">{borrowed}</p>
+                      <p className="color-space-gray">${borrowed * 23}</p>
+                    </div>
+                    <div
+                      onClick={(e) => openPopupDeposit(e, item)}
+                      className="action mini color-white"
+                    >
+                      <div className="market-flex apy">
+                        <p>7.29% +</p>
+                        <p className="icon-apy">
+                          <img src={icon} width={18} height={18} alt="Logo" />
+                        </p>
+                      </div>
+                      <button>Deposit</button>
+                    </div>
+                    <div
+                      onClick={(e) => openPopupBorrow(e, item)}
+                      className="action mini color-white"
+                    >
+                      <div className="market-flex apy">
+                        <p>7.29% +</p>
+                        <p className="icon-apy ">
+                          <img src={icon} width={18} height={18} alt="Logo" />
+                        </p>
+                      </div>
+                      <button>Borrow</button>
+                    </div>
+                  </div>
+                );
+              })
+            : null}
+          {/* <div className="wrap-pool">
             <div className="mini asset market-flex">
               <img
                 className="icon"
@@ -471,7 +517,7 @@ function Home() {
               </div>
               <button>Borrow</button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

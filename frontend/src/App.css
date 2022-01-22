@@ -1,3 +1,6 @@
+/* @import "~antd/dist/antd.css"; */
+/* @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap'); */
+@import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
 @import "~antd/dist/antd.css";
 
 :root {
@@ -11,15 +14,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Roboto", sans-serif;
+  font-family: "Fredoka One", sans-serif;
+  font-weight: normal;
+  font-style: normal;
   letter-spacing: 0.07rem;
-}
-
-@font-face {
-  font-family: "Roboto";
-  src: local("Roboto"), url(./fonts/roboto-regular.woff2) format("woff");
-  /* other formats include: 'woff2', 'truetype, 'opentype',
-                            'embedded-opentype', and 'svg' */
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -126,8 +124,7 @@ footer {
 }
 
 .header .container {
-  padding: 10px 0;
-
+  padding: 4px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -145,16 +142,57 @@ footer {
 }
 .header nav ul li {
   margin-left: 24px;
+  font-size: 15px;
 }
 
 .header nav a {
   color: var(--white);
+  font-family: "Fredoka One", sans-serif;
 }
 
 .header .btn-connect {
   border: 1px solid #2cffe4;
   padding: 10px;
   cursor: pointer;
+  font-size: 12px;
+  position: relative;
+}
+
+.header .btn-connect .more {
+  display: none;
+  position: absolute;
+  bottom: -90px;
+  width: 100%;
+  left: 0;
+  background: #282344;
+  padding: 15px;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.header .btn-connect .more a {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.header .btn-connect .more.active {
+  display: block;
+}
+
+.header .btn-connect .more p {
+  padding-bottom: 10px;
+}
+
+.header .btn-connect .more a:hover {
+  color: #2cffe4;
+}
+
+.header .btn-connect .more p:last-child {
+  padding-bottom: 0;
+}
+
+.header .link-active {
+  color: #2cffe4;
 }
 
 /* end HEADER */
@@ -176,6 +214,7 @@ footer {
 .homepage .wrap-total .total {
   padding: 20px;
   display: inline-block;
+  min-width: 200px;
 }
 
 .homepage .wrap-total .title {
@@ -190,10 +229,9 @@ footer {
 .homepage .wrap-market {
   color: #c1c1c1;
   padding: 20px;
-  border-top: 1px solid #fff;
-  border-bottom: 1px solid #fff;
-  background: rgb(0 0 0 / 35%);
+  background: rgb(0 0 0 / 40%);
   margin: 60px 0;
+  border-radius: 5px;
   overflow-x: scroll;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -222,7 +260,7 @@ footer {
   grid-auto-flow: column;
   grid-row-gap: 40px;
   justify-content: space-around;
-  border-bottom: 1px solid #c1c1c1;
+  border-bottom: 1px solid #2cffe4;
   padding: 30px 0;
   margin-bottom: 30px;
   margin-top: 50px;
@@ -278,10 +316,17 @@ footer {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  margin-bottom: 4px;
 }
 .homepage .wrap-market .wrap-pool .apy .icon-apy {
   padding: 0 7px;
   /* margin-bottom: -5px; */
+}
+
+.homepage .wrap-market .wrap-pool .apy .icon-apy img {
+  background: #2cffe4;
+  border-radius: 50%;
+  border: 1px solid #1c887a;
 }
 
 .homepage .wrap-market .wrap-pool .action {
@@ -307,10 +352,13 @@ footer {
 
 .homepage .wrap-market .wrap-pool .icon {
   margin-right: 8px;
+  border: 1px solid #2cffe4;
+  background: #2cffe4;
+  border-radius: 50%;
 }
 
 .homepage .wrap-market .wrap-pool .asset {
-  justify-content: center;
+  justify-content: flex-start;
   text-align: left;
 }
 
@@ -340,11 +388,9 @@ footer {
 
 .introduce-page .head .logo {
   position: absolute;
-  top: -150px;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, 0);
-  width: 120px;
-  height: 120px;
+  transform: translate(-50%, -50%);
 }
 
 .introduce-page .head h2 {
@@ -362,11 +408,18 @@ footer {
   padding: 100px 0;
 }
 
+.introduce-page .section-2.section-top {
+}
+.introduce-page .section-2.section-top .content {
+  margin: 0;
+}
+
 .introduce-page .section-2 .title {
   text-align: center;
   font-size: 55px;
   font-weight: bold;
   padding-bottom: 20px;
+  font-family: "Fredoka One", sans-serif;
 }
 
 .introduce-page .section-2 .img-background {
@@ -383,11 +436,13 @@ footer {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  padding: 0 30px;
 }
 .introduce-page .section-2 .content {
   max-width: 500px;
   font-size: 20px;
-  text-align: right;
+  text-align: justify;
+  margin: auto;
 }
 .introduce-page .section-2.section-3 {
   /* padding-bottom: 160px; */
@@ -442,7 +497,125 @@ footer {
 .introduce-page .section-2 .last p {
   padding-bottom: 4px;
 }
+
+.introduce-page .tokenomic {
+  padding: 0 0 100px;
+}
+
+.g2-tooltip {
+  color: #000;
+}
+.g2-tooltip-list-item,
+.g2-tooltip-value,
+.g2-tooltip-name {
+  color: #000;
+}
+
+.g2-tooltip-list-item {
+  text-align: center;
+}
+
 /* end Introduce Page */
+
+/* Portforlio Page */
+.portforlio .total {
+  text-align: center;
+}
+
+.portforlio .token-list {
+  position: relative;
+  /* border: 1px solid #20948a; */
+  background-color: rgb(0 0 0 / 40%);
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  margin: 60px 20px 20px;
+  font-size: 20px;
+  border-radius: 5px;
+  min-height: 200px;
+}
+
+.portforlio .token-list::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1px;
+  height: 85%;
+  background-color: #20948a;
+}
+
+.portforlio .token-list .side {
+  width: 45%;
+}
+.portforlio .token-list .side .my-info {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0 20px;
+  border-bottom: 1px solid #20948a;
+}
+
+.portforlio .token-list .side .my-info h5 {
+  font-weight: bold;
+}
+
+.portforlio .token-list .side .detail {
+  padding-bottom: 14px;
+}
+.portforlio .token-list .side .detail .label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  margin-top: 24px;
+}
+
+.portforlio .token-list .side .detail .label .title {
+  width: 100px;
+  text-align: center;
+  color: var(--space-gray);
+}
+
+.portforlio .token__logo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: left;
+  max-width: 100px;
+}
+
+.portforlio .token__logo img {
+  margin-right: 8px;
+  border: 2px solid #04413c;
+  border-radius: 50%;
+}
+
+.portforlio .token__price p {
+  text-align: left;
+  /* word-break: break-all; */
+}
+
+.portforlio .label__token-mini {
+  width: 100px;
+  text-align: center;
+}
+
+.portforlio .label__token-mini .token_name {
+  font-weight: bold;
+  text-transform: uppercase;
+  width: 140px;
+  word-break: break-word;
+}
+
+.portforlio .empty-account-line {
+  width: 40px;
+  height: 5px;
+  background: #fff;
+  border-radius: 4px;
+  margin: 30px auto 0;
+}
+/* end Portforlio Page */
 
 /* BACKGROUND WAVE */
 
@@ -604,6 +777,12 @@ footer {
 .wrap-popup .popup .icon {
   text-align: center;
   position: relative;
+  width: auto;
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .wrap-popup .popup .icon-name {
@@ -612,6 +791,7 @@ footer {
   position: relative;
   color: #1acab3;
   font-weight: bold;
+  text-transform: uppercase;
 }
 
 .wrap-popup .popup .value-percent {
@@ -637,6 +817,7 @@ footer {
 }
 .wrap-popup .popup .info p {
   color: var(--black);
+  width: 50%;
 }
 
 .wrap-popup .popup .input-number {
@@ -811,7 +992,7 @@ footer {
 }
 
 .Wave {
-  width: 5800px;
+  width: 6440px;
   animation-name: swell;
   animation-duration: 2s;
   animation-fill-mode: forwards;
@@ -853,7 +1034,7 @@ footer {
 }
 
 .roadmap {
-  padding: 80px 0;
+  padding: 80px 20px 0px;
   overflow-x: hidden;
 }
 
@@ -862,6 +1043,7 @@ footer {
   font-size: 55px;
   font-weight: bold;
   padding-bottom: 20px;
+  font-family: "Fredoka One", sans-serif;
 }
 
 .roadmap .section-top .text {
@@ -955,11 +1137,13 @@ footer {
   margin-left: auto;
 }
 .roadmap .wrap-line .phase.right {
+  text-align: right;
 }
 
 .roadmap .wrap-line .phase.right h4 {
   left: auto;
   right: -170px;
+  margin-left: auto;
 }
 
 .roadmap .wrap-line .phase h4 {

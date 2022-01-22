@@ -1,12 +1,26 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import iconShib from "../../images/icon-shib.png";
 import iconClose from "../../images/icon-close.png";
 import { InputNumber, Slider } from "antd";
+import { shortName } from "../../utils";
+import { useState as hookState, Downgraded } from "@hookstate/core";
+import globalState from "../../state/globalStore";
+import { tokenFomat } from "../../utils/token";
 
 type Props = {
   setTurnOff: Function;
+  tokenId?: string;
+  token: any;
 };
-const Deposit = ({ setTurnOff }: Props) => {
+const Deposit = ({ setTurnOff, token }: Props) => {
+  const { contract, wallet }: any = hookState<any>(globalState);
+  const [amountToken, setAmountToken] = useState(0);
+  const [amountTokenPercent, setAmountTokenPercent] = useState(0);
+  const [userTokenBalance, setUserTokenBalance] = useState(0);
+  console.log("token", token);
+  const icon = tokenFomat[token.tokenId].icon;
+  const tokenName = tokenFomat[token.tokenId].name;
+
   const marks = {
     0: "0%",
     25: "25%",
@@ -35,7 +49,64 @@ const Deposit = ({ setTurnOff }: Props) => {
       const htmlEle = window.document.getElementsByTagName("html")[0];
       htmlEle.classList.remove("popup-open");
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const getBalanceTokenUser = async () => {
+      try {
+        const balance = await contract
+          .attach(Downgraded)
+          .get()
+          .account.viewFunction(token.tokenId, "ft_balance_of", {
+            account_id: wallet.attach(Downgraded).get().getAccountId(),
+          });
+
+        console.log(
+          "yayaya",
+          token.tokenId,
+          contract.attach(Downgraded).get().contractId,
+          balance / 10 ** token.decimals
+        );
+
+        setUserTokenBalance(balance / 10 ** token.decimals);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getBalanceTokenUser();
+  }, []);
+
+  const handleBorrow = async () => {
+    const amount = amountToken * 10 ** token.decimals;
+    const accountId = contract.attach(Downgraded).get().account.accountId;
+    const contractID = contract.attach(Downgraded).get().contractId;
+    const tokenID = token.tokenId;
+    const ONE_YOCTO = 1;
+    const GAS = 200000000000000;
+    const args = {
+      receiver_id: accountId,
+      // sender_id: contractID,
+      amount: amount.toLocaleString("fullwide", { useGrouping: false }),
+      msg: `{"Execute": {"actions": [{"Borrow": {"token_id": ${tokenID}}}]}}`,
+    };
+
+    return await contract
+      .attach(Downgraded)
+      .get()
+      .account.functionCall(tokenID, "ft_transfer_call", args, GAS, ONE_YOCTO);
+  };
+
+  const onChange = (e: any) => {
+    console.log("+++++e", e)
+    setAmountToken(e);
+    setAmountTokenPercent((e / userTokenBalance) * 100);
+  };
+
+  const sliderOnChange = (e: any) => {
+    setAmountToken((e / 100) * userTokenBalance);
+    setAmountTokenPercent(e);
+  };
 
   return (
     <div className="wrap-popup">
@@ -66,28 +137,34 @@ const Deposit = ({ setTurnOff }: Props) => {
         <p className="icon">
           <img
             className="icon"
-            src={iconShib}
+            src={icon}
             width={54}
             height={54}
             alt="Logo"
           />
         </p>
-        <p className="icon-name">Shiba</p>
+        <p className="icon-name">{tokenName}</p>
         <p className="value-percent">0.03%</p>
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
-            <p>Available: 99.9785 SHIB ($0.00)</p>
-            <p className="tar">1 SHIB = $16.9718</p>
+            <p>
+              Available: {userTokenBalance} {shortName(token.tokenId)} ($
+              {userTokenBalance * 23})
+            </p>
+            <p className="tar">1 {shortName(token.tokenId)} = $23.00</p>
           </div>
           <div className="pad-side-14">
             <InputNumber
               className="input-number"
-              defaultValue={1000}
-              formatter={(value) =>
-                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              }
-              // parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-              // onChange={onChange}
+              defaultValue={0}
+              type="number"
+              // formatter={(value) => {
+              //   // const val = value?.toString();
+              //   return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              // }}
+              keyboard={true}
+              value={amountToken}
+              onChange={onChange}
             />
           </div>
           <div
@@ -101,17 +178,20 @@ const Deposit = ({ setTurnOff }: Props) => {
               getTooltipPopupContainer={(): any =>
                 document?.getElementById("slider-range")
               }
+              value={amountTokenPercent || 0}
+              onChange={sliderOnChange}
             />
           </div>
 
           <p className="position-relative total bg-white">
-            Total Supply = $831.44
+            Total Borrow <span style={{ fontSize: 22 }}>&#8771;</span> $
+            {(amountToken * 23).toFixed(1)}
           </p>
           <p className="position-relative rates-title fwb bg-white pad-side-14">
-            Supply Rates
+            Borrow Rates
           </p>
           <div className="position-relative flex bg-white pad-side-14">
-            <div className="left">Deposit APY</div>
+            <div className="left">Borrow APY</div>
             <div className="right fwb">0.028533093636258104</div>
           </div>
           <div className="position-relative flex bg-white pad-side-14">
@@ -128,7 +208,9 @@ const Deposit = ({ setTurnOff }: Props) => {
             </div>
           </div>
 
-          <button className="position-relative btn">DEPOSIT</button>
+          <button className="position-relative btn" onClick={handleBorrow}>
+            BORROW
+          </button>
         </div>
       </div>
     </div>
