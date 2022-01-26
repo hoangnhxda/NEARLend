@@ -22,7 +22,14 @@ near deploy $CONTRACT_ID --accountId $ACCOUNT_ID --wasmFile ./res/burrowland.was
 
 near call $CONTRACT_ID new '{"config" : {"oracle_account_id": "'$ACCOUNT_ID'", "owner_id": "'$ACCOUNT_ID'", "booster_token_id": "'$BOOSTER_TOKEN_ID'", "booster_decimals": 24}}' --accountId $ACCOUNT_ID
 
-near call $CONTRACT_ID --accountId=$ACCOUNT_ID --gas=$GAS --amount=0.1 storage_deposit '{}'
+near call $CONTRACT_ID --accountId=test2.hoangnh_xda.testnet --gas=$GAS --amount=0.1 storage_deposit '{
+  "account_id": "test2.hoangnh_xda.testnet",
+  "registration_only": true
+}'
+
+near call $CONTRACT_ID --accountId=$ACCOUNT_ID storage_balance_of '{
+  "account_id": "test2.hoangnh_xda.testnet"
+}'
 
 // near call $CONTRACT_ID addAccount '{"account_id": "'$ACCOUNT_ID'"}' --accountId $ACCOUNT_ID
 
@@ -38,7 +45,7 @@ near call $CONTRACT_ID get_asset '{"token_id": "'$BOOSTER_TOKEN_ID'"}' --account
 
 near view $AURORAX_TOKEN_ID ft_metadata
 
-near view $AURORAX_TOKEN_ID ft_balance_of '{"account_id": "'$CONTRACT_ID'"}'
+near view $AURORAX_TOKEN_ID ft_balance_of '{"account_id": "'$ACCOUNT_ID'"}'
 
 near view $NEL_TOKEN_ID ft_balance_of '{"account_id": "'$ACCOUNT_ID'"}'
 
@@ -80,4 +87,15 @@ near call $AURORAX_TOKEN_ID --accountId=$ACCOUNT_ID --gas=$GAS --amount=$ONE_YOC
   "receiver_id": "'$CONTRACT_ID'",
   "amount": "1000000000000000000000000000000000",
   "msg": ""
+}'
+
+near call $CONTRACT_ID --accountId=$ACCOUNT_ID --gas=$GAS --amount=$ONE_YOCTO execute '{
+  "amount": "2",
+  "actions": [
+    {
+      "Withdraw": {
+        "token_id": "'$AURORAX_TOKEN_ID'"
+      }
+    }
+  ]
 }'

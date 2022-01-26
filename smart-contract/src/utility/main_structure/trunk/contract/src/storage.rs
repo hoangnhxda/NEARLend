@@ -121,21 +121,42 @@ impl StorageManagement for Contract {
         let registration_only = registration_only.unwrap_or(false);
         if let Some(mut storage) = storage {
             if registration_only && amount > 0 {
+                log!("should send back amount {}", amount);
                 Promise::new(env::predecessor_account_id()).transfer(amount);
+
             } else {
                 storage.storage_balance += amount;
                 self.internal_set_storage(&account_id, storage);
             }
         } else {
             let min_balance = self.storage_balance_bounds().min.0;
+            // assert!(
+            //     amount <= min_balance,
+            //     "Assert The attached deposit is less than the mimimum storage balance");
+
+            let mut owned_string: String = "The attached deposit is less than the mimimum storage balance ".to_owned();
+            let another_owned_string: String = amount.to_string().to_owned();
+            let another1_owned_string: String = " === ".to_owned();
+            let another2_owned_string: String = min_balance.to_string().to_owned();
+            
+            owned_string.push_str(&another_owned_string);
+            owned_string.push_str(&another1_owned_string);
+            owned_string.push_str(&another2_owned_string);
+
             if amount < min_balance {
-                env::panic(b"The attached deposit is less than the mimimum storage balance");
+                // String error = "The attached deposit is less than the mimimum storage balance ".to_string() + amount.to_string() + " --- ".to_string() + min_balance.to_string();
+                // env::panic(b"The attached deposit is less than the mimimum storage balance {} -- {}");
+                env::panic(owned_string.to_string().as_bytes());
+                // env::panic(min_balance.to_string().as_bytes());
+                // env::panic(error.as_bytes());
             }
 
             let mut storage = Storage::new();
             if registration_only {
+                
                 let refund = amount - min_balance;
                 if refund > 0 {
+                    log!("refund min should send back amount {}", refund);
                     Promise::new(env::predecessor_account_id()).transfer(refund);
                 }
                 storage.storage_balance = min_balance;
@@ -147,8 +168,10 @@ impl StorageManagement for Contract {
             self.internal_set_account(&account_id, Account::new(&account_id), storage);
         }
         self.internal_storage_balance_of(&account_id).unwrap()
+
     }
 
+    #[private]
     #[payable]
     fn storage_withdraw(&mut self, amount: Option<U128>) -> StorageBalance {
         assert_one_yocto();

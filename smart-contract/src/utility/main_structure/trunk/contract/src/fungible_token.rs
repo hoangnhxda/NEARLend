@@ -37,7 +37,7 @@ impl FungibleTokenReceiver for Contract {
         //let amount = amount.0 * 10u128.pow(asset.config.extra_decimals as u32);
 
         let amount = amount.0;
-        
+
         // TODO: We need to be careful that only whitelisted tokens can call this method with a
         //     given set of actions. Or verify which actions are possible to do.
         let actions: Vec<Action> = if msg.is_empty() {
@@ -87,7 +87,7 @@ impl Contract {
         token_id: &TokenId,
         amount: Balance,
     ) -> Promise {
-        let asset = self.internal_unwrap_asset(token_id);
+        // let asset = self.internal_unwrap_asset(token_id);
         // let ft_amount = amount / 10u128.pow(asset.config.extra_decimals as u32);
         let ft_amount = amount;
         ext_fungible_token::ft_transfer(
