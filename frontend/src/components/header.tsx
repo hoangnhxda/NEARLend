@@ -27,11 +27,19 @@ export default function Header() {
   const [accountName, setAccountName] = useState("");
 
   const login = () => {
-    console.log(wallet.attach(Downgraded));
     wallet
       .attach(Downgraded)
       .get()
       .requestSignIn(contractName, "Rust Counter Example");
+  };
+
+  const logout = () => {
+    console.log("sign out: " + wallet.attach(Downgraded).get()._connectedAccount.accountId);
+    wallet
+      .attach(Downgraded)
+      .get()
+      .signOut();
+    window.location.reload();
   };
 
   async function initConnect() {
@@ -148,7 +156,7 @@ export default function Header() {
                         </a>
                       </Link>
 
-                      <a>Sign Out</a>
+                      <a onClick={logout}>Sign Out</a>
                     </div>
                   </li>
                 </>
