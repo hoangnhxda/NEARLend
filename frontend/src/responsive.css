@@ -227,6 +227,6 @@
   }
 
   .homepage .wrap-total .total.deposit {
-    border-bottom: 1px solid #fff;
+    border-bottom: 1px solid var(--white);
   }
 }

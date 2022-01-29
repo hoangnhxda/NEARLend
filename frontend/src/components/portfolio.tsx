@@ -1,18 +1,3 @@
-import crypto1 from "../images/crypto_01.png";
-import crypto4 from "../images/crypto_04.png";
-import crypto5 from "../images/crypto_05.png";
-import planet from "../images/planet-3.png";
-import cryptoNft from "../images/crypto-nft.png";
-import cryptoNftLend from "../images/crypto-nft-lend.png";
-import crossChain from "../images/cross-chain.png";
-import daoGOV from "../images/dao.png";
-import logo from "../images/nearlend.png";
-import PieChart from "../components/PieChart";
-
-import icon_1 from "../images/icon-sol.png";
-import icon_2 from "../images/icon-bitcoin.png";
-import icon_3 from "../images/icon-shib.png";
-import icon_4 from "../images/icon-doge.png";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 import { useEffect, useState } from "react";

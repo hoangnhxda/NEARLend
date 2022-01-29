@@ -19,6 +19,7 @@ export default function Header() {
     hookState<any>(globalState);
   const contractState = contract.attach(Downgraded).get();
   const userBalanceState = userBalance.attach(Downgraded).get();
+  const walletState = wallet.attach(Downgraded).get();
   const [isLoginMore, setIsLoginMore] = useState(false);
   const { pathname } = useLocation();
   const path = pathname.toString();
@@ -27,10 +28,8 @@ export default function Header() {
   const [accountName, setAccountName] = useState("");
 
   const login = () => {
-    wallet
-      .attach(Downgraded)
-      .get()
-      .requestSignIn(contractName, "Rust Counter Example");
+    // console.log(wallet.attach(Downgraded));
+    walletState.requestSignIn(contractName, "Rust Counter Example");
   };
 
   const logout = () => {
@@ -47,15 +46,15 @@ export default function Header() {
     const initWallet = _walletConnection(initNear);
     const initContract: any = _contract(initWallet);
 
-    near.set(initNear);
-    wallet.set(initWallet);
     contract.set(initContract);
+    wallet.set(initWallet);
+    near.set(initNear);
 
     return checkIsSigned(initWallet, initContract);
   }
 
   useEffect(() => {
-    if (!contractState && !userBalanceState) {
+    if (contractState === null || userBalance === null) {
       initConnect();
     }
     if (typeof window !== "undefined") {
@@ -71,22 +70,19 @@ export default function Header() {
 
   useEffect(() => {
     setTimeout(async () => {
-      const user = await contract
-        .attach(Downgraded)
-        .get()
-        .get_account({
-          account_id: wallet.attach(Downgraded).get().getAccountId(),
-        });
+      const user = await contractState.get_account({
+        account_id: walletState.getAccountId(),
+      });
       userBalance.set(user);
     }, 100);
   }, []);
 
   useEffect(() => {
-    if (contract.attach(Downgraded).get()?.account.accountId) {
+    if (contractState?.account.accountId) {
       setIsLogin(true);
-      setAccountName(contract.attach(Downgraded).get()?.account.accountId);
+      setAccountName(contractState?.account.accountId);
     }
-  }, [contract]);
+  }, [contractState]);
 
   const handleScoll = () => {
     const elementTopMenu: Element | null =
@@ -115,22 +111,32 @@ export default function Header() {
               <Link to="/">Docs</Link>
             </li>
             {path === "/" ? (
-              <li onClick={() => setIsLoginMore(false)}>
-                <Link to="/app">Launch App</Link>
-              </li>
+              <>
+                <li onClick={() => setIsLoginMore(false)}>
+                  <Link to="/app">Launch App</Link>
+                </li>
+                <li onClick={() => setIsLoginMore(false)}>
+                  <Link to="/marketplace">Marketplace</Link>
+                </li>
+              </>
             ) : (
               ""
             )}
-            {path === "/app" || path === "/portfolio" ? (
+            {path === "/app" || path === "/portfolio" || path === "/marketplace" ? (
               isLogin ? (
                 <>
-                  {path === "/portfolio" ? (
-                    <li onClick={() => setIsLoginMore(false)}>
-                      <Link to="/app">App</Link>
-                    </li>
+                  {/* {path === "/portfolio" || path === "/marketplace"  ? (
+                    <> */}
+                      <li onClick={() => setIsLoginMore(false)}>
+                        <Link to="/app">App</Link>
+                      </li>
+                      <li onClick={() => setIsLoginMore(false)}>
+                        <Link to="/marketplace">Marketplace</Link>
+                      </li>
+                    {/* </>
                   ) : (
                     ""
-                  )}
+                  )} */}
                   <li
                     className="btn-connect"
                     onClick={() => setIsLoginMore(!isLoginMore)}
@@ -147,16 +153,15 @@ export default function Header() {
                       onClick={() => setIsLoginMore(false)}
                     >
                       <Link to="/portfolio">
-                        <a
+                        <span
                           className={`${
                             path === "/portfolio" ? "link-active" : "ok"
                           }`}
                         >
                           Portfolio
-                        </a>
+                        </span>
                       </Link>
-
-                      <a onClick={logout}>Sign Out</a>
+                      <Link to="/portfolio">Sign Out</Link>
                     </div>
                   </li>
                 </>

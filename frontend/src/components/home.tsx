@@ -19,18 +19,24 @@ import { DepositPopup, BorrowPopup } from "./Popup";
 import { tokenFomat } from "../utils/token";
 
 function Home() {
-  const { near, wallet, contract, poolListToken }: any =
+  const { contract, poolListToken, userBalance }: any =
     hookState<any>(globalState);
   const contractState = contract.attach(Downgraded).get();
+  const userBalanceState = userBalance.attach(Downgraded).get();
+  const poolListTokenState = poolListToken.attach(Downgraded).get();
+  
   const [isShowPopupDeposit, setIsShowPopupDeposit] = useState(false);
   const [isShowPopupBorrow, setIsShowPopupBorrow] = useState(false);
   const [tokenList, setTokenList] = useState([]);
   const [tokenId, setTokenId] = useState("");
   const [tokenChose, setTokenChose] = useState(null);
 
-
   const openPopupDeposit = (e: any, item: any) => {
     e.preventDefault();
+    if (userBalanceState === null) {
+      console.log("nullllll");
+      return;
+    }
     setTokenId(item.tokenId);
     setTokenChose(item);
     setIsShowPopupDeposit(true);
@@ -38,6 +44,11 @@ function Home() {
 
   const openPopupBorrow = (e: any, item: any) => {
     e.preventDefault();
+    if (userBalanceState === null) {
+      console.log("nullllll");
+
+      return;
+    }
     setTokenId(item.tokenId);
     setTokenChose(item);
     setIsShowPopupBorrow(true);
@@ -45,7 +56,7 @@ function Home() {
 
   useEffect(() => {
     const getTokenList = async () => {
-      if (contractState) {
+      if (!contractState || !tokenList) {
         await contractState
           .get_assets_paged({ from_index: 0, limit: 10 })
           .then((res: any) => {
@@ -55,10 +66,6 @@ function Home() {
                 ...item[1],
               };
             });
-            setTokenList(fomat);
-            console.log(res);
-            console.log("fomat", fomat);
-
             poolListToken.set(fomat);
             return res;
           })
@@ -69,7 +76,13 @@ function Home() {
     setTimeout(() => {
       getTokenList();
     }, 500);
-  }, [contractState]);
+  }, [tokenList, contractState]);
+
+  useEffect(() => {
+    if (poolListToken) {
+      setTokenList(poolListTokenState);
+    }
+  }, [poolListToken]);
 
   return (
     <div className="container homepage">
@@ -108,6 +121,7 @@ function Home() {
           <p>Borrow APY</p>
         </div>
         <div className="pools">
+          {console.log('tokenList', tokenList)}
           {tokenList && tokenList.length > 0
             ? tokenList.map((item: any, idx: number) => {
                 const { tokenId } = item;

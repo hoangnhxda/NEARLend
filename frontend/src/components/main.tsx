@@ -1,11 +1,12 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Home from "../routes/home";
 import Intro from "../routes/intro";
-import Header from "../components/header";
-import Port from "../components/portfolio";
 import waveTop from "../images/wave-top.png";
 import waveBot from "../images/wave-bot.png";
 import waveMid from "../images/wave-mid.png";
+import Header from "../components/header";
+import Portfolio from "../components/portfolio";
+import Marketplace from "../components/marketplace";
 
 export default function Main() {
   const { pathname } = useLocation();
@@ -18,7 +19,9 @@ export default function Main() {
       case "/app":
         return <Home />;
       case "/portfolio":
-        return <Port />;
+        return <Portfolio />;
+      case "/marketplace":
+        return <Marketplace />;
       default:
         return <Outlet />;
     }

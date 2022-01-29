@@ -12,13 +12,14 @@ type Props = {
   tokenId?: string;
   token: any;
 };
-const Deposit = ({ setTurnOff, token }: Props) => {
+const DepositFirstTime = ({ setTurnOff, token }: Props) => {
   const { contract, wallet }: any = hookState<any>(globalState);
   const contractState = contract.attach(Downgraded).get();
   const walletState = wallet.attach(Downgraded).get();
   const [amountToken, setAmountToken] = useState(0);
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
   const [userTokenBalance, setUserTokenBalance] = useState(0);
+  console.log("token", token);
   const icon = tokenFomat[token.tokenId].icon;
   const tokenName = tokenFomat[token.tokenId].name;
 
@@ -29,11 +30,29 @@ const Deposit = ({ setTurnOff, token }: Props) => {
     75: "75%",
     100: "100%",
   };
-
-  // should debounce
   function formatter(value: any) {
+    // console.log(value)
     return `${value.toString()}%`;
   }
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const htmlEle = window.document.getElementsByTagName("html")[0];
+      const popupEle = window.document.getElementsByTagName("wrap-popup")[0];
+      if (popupEle) {
+        popupEle.addEventListener("click", () => {
+          console.log("alo");
+          setTurnOff();
+        });
+      }
+      htmlEle.classList.add("popup-open");
+    }
+    return () => {
+      const htmlEle = window.document.getElementsByTagName("html")[0];
+      htmlEle.classList.remove("popup-open");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const getBalanceTokenUser = async () => {
@@ -45,8 +64,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
             account_id: walletState.getAccountId(),
           }
         );
-        const fomatBalance = +balance / 10 ** token.config.extra_decimals;
-        setUserTokenBalance(fomatBalance);
+        setUserTokenBalance(+balance / 10 ** token.config.extra_decimals);
       } catch (err) {
         console.log(err);
       }
@@ -54,27 +72,18 @@ const Deposit = ({ setTurnOff, token }: Props) => {
     getBalanceTokenUser();
   }, [userTokenBalance]);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const htmlEle = window.document.getElementsByTagName("html")[0];
-      htmlEle.classList.add("popup-open");
-    }
-    return () => {
-      const htmlEle = window.document.getElementsByTagName("html")[0];
-      htmlEle.classList.remove("popup-open");
-    };
-  }, [userTokenBalance]);
-
-  const handleDeposit = async () => {
+  const handleBorrow = async () => {
     const amount = amountToken * 10 ** token.config.extra_decimals;
+    const accountId = contractState.account.accountId;
     const contractID = contractState.contractId;
     const tokenID = token.tokenId;
     const ONE_YOCTO = 1;
     const GAS = 200000000000000;
     const args = {
-      receiver_id: contractID,
+      receiver_id: accountId,
+      // sender_id: contractID,
       amount: amount.toLocaleString("fullwide", { useGrouping: false }),
-      msg: "",
+      msg: `{"Execute": {"actions": [{"Borrow": {"token_id": ${tokenID}}}]}}`,
     };
 
     return await contractState.account.functionCall(
@@ -104,7 +113,10 @@ const Deposit = ({ setTurnOff, token }: Props) => {
         </p>
         <div className="Ocean">
           <svg className="Wave" viewBox="0 0 12960 1120">
-            <path d="M9720,320C8100,320,8100,0,6480,0S4860,320,3240,320,1620,0,0,0V1120H12960V0C11340,0,11340,320,9720,320Z">
+            <path
+              className="WavePath"
+              d="M9720,320C8100,320,8100,0,6480,0S4860,320,3240,320,1620,0,0,0V1120H12960V0C11340,0,11340,320,9720,320Z"
+            >
               <animate
                 dur="5s"
                 repeatCount="indefinite"
@@ -118,7 +130,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
             </path>
           </svg>
         </div>
-        <h4 className="title">DEPOSIT</h4>
+        <h4 className="title">Borrow</h4>
         <p className="icon">
           <img className="icon" src={icon} width={54} height={54} alt="Logo" />
         </p>
@@ -138,9 +150,11 @@ const Deposit = ({ setTurnOff, token }: Props) => {
               className="input-number"
               defaultValue={0}
               type="number"
-              // formatter={(value) =>
-              //   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              // }
+              // formatter={(value) => {
+              //   // const val = value?.toString();
+              //   return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              // }}
+              keyboard={true}
               value={amountToken}
               onChange={onChange}
             />
@@ -162,14 +176,14 @@ const Deposit = ({ setTurnOff, token }: Props) => {
           </div>
 
           <p className="position-relative total bg-white">
-            Total Supply <span style={{ fontSize: 22 }}>&#8771;</span> $
+            Total Borrow <span style={{ fontSize: 22 }}>&#8771;</span> $
             {(amountToken * 23).toFixed(1)}
           </p>
           <p className="position-relative rates-title fwb bg-white pad-side-14">
-            Supply Rates
+            Borrow Rates
           </p>
           <div className="position-relative flex bg-white pad-side-14">
-            <div className="left">Deposit APY</div>
+            <div className="left">Borrow APY</div>
             <div className="right fwb">0.028533093636258104</div>
           </div>
           <div className="position-relative flex bg-white pad-side-14">
@@ -186,8 +200,8 @@ const Deposit = ({ setTurnOff, token }: Props) => {
             </div>
           </div>
 
-          <button className="position-relative btn" onClick={handleDeposit}>
-            DEPOSIT
+          <button className="position-relative btn" onClick={handleBorrow}>
+            BORROW
           </button>
         </div>
       </div>
@@ -195,4 +209,4 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   );
 };
 
-export default Deposit;
+export default DepositFirstTime;

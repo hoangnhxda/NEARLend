@@ -14,6 +14,8 @@ type Props = {
 };
 const Deposit = ({ setTurnOff, token }: Props) => {
   const { contract, wallet }: any = hookState<any>(globalState);
+  const contractState = contract.attach(Downgraded).get();
+  const walletState = wallet.attach(Downgraded).get();
   const [amountToken, setAmountToken] = useState(0);
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
   const [userTokenBalance, setUserTokenBalance] = useState(0);
@@ -55,12 +57,13 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   useEffect(() => {
     const getBalanceTokenUser = async () => {
       try {
-        const balance = await contract
-          .attach(Downgraded)
-          .get()
-          .account.viewFunction(token.tokenId, "ft_balance_of", {
-            account_id: wallet.attach(Downgraded).get().getAccountId(),
-          });
+        const balance = await contractState.account.viewFunction(
+          token.tokenId,
+          "ft_balance_of",
+          {
+            account_id: walletState.getAccountId(),
+          }
+        );
         setUserTokenBalance(+balance / 10 ** token.config.extra_decimals);
       } catch (err) {
         console.log(err);
@@ -71,8 +74,8 @@ const Deposit = ({ setTurnOff, token }: Props) => {
 
   const handleBorrow = async () => {
     const amount = amountToken * 10 ** token.config.extra_decimals;
-    const accountId = contract.attach(Downgraded).get().account.accountId;
-    const contractID = contract.attach(Downgraded).get().contractId;
+    const accountId = contractState.account.accountId;
+    const contractID = contractState.contractId;
     const tokenID = token.tokenId;
     const ONE_YOCTO = 1;
     const GAS = 200000000000000;

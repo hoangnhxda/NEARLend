@@ -30,31 +30,43 @@ export const _contract = function (wallet: any) {
 };
 
 export const checkIsSigned = async function (wallet: any, contract: any) {
-  async function sup() {
-    const accountId = wallet.getAccountId();
+  const ONE_YOCTO = 1;
+  const GAS = 200000000000000;
+  const accountId = wallet.getAccountId();
+  const { contractId } = contract;
+  const isAccountDeposit = await contract.get_account({
+    account_id: accountId,
+  });
+  async function initCheck() {
     var tmpAvila = await wallet.account().getAccountBalance();
     const balance = tmpAvila.available / Math.pow(10, 24);
     console.log("accountId", accountId);
     console.log("balance", balance);
   }
-
-  const ONE_YOCTO = 1;
-  const GAS = 200000000000000;
-
-  console.log(contract);
+  console.log("isAccountDeposit", isAccountDeposit);
   if (wallet.isSignedIn()) {
-    sup();
+    initCheck();
+    console.log("wallet", wallet);
+    // 1 - deposit to pool for first time User login
+    // await contract.storage_deposit(
+    //   {
+    //     account_id: accountId,
+    //     registration_only: true,
+    //   },
+    //   GAS,
+    //   "100000000000000000000000",
+    // );
 
-    // 1
-    // await contract.storage_deposit({ account_id: wallet.getAccountId()});
-
-    // 2
+    // 2 - deposit to pool for first time User login
     // await contract.account.functionCall(
     //   contract.contractId,
     //   "storage_deposit",
-    //   { attached_deposit: 0.1 },
+    //   {
+    //     account_id: accountId,
+    //     registration_only: true,
+    //   },
     //   GAS,
-    //   ONE_YOCTO
+    //   "100000000000000000000000"
     // );
   }
 };

@@ -6,8 +6,10 @@
 :root {
   --white: #fff;
   --black: #2c2b2b;
+  --origin-black: #000;
   --orange: #f3aa3a;
   --space-gray: #929191;
+  --greenlight: #2cffe4;
 }
 
 * {
@@ -49,7 +51,7 @@ h5,
 h6,
 p,
 ul {
-  color: #fff;
+  color: var(--white);
   margin: 0;
 }
 
@@ -151,7 +153,7 @@ footer {
 }
 
 .header .btn-connect {
-  border: 1px solid #2cffe4;
+  border: 1px solid var(--greenlight);
   padding: 10px;
   cursor: pointer;
   font-size: 12px;
@@ -184,7 +186,7 @@ footer {
 }
 
 .header .btn-connect .more a:hover {
-  color: #2cffe4;
+  color: var(--greenlight);
 }
 
 .header .btn-connect .more p:last-child {
@@ -192,7 +194,7 @@ footer {
 }
 
 .header .link-active {
-  color: #2cffe4;
+  color: var(--greenlight);
 }
 
 /* end HEADER */
@@ -205,10 +207,10 @@ footer {
   display: inline-block;
   font-size: 17px;
   background: rgb(0 0 0 / 35%);
-  color: #fff;
+  color: var(--white);
   font-weight: bold;
   border-radius: 10px;
-  /* border: 1px solid #2cffe4; */
+  /* border: 1px solid var(--greenlight) */
 }
 
 .homepage .wrap-total .total {
@@ -230,7 +232,7 @@ footer {
   color: #c1c1c1;
   padding: 20px;
   background: rgb(0 0 0 / 40%);
-  margin: 60px 0;
+  margin: 60px 20px;
   border-radius: 5px;
   overflow-x: scroll;
   overflow-y: hidden;
@@ -251,7 +253,7 @@ footer {
   font-size: 26px;
   padding-bottom: 10px;
   padding-top: 14px;
-  color: #2cffe4;
+  color: var(--greenlight);
   position: absolute;
 }
 .homepage .wrap-market .wrap-label {
@@ -260,7 +262,7 @@ footer {
   grid-auto-flow: column;
   grid-row-gap: 40px;
   justify-content: space-around;
-  border-bottom: 1px solid #2cffe4;
+  border-bottom: 1px solid var(--greenlight);
   padding: 30px 0;
   margin-bottom: 30px;
   margin-top: 50px;
@@ -324,7 +326,7 @@ footer {
 }
 
 .homepage .wrap-market .wrap-pool .apy .icon-apy img {
-  background: #2cffe4;
+  background: var(--greenlight);
   border-radius: 50%;
   border: 1px solid #1c887a;
 }
@@ -341,7 +343,7 @@ footer {
   cursor: pointer;
   outline: none;
   border-radius: 4px;
-  border: 1px solid #2cffe4;
+  border: 1px solid var(--greenlight);
   padding: 3px 15px;
   margin-top: 2px;
   background: transparent;
@@ -352,8 +354,8 @@ footer {
 
 .homepage .wrap-market .wrap-pool .icon {
   margin-right: 8px;
-  border: 1px solid #2cffe4;
-  background: #2cffe4;
+  border: 1px solid var(--greenlight);
+  background: var(--greenlight);
   border-radius: 50%;
 }
 
@@ -611,11 +613,164 @@ footer {
 .portforlio .empty-account-line {
   width: 40px;
   height: 5px;
-  background: #fff;
+  background: var(--white);
   border-radius: 4px;
   margin: 30px auto 0;
 }
 /* end Portforlio Page */
+
+/* Marketplace Page */
+
+.marketplace {
+  padding-top: 100px;
+  height: 100vh;
+  background: #0e0d1a;
+}
+
+.marketplace .single-slide {
+  height: 40vh;
+  color: "#fff";
+}
+/* .marketplace .single-slide-1 {
+  background: url("./images/nft_circle.jpeg") no-repeat center 70% / cover;
+}
+.marketplace .single-slide-2 {
+  background: url("./images/nft_city.jpeg") no-repeat center 70% / cover;
+}
+.marketplace .single-slide-3 {
+  background: url("./images/nft_moutain-land.jpeg") no-repeat center 70% / cover;
+} */
+
+.marketplace .ant-carousel .slick-dots-bottom {
+  bottom: -38px;
+}
+
+.marketplace .list-card {
+  background-color: var(--origin-black);
+  position: relative;
+  padding: 74px 0;
+}
+.marketplace .list-card .container {
+  max-width: 1200px;
+}
+.marketplace .wrap-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 280px);
+  grid-row-gap: 40px;
+  grid-column-gap: 25px;
+  justify-content: center;
+}
+.marketplace .wrap-card .card {
+  cursor: pointer;
+  max-width: 280px;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--origin-black);
+  transition: 0.4s all;
+}
+.marketplace .wrap-card .card:hover {
+  border: 1px solid var(--greenlight);
+}
+.marketplace .wrap-img {
+  position: relative;
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.marketplace .wrap-img .img {
+  width: 100%;
+  height: 240px;
+}
+.marketplace .wrap-img .img img {
+  object-fit: cover;
+  width: inherit;
+  height: inherit;
+}
+.marketplace .wrap-img .img video {
+  overflow: hidden;
+  width: inherit;
+  height: auto;
+}
+
+.marketplace .wrap-img .type {
+  z-index: 1;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  color: rgb(255, 255, 255);
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 11px;
+}
+
+.marketplace .wrap-img .like {
+  z-index: 1;
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  color: rgb(255, 255, 255);
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 11px;
+}
+
+.marketplace .wrap-card .card-name {
+  padding: 10px 0 14px;
+}
+.marketplace .wrap-card .card-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+}
+.marketplace .wrap-card .card-price .price {
+  display: flex;
+  align-items: center;
+}
+.marketplace .wrap-card .card-price .left {
+  font-size: 12px;
+}
+.marketplace .wrap-card .card-price .right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.marketplace .wrap-card .card-price .price-token {
+}
+.marketplace .wrap-card .card-price .price-token {
+  padding-left: 8px;
+}
+.marketplace .wrap-card .card-price .icon-token {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: rgb(146 145 145 / 23%);
+}
+.marketplace .wrap-card .price-text {
+  align-self: flex-start;
+}
+.marketplace .wrap-card .card-price .left {
+}
+.marketplace .wrap-card .card-price .right {
+}
+
+.marketplace .wrap-card .price-usd {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  height: 21px;
+}
+
+.marketplace .wrap-card .creator-verified {
+  padding-right: 4px;
+  color: #2196f3;
+  font-size: 12px;
+}
+
+/* end Marketplace Page */
 
 /* BACKGROUND WAVE */
 
@@ -1125,7 +1280,7 @@ footer {
   transform: translateX(-50%);
   width: 1px;
   height: 100%;
-  background: #2cffe4;
+  background: var(--greenlight);
 }
 .roadmap .wrap-line .phase {
   position: relative;
@@ -1153,7 +1308,7 @@ footer {
   text-align: center;
   margin-bottom: 14px;
   /* left: -180px; */
-  border: 1px solid #fff;
+  border: 1px solid var(--white);
   padding: 6px 15px;
   border-radius: 20px;
 }
