@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 import { contractName } from "../utils";
@@ -6,7 +5,7 @@ import { useEffect, useState } from "react";
 import logo from "../images/nearlend-text.png";
 import arrow_down from "../images/arrow_down.png";
 import arrow_down_white from "../images/arrow_down_white.png";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import {
   _near,
   _walletConnection,
@@ -33,24 +32,27 @@ export default function Header() {
   };
 
   const logout = () => {
-    console.log("sign out: " + wallet.attach(Downgraded).get()._connectedAccount.accountId);
-    wallet
-      .attach(Downgraded)
-      .get()
-      .signOut();
+    console.log(
+      "sign out: " + wallet.attach(Downgraded).get()._connectedAccount.accountId
+    );
+    wallet.attach(Downgraded).get().signOut();
     window.location.reload();
   };
 
   async function initConnect() {
-    const initNear = await _near();
-    const initWallet = _walletConnection(initNear);
-    const initContract: any = _contract(initWallet);
+    try {
+      const initNear = await _near();
+      const initWallet = _walletConnection(initNear);
+      const initContract: any = _contract(initWallet);
 
-    contract.set(initContract);
-    wallet.set(initWallet);
-    near.set(initNear);
+      contract.set(initContract);
+      wallet.set(initWallet);
+      near.set(initNear);
 
-    return checkIsSigned(initWallet, initContract);
+      return checkIsSigned(initWallet, initContract);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
@@ -64,17 +66,22 @@ export default function Header() {
       window.addEventListener("scroll", handleScoll);
       return () => window.removeEventListener("scroll", handleScoll);
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     setTimeout(async () => {
-      const user = await contractState.get_account({
-        account_id: walletState.getAccountId(),
-      });
-      userBalance.set(user);
+      try {
+        if (!contractState || !walletState) return;
+        const user = await contractState.get_account({
+          account_id: walletState.getAccountId(),
+        });
+        userBalance.set(user);
+      } catch (error) {
+        console.log(error);
+      }
     }, 100);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -107,9 +114,9 @@ export default function Header() {
             <li onClick={() => setIsLoginMore(false)}>
               <Link to="/">Home</Link>
             </li>
-            <li onClick={() => setIsLoginMore(false)}>
+            {/* <li onClick={() => setIsLoginMore(false)}>
               <Link to="/">Docs</Link>
-            </li>
+            </li> */}
             {path === "/" ? (
               <>
                 <li onClick={() => setIsLoginMore(false)}>
@@ -122,18 +129,20 @@ export default function Header() {
             ) : (
               ""
             )}
-            {path === "/app" || path === "/portfolio" || path === "/marketplace" ? (
+            {path === "/app" ||
+            path === "/portfolio" ||
+            path === "/marketplace" ? (
               isLogin ? (
                 <>
                   {/* {path === "/portfolio" || path === "/marketplace"  ? (
                     <> */}
-                      <li onClick={() => setIsLoginMore(false)}>
-                        <Link to="/app">App</Link>
-                      </li>
-                      <li onClick={() => setIsLoginMore(false)}>
-                        <Link to="/marketplace">Marketplace</Link>
-                      </li>
-                    {/* </>
+                  <li onClick={() => setIsLoginMore(false)}>
+                    <Link to="/app">App</Link>
+                  </li>
+                  <li onClick={() => setIsLoginMore(false)}>
+                    <Link to="/marketplace">Marketplace</Link>
+                  </li>
+                  {/* </>
                   ) : (
                     ""
                   )} */}

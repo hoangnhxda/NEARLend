@@ -140,21 +140,6 @@ export default function Intro() {
               </p>
             </div>
           </div>
-
-          {/* <div className="last">
-            <p>
-              Defi is a very new field, and there is a lot of knowledge that
-              needs to be updated to build a test-net for Nearlend.
-            </p>
-            <p>
-              Researching a new governance model to ensure the long-term
-              development of Nearlend.
-            </p>
-            <p>
-              And the biggest challenge is the consensus of the founding members
-              of Nearlend
-            </p>
-          </div> */}
         </div>
       </div>
 
@@ -169,7 +154,7 @@ export default function Intro() {
               </p>
               <div className="phase left">
                 <h4>Phase 1</h4>
-                <h5 className="bold">Q1/2022</h5>
+                <h5 className="bold">Q2/2022</h5>
                 <div className="content color-gray">
                   <p>Testnet Launch</p>
                 </div>
@@ -181,7 +166,7 @@ export default function Intro() {
               </p>
               <div className="phase right">
                 <h4>Phase 2</h4>
-                <h5 className="bold">Q2/2022</h5>
+                <h5 className="bold">Q3/2022</h5>
                 <div className="content color-gray">
                   <p>Tokenomic issuance &amp; Seed funding</p>
                 </div>
@@ -193,7 +178,7 @@ export default function Intro() {
               </p>
               <div className="phase left">
                 <h4>Phase 3</h4>
-                <h5 className="bold">Q3/2022</h5>
+                <h5 className="bold">Q4/2022</h5>
                 <div className="content color-gray">
                   <p>Price Feeds Integration &amp; Security Audit</p>
                 </div>
@@ -205,13 +190,13 @@ export default function Intro() {
               </p>
               <div className="phase right">
                 <h4>Phase 4</h4>
-                <h5 className="bold">Q4/2022</h5>
+                <h5 className="bold">Q1/2023</h5>
                 <div className="content color-gray">
                   <p>Mainnet Launch</p>
                 </div>
               </div>
             </div>
-            <div className="wrap">
+            {/* <div className="wrap">
               <p className="planet grayscale">
                 <img alt="Planet" src={planet} width={40} height={40} />
               </p>
@@ -222,7 +207,7 @@ export default function Intro() {
                   <p>Cross-chain integrations</p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

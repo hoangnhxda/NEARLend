@@ -6,6 +6,7 @@ import waveBot from "../images/wave-bot.png";
 import waveMid from "../images/wave-mid.png";
 import Header from "../components/header";
 import Portfolio from "../components/portfolio";
+import NftDetail from "../components/nft-detail";
 import Marketplace from "../components/marketplace";
 
 export default function Main() {
@@ -22,6 +23,8 @@ export default function Main() {
         return <Portfolio />;
       case "/marketplace":
         return <Marketplace />;
+      case "/nft-detail":
+        return <NftDetail />;
       default:
         return <Outlet />;
     }
