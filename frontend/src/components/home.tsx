@@ -1,17 +1,11 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
 import { useEffect, useState } from "react";
-import iconSol from "../images/icon-sol.png";
-import iconBitcoin from "../images/icon-bitcoin.png";
-import iconShib from "../images/icon-shib.png";
-import iconDoge from "../images/icon-doge.png";
 import "../App.css";
 import "../responsive.css";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 import { _near, _walletConnection, _contract } from "../services/connect";
-import { fomatBalance } from "../utils";
 import { DepositPopup, BorrowPopup, RegistFirstTime } from "./Popup";
-import { tokenFomat } from "../utils/token";
 import TokenList from "./token-list";
 
 function Home() {
@@ -30,13 +24,13 @@ function Home() {
 
   const setUpPopup = (e: any, item: any) => {
     e.preventDefault();
+    setTokenId(item.tokenId);
+    setTokenChose(item);
     if (userBalanceState === null) {
       setIsShowPopupRegist(true);
       // console.log("nullllll");
       return;
     }
-    setTokenId(item.tokenId);
-    setTokenChose(item);
   };
 
   const openPopupDeposit = (e: any, item: any) => {

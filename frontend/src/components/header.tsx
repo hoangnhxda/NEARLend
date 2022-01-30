@@ -42,16 +42,20 @@ export default function Header() {
       const initNear = await _near();
       const initWallet = _walletConnection(initNear);
       const initContract: any = _contract(initWallet);
-      const accountId = initWallet.getAccountId();
+      const accountId =
+        initWallet._authData.accountId && initWallet.getAccountId();
+
       contract.set(initContract);
       wallet.set(initWallet);
       near.set(initNear);
 
-      const isAccountDeposit = await initContract.get_account({
-        account_id: accountId,
-      });
-      userBalance.set(isAccountDeposit);
-
+      if (accountId) {
+        const isAccountDeposit = await initContract.get_account({
+          account_id: accountId,
+        });
+        userBalance.set(isAccountDeposit);
+      }
+      
       return checkIsSigned(initWallet);
     } catch (error) {
       console.log(error);

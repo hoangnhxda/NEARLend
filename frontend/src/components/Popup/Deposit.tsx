@@ -19,8 +19,8 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   const [amountToken, setAmountToken] = useState(0);
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
   const [userTokenBalance, setUserTokenBalance] = useState(0);
-  const icon = tokenFomat[token.tokenId].icon;
-  const tokenName = tokenFomat[token.tokenId].name;
+  const icon = token && tokenFomat[token?.tokenId]?.icon;
+  const tokenName = token && tokenFomat[token?.tokenId]?.name;
 
   const marks = {
     0: "0%",
@@ -38,15 +38,17 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   useEffect(() => {
     const getBalanceTokenUser = async () => {
       try {
-        const balance = await contractState.account.viewFunction(
-          token.tokenId,
-          "ft_balance_of",
-          {
-            account_id: walletState.getAccountId(),
-          }
-        );
-        const fomatBalance = +balance / 10 ** token.config.extra_decimals;
-        setUserTokenBalance(fomatBalance);
+        if (contractState) {
+          const balance = await contractState.account.viewFunction(
+            token?.tokenId,
+            "ft_balance_of",
+            {
+              account_id: walletState.getAccountId(),
+            }
+          );
+          const fomatBalance = +balance / 10 ** token.config.extra_decimals;
+          setUserTokenBalance(fomatBalance);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -66,6 +68,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   }, [userTokenBalance]);
 
   const handleDeposit = async () => {
+    // if(contractState === null || walletState === null) return;
     const amount = amountToken * 10 ** token.config.extra_decimals;
     const contractID = contractState.contractId;
     const tokenID = token.tokenId;
