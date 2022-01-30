@@ -12,14 +12,14 @@ type Props = {
   tokenId?: string;
   token: any;
 };
-const Deposit = ({ setTurnOff, token }: Props) => {
+const Borrow = ({ setTurnOff, token }: Props) => {
   const { contract, wallet }: any = hookState<any>(globalState);
   const contractState = contract.attach(Downgraded).get();
   const walletState = wallet.attach(Downgraded).get();
   const [amountToken, setAmountToken] = useState(0);
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
   const [userTokenBalance, setUserTokenBalance] = useState(0);
-  console.log("token", token);
+  // console.log("token", token);
   const icon = tokenFomat[token.tokenId].icon;
   const tokenName = tokenFomat[token.tokenId].name;
 
@@ -41,7 +41,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
       const popupEle = window.document.getElementsByTagName("wrap-popup")[0];
       if (popupEle) {
         popupEle.addEventListener("click", () => {
-          console.log("alo");
+          // console.log("alo");
           setTurnOff();
         });
       }
@@ -206,4 +206,4 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   );
 };
 
-export default Deposit;
+export default Borrow;

@@ -22,7 +22,7 @@ const CommingSoon = ({ setTurnOff }: Props) => {
     <div className="wrap-popup">
       <div className="popup notification">
         <h4 className="title-notification">Comming Soon ! 💻 </h4>
-        <button className="button-notification" onClick={_handleTurnOff}>Close</button>
+        <button className="button-notification button-gray" onClick={_handleTurnOff}>Close</button>
       </div>
     </div>
   );

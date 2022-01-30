@@ -8,15 +8,11 @@ import "../App.css";
 import "../responsive.css";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
-import {
-  _near,
-  _walletConnection,
-  _contract,
-  checkIsSigned,
-} from "../services/connect";
+import { _near, _walletConnection, _contract } from "../services/connect";
 import { fomatBalance } from "../utils";
-import { DepositPopup, BorrowPopup } from "./Popup";
+import { DepositPopup, BorrowPopup, RegistFirstTime } from "./Popup";
 import { tokenFomat } from "../utils/token";
+import TokenList from "./token-list";
 
 function Home() {
   const { contract, poolListToken, userBalance }: any =
@@ -24,39 +20,50 @@ function Home() {
   const contractState = contract.attach(Downgraded).get();
   const userBalanceState = userBalance.attach(Downgraded).get();
   const poolListTokenState = poolListToken.attach(Downgraded).get();
-  
+
   const [isShowPopupDeposit, setIsShowPopupDeposit] = useState(false);
   const [isShowPopupBorrow, setIsShowPopupBorrow] = useState(false);
+  const [isShowPopupRegist, setIsShowPopupRegist] = useState(false);
   const [tokenList, setTokenList] = useState([]);
   const [tokenId, setTokenId] = useState("");
   const [tokenChose, setTokenChose] = useState(null);
 
-  const openPopupDeposit = (e: any, item: any) => {
+  const setUpPopup = (e: any, item: any) => {
     e.preventDefault();
     if (userBalanceState === null) {
-      console.log("nullllll");
+      setIsShowPopupRegist(true);
+      // console.log("nullllll");
       return;
     }
     setTokenId(item.tokenId);
     setTokenChose(item);
+  };
+
+  const openPopupDeposit = (e: any, item: any) => {
+    setUpPopup(e, item);
     setIsShowPopupDeposit(true);
   };
 
   const openPopupBorrow = (e: any, item: any) => {
-    e.preventDefault();
-    if (userBalanceState === null) {
-      console.log("nullllll");
-
-      return;
-    }
-    setTokenId(item.tokenId);
-    setTokenChose(item);
+    setUpPopup(e, item);
     setIsShowPopupBorrow(true);
+  };
+
+  const _handleClosePopupDeposit = () => {
+    setIsShowPopupDeposit(false);
+  };
+
+  const _handleClosePopupBorrow = () => {
+    setIsShowPopupBorrow(false);
+  };
+
+  const _handleClosePopupRegist = () => {
+    setIsShowPopupRegist(false);
   };
 
   useEffect(() => {
     const getTokenList = async () => {
-      if (!contractState || !tokenList) {
+      if (contractState !== null) {
         await contractState
           .get_assets_paged({ from_index: 0, limit: 10 })
           .then((res: any) => {
@@ -76,13 +83,13 @@ function Home() {
     setTimeout(() => {
       getTokenList();
     }, 500);
-  }, [tokenList, contractState]);
+  }, [contractState]);
 
   useEffect(() => {
-    if (poolListToken) {
+    if (poolListTokenState) {
       setTokenList(poolListTokenState);
     }
-  }, [poolListToken]);
+  }, [poolListTokenState, tokenList]);
 
   return (
     <div className="container homepage">
@@ -90,15 +97,18 @@ function Home() {
         <DepositPopup
           tokenId={tokenId}
           token={tokenChose}
-          setTurnOff={() => setIsShowPopupDeposit(false)}
+          setTurnOff={_handleClosePopupDeposit}
         />
       )}
       {isShowPopupBorrow && (
         <BorrowPopup
           tokenId={tokenId}
           token={tokenChose}
-          setTurnOff={() => setIsShowPopupBorrow(false)}
+          setTurnOff={_handleClosePopupBorrow}
         />
+      )}
+      {isShowPopupRegist && (
+        <RegistFirstTime setTurnOff={_handleClosePopupRegist} />
       )}
       <div className="wrap-total">
         <div className="total deposit">
@@ -121,403 +131,11 @@ function Home() {
           <p>Borrow APY</p>
         </div>
         <div className="pools">
-          {console.log('tokenList', tokenList)}
-          {tokenList && tokenList.length > 0
-            ? tokenList.map((item: any, idx: number) => {
-                const { tokenId } = item;
-                const icon = tokenFomat[tokenId.toString()]?.icon;
-                const tokenSymbol = tokenFomat[tokenId.toString()]?.symbol;
-                const supplied: any = fomatBalance(
-                  item?.supplied.balance,
-                  item.config.extra_decimals
-                );
-                const borrowed: any = fomatBalance(
-                  item?.borrowed.balance,
-                  item.config.extra_decimals
-                );
-
-                return (
-                  <div key={idx} className="wrap-pool">
-                    <div className="mini asset market-flex">
-                      <img
-                        className="icon"
-                        src={icon}
-                        width={30}
-                        height={30}
-                        alt="Logo"
-                      />
-                      <div>
-                        <p className="top coin color-white fwb">
-                          {tokenSymbol}
-                        </p>
-                        <p className="color-space-gray">$23</p>
-                      </div>
-                    </div>
-                    <div className="mini deposit">
-                      <p className="top color-white fwb">{supplied}</p>
-                      <p className="color-space-gray">${supplied * 23}</p>
-                    </div>
-                    <div className="mini deposit">
-                      <p className="top color-white fwb">{borrowed}</p>
-                      <p className="color-space-gray">${borrowed * 23}</p>
-                    </div>
-                    <div
-                      onClick={(e) => openPopupDeposit(e, item)}
-                      className="action mini color-white"
-                    >
-                      <div className="market-flex apy">
-                        <p>7.29% +</p>
-                        <p className="icon-apy">
-                          <img src={icon} width={18} height={18} alt="Logo" />
-                        </p>
-                      </div>
-                      <button>Deposit</button>
-                    </div>
-                    <div
-                      onClick={(e) => openPopupBorrow(e, item)}
-                      className="action mini color-white"
-                    >
-                      <div className="market-flex apy">
-                        <p>7.29% +</p>
-                        <p className="icon-apy ">
-                          <img src={icon} width={18} height={18} alt="Logo" />
-                        </p>
-                      </div>
-                      <button>Borrow</button>
-                    </div>
-                  </div>
-                );
-              })
-            : null}
-          {/* <div className="wrap-pool">
-            <div className="mini asset market-flex">
-              <img
-                className="icon"
-                src={iconSol}
-                width={30}
-                height={30}
-                alt="Logo"
-              />
-              <div>
-                <p className="top coin color-white fwb">SOL</p>
-                <p className="color-space-gray">$124.5</p>
-              </div>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div onClick={openPopupDeposit} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconSol} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Deposit</button>
-            </div>
-            <div onClick={openPopupBorrow} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy ">
-                  <img src={iconSol} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Borrow</button>
-            </div>
-          </div>
-          <div className="wrap-pool">
-            <div className="mini asset market-flex">
-              <img
-                className="icon"
-                src={iconBitcoin}
-                width={30}
-                height={30}
-                alt="Logo"
-              />
-              <div>
-                <p className="top coin color-white fwb">BTC</p>
-                <p className="color-space-gray">$124.5</p>
-              </div>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div onClick={openPopupDeposit} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconBitcoin} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Deposit</button>
-            </div>
-            <div onClick={openPopupBorrow} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconBitcoin} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Borrow</button>
-            </div>
-          </div>
-          <div className="wrap-pool">
-            <div className="mini asset market-flex">
-              <img
-                className="icon"
-                src={iconShib}
-                width={30}
-                height={30}
-                alt="Logo"
-              />
-              <div>
-                <p className="top coin color-white fwb">SHIB</p>
-                <p className="color-space-gray">$124.5</p>
-              </div>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div onClick={openPopupDeposit} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconShib} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Deposit</button>
-            </div>
-            <div onClick={openPopupBorrow} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconShib} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Borrow</button>
-            </div>
-          </div>
-          <div className="wrap-pool">
-            <div className="mini asset market-flex">
-              <img
-                className="icon"
-                src={iconDoge}
-                width={30}
-                height={30}
-                alt="Logo"
-              />
-              <div>
-                <p className="top coin color-white fwb">DOGE</p>
-                <p className="color-space-gray">$124.5</p>
-              </div>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div onClick={openPopupDeposit} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconDoge} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Deposit</button>
-            </div>
-            <div onClick={openPopupBorrow} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconDoge} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Borrow</button>
-            </div>
-          </div>
-
-          <div className="wrap-pool">
-            <div className="mini asset market-flex">
-              <img
-                className="icon"
-                src={iconSol}
-                width={30}
-                height={30}
-                alt="Logo"
-              />
-              <div>
-                <p className="top coin color-white fwb">SOL</p>
-                <p className="color-space-gray">$124.5</p>
-              </div>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div onClick={openPopupDeposit} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconSol} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Deposit</button>
-            </div>
-            <div onClick={openPopupBorrow} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy ">
-                  <img src={iconSol} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Borrow</button>
-            </div>
-          </div>
-          <div className="wrap-pool">
-            <div className="mini asset market-flex">
-              <img
-                className="icon"
-                src={iconBitcoin}
-                width={30}
-                height={30}
-                alt="Logo"
-              />
-              <div>
-                <p className="top coin color-white fwb">BTC</p>
-                <p className="color-space-gray">$124.5</p>
-              </div>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div onClick={openPopupDeposit} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconBitcoin} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Deposit</button>
-            </div>
-            <div onClick={openPopupBorrow} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconBitcoin} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Borrow</button>
-            </div>
-          </div>
-          <div className="wrap-pool">
-            <div className="mini asset market-flex">
-              <img
-                className="icon"
-                src={iconShib}
-                width={30}
-                height={30}
-                alt="Logo"
-              />
-              <div>
-                <p className="top coin color-white fwb">SHIB</p>
-                <p className="color-space-gray">$124.5</p>
-              </div>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div onClick={openPopupDeposit} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconShib} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Deposit</button>
-            </div>
-            <div onClick={openPopupBorrow} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconShib} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Borrow</button>
-            </div>
-          </div>
-          <div className="wrap-pool">
-            <div className="mini asset market-flex">
-              <img
-                className="icon"
-                src={iconDoge}
-                width={30}
-                height={30}
-                alt="Logo"
-              />
-              <div>
-                <p className="top coin color-white fwb">DOGE</p>
-                <p className="color-space-gray">$124.5</p>
-              </div>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div className="mini deposit">
-              <p className="top color-white fwb">129.04K</p>
-              <p className="color-space-gray">$124.5M</p>
-            </div>
-            <div onClick={openPopupDeposit} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconDoge} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Deposit</button>
-            </div>
-            <div onClick={openPopupBorrow} className="action mini color-white">
-              <div className="market-flex apy">
-                <p>7.29% +</p>
-                <p className="icon-apy">
-                  <img src={iconDoge} width={15} height={15} alt="Logo" />
-                </p>
-              </div>
-              <button>Borrow</button>
-            </div>
-          </div> */}
+          <TokenList
+            tokenList={tokenList}
+            _openPopupDeposit={openPopupDeposit}
+            _openPopupBorrow={openPopupBorrow}
+          />
         </div>
       </div>
     </div>

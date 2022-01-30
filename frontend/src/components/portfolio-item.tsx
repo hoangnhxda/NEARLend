@@ -19,7 +19,7 @@ export default function PortfolioItem() {
     <div>
       {account?.supplied.length > 0 ? (
         account?.supplied.map((item: any, idx: number) => {
-          console.log(item);
+          // console.log(item);
           const decimals = tokenFomat[item.token_id].decimals;
           const icon = tokenFomat[item.token_id].icon;
           const symbol = tokenFomat[item.token_id].symbol;

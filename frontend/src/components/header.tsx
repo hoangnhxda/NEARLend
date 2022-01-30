@@ -32,10 +32,8 @@ export default function Header() {
   };
 
   const logout = () => {
-    console.log(
-      "sign out: " + wallet.attach(Downgraded).get()._connectedAccount.accountId
-    );
-    wallet.attach(Downgraded).get().signOut();
+    // console.log("sign out: " + walletState._connectedAccount.accountId);
+    walletState.signOut();
     window.location.reload();
   };
 
@@ -44,19 +42,24 @@ export default function Header() {
       const initNear = await _near();
       const initWallet = _walletConnection(initNear);
       const initContract: any = _contract(initWallet);
-
+      const accountId = initWallet.getAccountId();
       contract.set(initContract);
       wallet.set(initWallet);
       near.set(initNear);
 
-      return checkIsSigned(initWallet, initContract);
+      const isAccountDeposit = await initContract.get_account({
+        account_id: accountId,
+      });
+      userBalance.set(isAccountDeposit);
+
+      return checkIsSigned(initWallet);
     } catch (error) {
       console.log(error);
     }
   }
 
   useEffect(() => {
-    if (contractState === null || userBalance === null) {
+    if (contractState === null || userBalanceState === null) {
       initConnect();
     }
     if (typeof window !== "undefined") {
@@ -170,7 +173,9 @@ export default function Header() {
                           Portfolio
                         </span>
                       </Link>
-                      <Link to="/portfolio">Sign Out</Link>
+                      <a href={"?"} onClick={logout}>
+                        Sign Out
+                      </a>
                     </div>
                   </li>
                 </>

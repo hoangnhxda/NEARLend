@@ -1179,7 +1179,15 @@ footer {
   text-align: center;
 }
 
-.wrap-popup .popup.notification .button-notification {
+.popup.notification .text-notification {
+  padding: 10px 0 0;
+}
+
+.popup.notification .text-notification strong {
+  font-size: 15px;
+}
+
+.button-notification {
   cursor: pointer;
   min-width: 100px;
   padding: 4px 0 4px;
@@ -1192,6 +1200,10 @@ footer {
 .popup.notification .title-notification {
   text-transform: uppercase;
   font-size: 20px;
+}
+
+.button-notification.button-gray {
+  background: var(--space-gray);
 }
 .button-notification:hover {
   opacity: 0.84;
