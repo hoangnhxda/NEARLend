@@ -73,7 +73,7 @@ impl FungibleTokenReceiver for Contract {
             actions,
             Prices::new(),
         );
-        log!("Execute borrow done");
+        log!("Execute actions done");
         self.internal_set_account(sender_id.as_ref(), account, storage);
         log!("internal_set_account done -> ft_on_transfer return");
         PromiseOrValue::Value(U128(0))

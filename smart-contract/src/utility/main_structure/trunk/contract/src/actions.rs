@@ -85,8 +85,8 @@ impl Contract {
                 Action::Borrow(asset_amount) => { // Action borrow
                     need_number_check = true; // is NaN ?
                     need_risk_check = false; // check account.borrowed.is_empty()
-                    account.add_affected_farm(FarmId::Supplied(asset_amount.token_id.clone())); // add asset id to farm supplied if not exist
-                    account.add_affected_farm(FarmId::Borrowed(asset_amount.token_id.clone())); // add asset id to farm borrowed if not exist
+                    // account.add_affected_farm(FarmId::Supplied(asset_amount.token_id.clone())); // add asset id to farm supplied if not exist
+                    // account.add_affected_farm(FarmId::Borrowed(asset_amount.token_id.clone())); // add asset id to farm borrowed if not exist
                     let amount = self.internal_borrow(account, &asset_amount);
                     log!(
                         "Account {} borrows {} of {}",
@@ -282,10 +282,10 @@ impl Contract {
         let supplied_shares: Shares = asset.supplied.amount_to_shares(amount, false);
 
         //log!("internal_borrow asset.borrowed.deposit");
-        asset.borrowed.deposit(borrowed_shares, amount);
+        // asset.borrowed.deposit(borrowed_shares, amount);
 
         //log!("internal_borrow asset.supplied.deposit");
-        asset.supplied.deposit(supplied_shares, amount);
+        // asset.supplied.deposit(supplied_shares, amount);
 
         //log!("internal_borrow self.internal_set_asset");
         self.internal_set_asset(&asset_amount.token_id, asset);
