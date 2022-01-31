@@ -213,8 +213,8 @@ impl Contract {
         account: Account,
         storage: Storage,
     ) {
-        self.accounts.insert(account_id, &account.into());
-        self.internal_set_storage(account_id, storage);
+        self.accounts.insert(account_id, &account.into()); // Replace Account if exist
+        self.internal_set_storage(account_id, storage); // Replace Storage if exist
     }
 }
 

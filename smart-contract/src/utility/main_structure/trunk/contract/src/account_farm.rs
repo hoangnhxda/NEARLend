@@ -50,12 +50,12 @@ impl From<AccountFarm> for VAccountFarm {
 }
 
 impl Contract {
-    pub fn internal_account_farm_claim(
+    pub fn internal_account_farm_claim( 
         &self,
-        account: &Account,
-        farm_id: &FarmId,
-        asset_farm: &AssetFarm,
-    ) -> (
+        account: &Account, // Claim for which account
+        farm_id: &FarmId, // Claim in which farmId
+        asset_farm: &AssetFarm, // Claim for which asset
+    ) -> ( // ==> result
         AccountFarm,
         Vec<(TokenId, Balance)>,
         Vec<(TokenId, Balance)>,
@@ -63,7 +63,7 @@ impl Contract {
         let mut new_rewards = vec![];
         let mut inactive_rewards = vec![];
         let block_timestamp = env::block_timestamp();
-        let mut account_farm: AccountFarm = account
+        let mut account_farm: AccountFarm = account // get AccountFarm from farm_id
             .farms
             .get(farm_id)
             .map(|v| v.into())
@@ -71,17 +71,17 @@ impl Contract {
                 block_timestamp: 0,
                 rewards: HashMap::new(),
             });
-        if account_farm.block_timestamp != block_timestamp {
+        if account_farm.block_timestamp != block_timestamp { // different timestamp --> get reward, else return empty
             account_farm.block_timestamp = block_timestamp;
             let mut old_rewards = std::mem::take(&mut account_farm.rewards);
-            for (
+            for ( // loop all AssetFarmReward
                 token_id,
                 AssetFarmReward {
                     reward_per_share, ..
                 },
             ) in &asset_farm.rewards
             {
-                let boosted_shares = if let Some(AccountFarmReward {
+                let boosted_shares = if let Some(AccountFarmReward { 
                     boosted_shares,
                     last_reward_per_share,
                 }) = old_rewards.remove(token_id)
@@ -91,11 +91,11 @@ impl Contract {
                     if amount > 0 {
                         new_rewards.push((token_id.clone(), amount));
                     }
-                    boosted_shares
+                    boosted_shares // return boosted_shares as reward
                 } else {
-                    0
+                    0 // reward 0
                 };
-                account_farm.rewards.insert(
+                account_farm.rewards.insert( // insert new reward
                     token_id.clone(),
                     AccountFarmReward {
                         boosted_shares,
@@ -105,7 +105,7 @@ impl Contract {
             }
             for (
                 token_id,
-                AccountFarmReward {
+                AccountFarmReward { // loop all AccountReward 
                     boosted_shares,
                     last_reward_per_share,
                 },
@@ -120,7 +120,7 @@ impl Contract {
                 let amount = diff.round_mul_u128(boosted_shares);
                 inactive_rewards.push((token_id.clone(), boosted_shares));
                 if amount > 0 {
-                    new_rewards.push((token_id, amount));
+                    new_rewards.push((token_id, amount)); // insert all boosted shared as new reward
                 }
             }
         }

@@ -40,7 +40,7 @@ impl Contract {
         actions: Vec<Action>,
         prices: Prices,
     ) {
-        let mut need_risk_check = false;
+        let mut need_risk_check = false;  // check account.borrowed.is_empty()
         let mut need_number_check = false;
         for action in actions {
             match action {
@@ -82,11 +82,11 @@ impl Contract {
                         asset_amount.token_id
                     );
                 }
-                Action::Borrow(asset_amount) => {
-                    need_number_check = true;
-                    need_risk_check = false;
-                    account.add_affected_farm(FarmId::Supplied(asset_amount.token_id.clone()));
-                    account.add_affected_farm(FarmId::Borrowed(asset_amount.token_id.clone()));
+                Action::Borrow(asset_amount) => { // Action borrow
+                    need_number_check = true; // is NaN ?
+                    need_risk_check = false; // check account.borrowed.is_empty()
+                    account.add_affected_farm(FarmId::Supplied(asset_amount.token_id.clone())); // add asset id to farm supplied if not exist
+                    account.add_affected_farm(FarmId::Borrowed(asset_amount.token_id.clone())); // add asset id to farm borrowed if not exist
                     let amount = self.internal_borrow(account, &asset_amount);
                     log!(
                         "Account {} borrows {} of {}",
@@ -138,7 +138,7 @@ impl Contract {
             assert!(self.compute_max_discount(account, &prices) == BigDecimal::zero());
         }
 
-        self.internal_account_apply_affected_farms(account, true);
+        // self.internal_account_apply_affected_farms(account, true);
     }
 
     pub fn internal_deposit(
@@ -535,17 +535,17 @@ impl Contract {
     /// Executes a given list actions on behalf of the predecessor account.
     /// - Requires one yoctoNEAR.
     #[payable]
-    pub fn execute(&mut self, actions: Vec<Action>) {
-        assert_one_yocto();
-        let account_id = env::predecessor_account_id();
-        let (mut account, mut storage) = self.internal_unwrap_account_with_storage(&account_id);
-        self.internal_execute(
+    pub fn execute(&mut self, actions: Vec<Action>) { // execute message from ft_transfer_call 
+        assert_one_yocto(); // need have exactly 1 Yocto Near
+        let account_id = env::predecessor_account_id(); // get account from function call
+        let (mut account, mut storage) = self.internal_unwrap_account_with_storage(&account_id); 
+        self.internal_execute(        // ===> Internal execute
             &account_id,
             &mut account,
             &mut storage,
             actions,
             Prices::new(),
         );
-        self.internal_set_account(&account_id, account, storage);
+        self.internal_set_account(&account_id, account, storage);    // ===> Internal set Storage for Account
     }
 }
