@@ -74,13 +74,13 @@ near call $CONTRACT_ID --accountId=$OWNER_ID add_asset '{
 near call $AURORAX_TOKEN_ID --accountId=$ACCOUNT_ID --gas=$GAS --amount=$ONE_YOCTO ft_transfer_call '{
   "receiver_id": "'$CONTRACT_ID'",
   "amount": "1",
-  "msg": "{\"Execute\": {\"actions\": [{\"Withdraw\": {\"token_id\": \"'$AURORAX_TOKEN_ID'\", \"amount\": \"137\"}}]}}"
+  "msg": "{\"Execute\": {\"actions\": [{\"Withdraw\": {\"token_id\": \"'$AURORAX_TOKEN_ID'\", \"amount\": \"3000000000000000000000000\"}}]}}"
 }'
 
 near call $AURORAX_TOKEN_ID --accountId=$ACCOUNT_ID --gas=$GAS --amount=$ONE_YOCTO ft_transfer_call '{
   "receiver_id": "'$CONTRACT_ID'",
   "amount": "1",
-  "msg": "{\"Execute\": {\"actions\": [{\"Borrow\": {\"token_id\": \"'$AURORAX_TOKEN_ID'\", \"amount\": \"1000000000000000000000000\"}}]}}"
+  "msg": "{\"Execute\": {\"actions\": [{\"Borrow\": {\"token_id\": \"'$AURORAX_TOKEN_ID'\", \"amount\": \"3000000000000000000000000\"}}]}}"
 }'
 
 near call $AURORAX_TOKEN_ID --accountId=$ACCOUNT_ID --gas=$GAS --amount=$ONE_YOCTO ft_transfer_call '{
