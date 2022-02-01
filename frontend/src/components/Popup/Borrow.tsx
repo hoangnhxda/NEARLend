@@ -96,11 +96,6 @@ const Borrow = ({ setTurnOff, token }: Props) => {
   }, []);
 
   const _handleBorrow = () => {
-    handleValidate();
-    return handleBorrow(token, amountToken, contractState);
-  };
-
-  const handleValidate = () => {
     if (userTokenBalance === 0) {
       return setError(`You have 0 of tokens`);
     } else if (amountToken === 0 || amountToken === null) {
@@ -108,6 +103,7 @@ const Borrow = ({ setTurnOff, token }: Props) => {
     } else if (amountToken > shares) {
       return setError(`You out of limits for borrow`);
     }
+    return handleBorrow(token, amountToken, contractState);
   };
 
   const onChange = (e: any) => {

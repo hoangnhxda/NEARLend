@@ -91,11 +91,6 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   }, []);
 
   const _handleDeposit = () => {
-    handleValidate();
-    return handleDeposit(token, amountToken, contractState);
-  };
-
-  const handleValidate = () => {
     if (userTokenBalance === 0) {
       return setError(`You have 0 of tokens`);
     } else if (amountToken === 0 || amountToken === null) {
@@ -103,6 +98,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
     } else if (amountToken > userTokenBalance) {
       return setError(`The token you have lower than value that you deposit`);
     }
+    return handleDeposit(token, amountToken, contractState);
   };
 
   const onChange = (e: any) => {
