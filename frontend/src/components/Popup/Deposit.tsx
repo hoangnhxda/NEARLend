@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import iconShib from "../../images/icon-shib.png";
 import iconClose from "../../images/icon-close.png";
 import { InputNumber, Slider } from "antd";
 import { shortName } from "../../utils";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../../state/globalStore";
 import { tokenFomat } from "../../utils/token";
+import { handleDeposit } from "../../services/connect";
 
 type Props = {
   setTurnOff: Function;
@@ -13,14 +13,23 @@ type Props = {
   token: any;
 };
 const Deposit = ({ setTurnOff, token }: Props) => {
-  const { contract, wallet }: any = hookState<any>(globalState);
+  const { contract, wallet, usdTokens, userBalance }: any =
+    hookState<any>(globalState);
   const contractState = contract.attach(Downgraded).get();
   const walletState = wallet.attach(Downgraded).get();
+  const usdTokensState = usdTokens.attach(Downgraded).get();
+  const userBalanceState = userBalance.attach(Downgraded).get();
   const [amountToken, setAmountToken] = useState(0);
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
   const [userTokenBalance, setUserTokenBalance] = useState(0);
-  const icon = token && tokenFomat[token?.tokenId]?.icon;
-  const tokenName = token && tokenFomat[token?.tokenId]?.name;
+  const [shares, setShares] = useState(0);
+  const [error, setError] = useState("");
+
+  const tokenConfig = token && tokenFomat[token?.tokenId];
+  const icon = tokenConfig && tokenConfig?.icon;
+  const tokenName = tokenConfig && tokenConfig?.name;
+  const tokenDecimals = tokenConfig && tokenConfig?.decimals;
+  const priceUsd = usdTokensState[tokenName]?.usd || 23;
 
   const marks = {
     0: "0%",
@@ -38,17 +47,15 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   useEffect(() => {
     const getBalanceTokenUser = async () => {
       try {
-        if (contractState) {
-          const balance = await contractState.account.viewFunction(
-            token?.tokenId,
-            "ft_balance_of",
-            {
-              account_id: walletState.getAccountId(),
-            }
-          );
-          const fomatBalance = +balance / 10 ** token.config.extra_decimals;
-          setUserTokenBalance(fomatBalance);
-        }
+        const balance = await contractState.account.viewFunction(
+          token?.tokenId,
+          "ft_balance_of",
+          {
+            account_id: walletState.getAccountId(),
+          }
+        );
+        const fomatBalance = +balance / 10 ** token.config.extra_decimals;
+        setUserTokenBalance(fomatBalance);
       } catch (err) {
         console.log(err);
       }
@@ -67,28 +74,35 @@ const Deposit = ({ setTurnOff, token }: Props) => {
     };
   }, [userTokenBalance]);
 
-  const handleDeposit = async () => {
-    // if(contractState === null || walletState === null) return;
-    if (userTokenBalance === 0)
-      return console.log(`You have 0 of ${token.tokenId}`);
-    const amount = amountToken * 10 ** token.config.extra_decimals;
-    const contractID = contractState.contractId;
-    const tokenID = token.tokenId;
-    const ONE_YOCTO = 1;
-    const GAS = 200000000000000;
-    const args = {
-      receiver_id: contractID,
-      amount: amount.toLocaleString("fullwide", { useGrouping: false }),
-      msg: "",
-    };
+  useEffect(() => {
+    const rs =
+      userBalanceState &&
+      userBalanceState?.supplied.find(
+        (item: any) => item.token_id === token.tokenId
+      );
+    if (!rs) return;
+    // let balanceDeposit = rs.balance;
+    let sharesDeposit = rs.shares;
 
-    return await contractState.account.functionCall(
-      tokenID,
-      "ft_transfer_call",
-      args,
-      GAS,
-      ONE_YOCTO
-    );
+    // balanceDeposit = (balanceDeposit / 10 ** tokenDecimals).toFixed(2);
+    sharesDeposit = (sharesDeposit / 10 ** tokenDecimals).toFixed(2);
+
+    setShares(sharesDeposit);
+  }, []);
+
+  const _handleDeposit = () => {
+    handleValidate();
+    return handleDeposit(token, amountToken, contractState);
+  };
+
+  const handleValidate = () => {
+    if (userTokenBalance === 0) {
+      return setError(`You have 0 of tokens`);
+    } else if (amountToken === 0 || amountToken === null) {
+      return setError(`You have to Enter amount of Tokens`);
+    } else if (amountToken > userTokenBalance) {
+      return setError(`The token you have lower than value that you deposit`);
+    }
   };
 
   const onChange = (e: any) => {
@@ -134,9 +148,11 @@ const Deposit = ({ setTurnOff, token }: Props) => {
             <p>
               Available: {userTokenBalance.toFixed(1)}{" "}
               {shortName(token.tokenId)} ($
-              {(userTokenBalance * 23).toFixed(1)})
+              {(userTokenBalance * priceUsd).toFixed(1)})
             </p>
-            <p className="tar">1 {shortName(token.tokenId)} = $23.00</p>
+            <p className="tar">
+              1 {shortName(token.tokenId)} = ${priceUsd.toFixed(2)}
+            </p>
           </div>
           <div className="pad-side-14">
             <InputNumber
@@ -168,7 +184,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
 
           <p className="position-relative total bg-white">
             Total Supply <span style={{ fontSize: 22 }}>&#8771;</span> $
-            {(amountToken * 23).toFixed(1)}
+            {(amountToken * priceUsd).toFixed(1)}
           </p>
           <p className="position-relative rates-title fwb bg-white pad-side-14">
             Supply Rates
@@ -190,8 +206,8 @@ const Deposit = ({ setTurnOff, token }: Props) => {
               </label>
             </div>
           </div>
-
-          <button className="position-relative btn" onClick={handleDeposit}>
+          {error && <p className="text-error">* {error}</p>}
+          <button className="position-relative btn" onClick={_handleDeposit}>
             DEPOSIT
           </button>
         </div>

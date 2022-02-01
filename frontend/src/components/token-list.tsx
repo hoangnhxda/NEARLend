@@ -1,8 +1,13 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
 import { fomatBalance } from "../utils";
 import { tokenFomat } from "../utils/token";
+import { useState as hookState, Downgraded } from "@hookstate/core";
+import globalState from "../state/globalStore";
 
 function TokenList({ tokenList, _openPopupDeposit, _openPopupBorrow }: any) {
+  const { usdTokens }: any = hookState<any>(globalState);
+  const usdTokensState = usdTokens.attach(Downgraded).get();
+
   const openPopupDeposit = (e: any, item: any) => {
     _openPopupDeposit(e, item);
   };
@@ -18,6 +23,8 @@ function TokenList({ tokenList, _openPopupDeposit, _openPopupBorrow }: any) {
             const { tokenId } = item;
             const icon = tokenFomat[tokenId.toString()]?.icon;
             const tokenSymbol = tokenFomat[tokenId.toString()]?.symbol;
+            const tokenName = tokenFomat[tokenId.toString()]?.name;
+            const priceUsd = usdTokensState && (usdTokensState[tokenName]?.usd || 23);
             const supplied: any = fomatBalance(
               item?.supplied.balance,
               item.config.extra_decimals
@@ -39,16 +46,16 @@ function TokenList({ tokenList, _openPopupDeposit, _openPopupBorrow }: any) {
                   />
                   <div>
                     <p className="top coin color-white fwb">{tokenSymbol}</p>
-                    <p className="color-space-gray">$23</p>
+                    <p className="color-space-gray">${priceUsd.toFixed(1)}</p>
                   </div>
                 </div>
                 <div className="mini deposit">
                   <p className="top color-white fwb">{supplied}</p>
-                  <p className="color-space-gray">${supplied * 23}</p>
+                  <p className="color-space-gray">${(supplied * +priceUsd).toFixed(1)}</p>
                 </div>
                 <div className="mini deposit">
                   <p className="top color-white fwb">{borrowed}</p>
-                  <p className="color-space-gray">${borrowed * 23}</p>
+                  <p className="color-space-gray">${(borrowed * +priceUsd).toFixed(1)}</p>
                 </div>
                 <div
                   onClick={(e) => openPopupDeposit(e, item)}

@@ -12,14 +12,17 @@ import {
   _contract,
   checkIsSigned,
 } from "../services/connect";
+import { getUsdtOfToken } from "../services";
 
 export default function Header() {
-  const { near, wallet, contract, userBalance, isLogged }: any =
+  const { near, wallet, contract, userBalance, isLogged, usdTokens }: any =
     hookState<any>(globalState);
   const contractState = contract.attach(Downgraded).get();
   const userBalanceState = userBalance.attach(Downgraded).get();
   const walletState = wallet.attach(Downgraded).get();
+  const usdTokensState = usdTokens.attach(Downgraded).get();
   const [isLoginMore, setIsLoginMore] = useState(false);
+  const [listUsdPriceToken, setListUsdPriceToken] = useState(null);
   const { pathname } = useLocation();
   const path = pathname.toString();
 
@@ -54,9 +57,9 @@ export default function Header() {
           account_id: accountId,
         });
         userBalance.set(isAccountDeposit);
-        isLogged.set(true)
+        isLogged.set(true);
       } else {
-        isLogged.set(false)
+        isLogged.set(false);
       }
 
       return checkIsSigned(initWallet);
@@ -110,6 +113,15 @@ export default function Header() {
       elementTopMenu && elementTopMenu.classList.remove("active");
     }
   };
+
+  useEffect(() => {
+    async function initGetUSDPrice() {
+      const res = await getUsdtOfToken();
+      setListUsdPriceToken(res);
+      usdTokens.set(res);
+    }
+    initGetUSDPrice();
+  }, []);
 
   return (
     <header id="wrap-header-menu" className="header">

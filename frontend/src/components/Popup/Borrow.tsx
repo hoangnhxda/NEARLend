@@ -6,6 +6,7 @@ import { shortName } from "../../utils";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../../state/globalStore";
 import { tokenFomat } from "../../utils/token";
+import { handleBorrow } from "../../services/connect";
 
 type Props = {
   setTurnOff: Function;
@@ -13,15 +14,23 @@ type Props = {
   token: any;
 };
 const Borrow = ({ setTurnOff, token }: Props) => {
-  const { contract, wallet }: any = hookState<any>(globalState);
+  const { contract, wallet, usdTokens, userBalance }: any =
+    hookState<any>(globalState);
   const contractState = contract.attach(Downgraded).get();
   const walletState = wallet.attach(Downgraded).get();
+  const usdTokensState = usdTokens.attach(Downgraded).get();
+  const userBalanceState = userBalance.attach(Downgraded).get();
   const [amountToken, setAmountToken] = useState(0);
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
   const [userTokenBalance, setUserTokenBalance] = useState(0);
-  // console.log("token", token);
-  const icon = tokenFomat[token.tokenId].icon;
-  const tokenName = tokenFomat[token.tokenId].name;
+  const [shares, setShares] = useState(0);
+  const [error, setError] = useState("");
+
+  const tokenConfig = tokenFomat[token.tokenId];
+  const icon = tokenConfig?.icon;
+  const tokenName = tokenConfig?.name;
+  const tokenDecimals = tokenConfig?.decimals;
+  const priceUsd = usdTokensState[tokenName]?.usd || 23;
 
   const marks = {
     0: "0%",
@@ -72,27 +81,33 @@ const Borrow = ({ setTurnOff, token }: Props) => {
     getBalanceTokenUser();
   }, [userTokenBalance]);
 
-  const handleBorrow = async () => {
-    let amount = amountToken * 10 ** token.config.extra_decimals;
-    let amountToString = amount.toLocaleString("fullwide", {
-      useGrouping: false,
-    });
-    if (amountToken === 0) return console.log(`Amount zero !`);
+  useEffect(() => {
+    const rs = userBalanceState?.borrowed.find(
+      (item: any) => item.token_id === token.tokenId
+    );
+    if (!rs) return;
+    // let balanceBorrow = rs.balance;
+    let sharesBorrow = rs.shares;
 
-    const contractID = contractState.contractId;
-    const tokenID = token.tokenId;
-    const ONE_YOCTO = 1;
-    const GAS = 200000000000000;
-    const args = {
-      receiver_id: contractID,
-      amount: "1",
-      msg: `{"Execute": {"actions": [{"Borrow": {"token_id": "${tokenID}", "amount": "${amountToString}"}}]}}`,
-    };
+    // balanceBorrow = (balanceBorrow / 10 ** tokenDecimals).toFixed(2);
+    sharesBorrow = (sharesBorrow / 10 ** tokenDecimals).toFixed(2);
 
-    return await contract
-      .attach(Downgraded)
-      .get()
-      .account.functionCall(tokenID, "ft_transfer_call", args, GAS, ONE_YOCTO);
+    setShares(sharesBorrow);
+  }, []);
+
+  const _handleBorrow = () => {
+    handleValidate();
+    return handleBorrow(token, amountToken, contractState);
+  };
+
+  const handleValidate = () => {
+    if (userTokenBalance === 0) {
+      return setError(`You have 0 of tokens`);
+    } else if (amountToken === 0 || amountToken === null) {
+      return setError(`You have to Enter amount of Tokens`);
+    } else if (amountToken > shares) {
+      return setError(`You out of limits for borrow`);
+    }
   };
 
   const onChange = (e: any) => {
@@ -141,9 +156,11 @@ const Borrow = ({ setTurnOff, token }: Props) => {
             <p>
               Available: {userTokenBalance.toFixed(1)}{" "}
               {shortName(token.tokenId)} ($
-              {(userTokenBalance * 23).toFixed(1)})
+              {(userTokenBalance * priceUsd).toFixed(1)})
             </p>
-            <p className="tar">1 {shortName(token.tokenId)} = $23.00</p>
+            <p className="tar">
+              1 {shortName(token.tokenId)} = ${priceUsd.toFixed(2)}
+            </p>
           </div>
           <div className="pad-side-14">
             <InputNumber
@@ -177,7 +194,7 @@ const Borrow = ({ setTurnOff, token }: Props) => {
 
           <p className="position-relative total bg-white">
             Total Borrow <span style={{ fontSize: 22 }}>&#8771;</span> $
-            {(amountToken * 23).toFixed(1)}
+            {(amountToken * priceUsd).toFixed(1)}
           </p>
           <p className="position-relative rates-title fwb bg-white pad-side-14">
             Borrow Rates
@@ -199,8 +216,8 @@ const Borrow = ({ setTurnOff, token }: Props) => {
               </label>
             </div>
           </div>
-
-          <button className="position-relative btn" onClick={handleBorrow}>
+          {error && <p className="text-error">* {error}</p>}
+          <button className="position-relative btn" onClick={_handleBorrow}>
             BORROW
           </button>
         </div>

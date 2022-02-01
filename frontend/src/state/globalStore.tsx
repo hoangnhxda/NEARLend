@@ -8,6 +8,7 @@ const globalState: any = createState<any>({
   userBalance: null,
   poolListToken: null,
   isLogged: false,
+  usdTokens: null,
 });
 
 
