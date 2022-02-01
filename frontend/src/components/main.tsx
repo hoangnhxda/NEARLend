@@ -8,6 +8,7 @@ import Header from "../components/header";
 import Portfolio from "../components/portfolio";
 import NftDetail from "../components/nft-detail";
 import Marketplace from "../components/marketplace";
+import WhitePaper from "../components/white-paper";
 
 export default function Main() {
   const { pathname } = useLocation();
@@ -25,6 +26,8 @@ export default function Main() {
         return <Marketplace />;
       case "/nft-detail":
         return <NftDetail />;
+      case "/white-paper":
+        return <WhitePaper />;
       default:
         return <Outlet />;
     }

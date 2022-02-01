@@ -585,12 +585,33 @@ footer {
   align-items: center;
   font-size: 14px;
   margin-top: 24px;
+  pointer-events: none;
 }
 
-.portforlio .token-list .side .detail .label .title {
+.portforlio .token-list .label .title {
   width: 100px;
   text-align: center;
   color: var(--space-gray);
+}
+.portforlio .token-list .wrap-info .label.label__token__detail {
+  display: none;
+}
+.portforlio .token-list .wrap-info.active .label.label__token__detail {
+  display: block;
+}
+
+.portforlio .label.label__token__detail .token__detail__row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+  align-items: center;
+}
+
+.portforlio .label.label__token__detail .token__detail__row .title {
+  text-align: left;
+}
+.portforlio .label.label__token__detail .token__detail__row .label__token-mini {
+  text-align: right;
 }
 
 .portforlio .token__logo {
@@ -1664,6 +1685,23 @@ footer {
 /* REUSE */
 /* REUSE */
 /* REUSE */
+
+.button-basic {
+  pointer-events: all;
+  padding: 4px;
+  background: transparent;
+  border: 1px solid var(--greenlight);
+  color: #fff;
+  border-radius: 4px;
+  transition: 0.4s all;
+}
+
+.button-basic:hover {
+  opacity: 0.8;
+}
+.button-basic:active {
+  opacity: 0.6;
+}
 
 .color-white {
   color: var(--white);

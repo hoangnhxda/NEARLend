@@ -73,17 +73,20 @@ const Borrow = ({ setTurnOff, token }: Props) => {
   }, [userTokenBalance]);
 
   const handleBorrow = async () => {
-    const amount = amountToken * 10 ** token.config.extra_decimals;
-    const accountId = contractState.account.accountId;
+    let amount = amountToken * 10 ** token.config.extra_decimals;
+    let amountToString = amount.toLocaleString("fullwide", {
+      useGrouping: false,
+    });
+    if (amountToken === 0) return console.log(`Amount zero !`);
+
     const contractID = contractState.contractId;
     const tokenID = token.tokenId;
     const ONE_YOCTO = 1;
     const GAS = 200000000000000;
     const args = {
-      receiver_id: accountId,
-      // sender_id: contractID,
-      amount: amount.toLocaleString("fullwide", { useGrouping: false }),
-      msg: `{"Execute": {"actions": [{"Borrow": {"token_id": ${tokenID}}}]}}`,
+      receiver_id: contractID,
+      amount: "1",
+      msg: `{"Execute": {"actions": [{"Borrow": {"token_id": "${tokenID}", "amount": "${amountToString}"}}]}}`,
     };
 
     return await contract

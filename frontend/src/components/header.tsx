@@ -14,7 +14,7 @@ import {
 } from "../services/connect";
 
 export default function Header() {
-  const { near, wallet, contract, userBalance }: any =
+  const { near, wallet, contract, userBalance, isLogged }: any =
     hookState<any>(globalState);
   const contractState = contract.attach(Downgraded).get();
   const userBalanceState = userBalance.attach(Downgraded).get();
@@ -54,8 +54,11 @@ export default function Header() {
           account_id: accountId,
         });
         userBalance.set(isAccountDeposit);
+        isLogged.set(true)
+      } else {
+        isLogged.set(false)
       }
-      
+
       return checkIsSigned(initWallet);
     } catch (error) {
       console.log(error);
@@ -121,9 +124,9 @@ export default function Header() {
             <li onClick={() => setIsLoginMore(false)}>
               <Link to="/">Home</Link>
             </li>
-            {/* <li onClick={() => setIsLoginMore(false)}>
-              <Link to="/">Docs</Link>
-            </li> */}
+            <li onClick={() => setIsLoginMore(false)}>
+              <Link to="/white-paper">Docs</Link>
+            </li>
             {path === "/" ? (
               <>
                 <li onClick={() => setIsLoginMore(false)}>

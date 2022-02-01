@@ -7,6 +7,7 @@ const globalState: any = createState<any>({
   balance: null,
   userBalance: null,
   poolListToken: null,
+  isLogged: false,
 });
 
 

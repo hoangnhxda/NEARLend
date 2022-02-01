@@ -6,13 +6,20 @@ import { tokenFomat } from "../utils/token";
 
 export default function Intro() {
   const { userBalance }: any = hookState<any>(globalState);
+  const userBalanceState = userBalance.attach(Downgraded).get();
   const [account, setAccount] = useState<any>(null);
 
   useEffect(() => {
+    console.log("user balance: ", userBalanceState);
     setTimeout(() => {
       setAccount(userBalance.attach(Downgraded).get());
     }, 500);
   }, [account, userBalance]);
+
+  const _handToggleDiv = (e: any) => {
+    e.preventDefault();
+    e.target.classList.toggle("active");
+  };
 
   return (
     <main className="container portforlio homepage">
@@ -52,9 +59,8 @@ export default function Intro() {
           <div className="detail">
             <div className="label">
               <p className="title">Asset</p>
-              <p className="title">Balance</p>
               <p className="title">APY</p>
-              {/* <p className="title">Actions</p> */}
+              <p className="title">Actions</p>
             </div>
             {account?.supplied.length > 0 ? (
               account?.supplied.map((item: any, idx: number) => {
@@ -63,24 +69,49 @@ export default function Intro() {
                 const icon = tokenFomat[item.token_id].icon;
                 const symbol = tokenFomat[item.token_id].symbol;
                 const balance = fomatBalance(item.balance, decimals);
+                const shares = fomatBalance(item.shares, decimals);
                 return (
-                  <div key={idx} className="label label__token">
-                    <div className="label__token-mini token__logo">
-                      <img
-                        className="icon"
-                        src={icon}
-                        width={30}
-                        height={30}
-                        alt="Logo"
-                      />
-                      <div className="token__price">
-                        <p className="token_name">{symbol}</p>
-                        <p className="color-space-gray">$23</p>
+                  <div key={idx} onClick={_handToggleDiv} className="wrap-info">
+                    <div className="label label__token">
+                      <div className="label__token-mini token__logo">
+                        <img
+                          className="icon"
+                          src={icon}
+                          width={30}
+                          height={30}
+                          alt="Logo"
+                        />
+                        <div className="token__price">
+                          <p className="token_name">{symbol}</p>
+                          <p className="color-space-gray">$23</p>
+                        </div>
+                      </div>
+                      <p className="label__token-mini">
+                        {(Number(item.apr) * 100).toFixed(3)}%
+                      </p>
+                      <button className="button-basic">Withdraw</button>
+                    </div>
+                    <div className="label label__token__detail">
+                      <div className="token__detail__row">
+                        <p className="title">Available:</p>
+                        <p className="label__token-mini">
+                          {Number(shares).toFixed(1)}
+                        </p>
+                      </div>
+                      <div className="token__detail__row">
+                        <p className="title">Balance:</p>
+                        <p className="label__token-mini">
+                          {Number(balance).toFixed(1)}
+                        </p>
+                      </div>
+
+                      <div className="token__detail__row">
+                        <p className="title">Earned:</p>
+                        <p className="label__token-mini">
+                          {Number(0).toFixed(1)}
+                        </p>
                       </div>
                     </div>
-                    <p className="label__token-mini">{Number(balance).toFixed(1)}</p>
-                    <p className="label__token-mini">{(Number(item.apr) * 100).toFixed(3)}%</p>
-                    {/* <p className="label__token-mini">Actions</p> */}
                   </div>
                 );
               })
@@ -97,9 +128,8 @@ export default function Intro() {
           <div className="detail">
             <div className="label">
               <p className="title">Asset</p>
-              <p className="title">Balance</p>
               <p className="title">APY</p>
-              {/* <p className="title">Actions</p> */}
+              <p className="title">Actions</p>
             </div>
             {account?.borrowed.length > 0 ? (
               account?.borrowed.map((item: any, idx: number) => {
@@ -107,24 +137,49 @@ export default function Intro() {
                 const icon = tokenFomat[item.token_id].icon;
                 const symbol = tokenFomat[item.token_id].symbol;
                 const balance = fomatBalance(item.balance, decimals);
+                const shares = fomatBalance(item.shares, decimals);
                 return (
-                  <div key={idx} className="label label__token">
-                    <div className="label__token-mini token__logo">
-                      <img
-                        className="icon"
-                        src={icon}
-                        width={30}
-                        height={30}
-                        alt="Logo"
-                      />
-                      <div className="token__price">
-                        <p className="token_name">{symbol}</p>
-                        <p className="color-space-gray">$23</p>
+                  <div key={idx} onClick={_handToggleDiv} className="wrap-info">
+                    <div className="label label__token">
+                      <div className="label__token-mini token__logo">
+                        <img
+                          className="icon"
+                          src={icon}
+                          width={30}
+                          height={30}
+                          alt="Logo"
+                        />
+                        <div className="token__price">
+                          <p className="token_name">{symbol}</p>
+                          <p className="color-space-gray">$23</p>
+                        </div>
+                      </div>
+                      <p className="label__token-mini">
+                        {(Number(item.apr) * 100).toFixed(3)}%
+                      </p>
+                      <button className="button-basic">Withdraw</button>
+                    </div>
+                    <div className="label label__token__detail">
+                      <div className="token__detail__row">
+                        <p className="title">Available:</p>
+                        <p className="label__token-mini">
+                          {Number(shares).toFixed(1)}
+                        </p>
+                      </div>
+                      <div className="token__detail__row">
+                        <p className="title">Balance:</p>
+                        <p className="label__token-mini">
+                          {Number(balance).toFixed(1)}
+                        </p>
+                      </div>
+
+                      <div className="token__detail__row">
+                        <p className="title">Earned:</p>
+                        <p className="label__token-mini">
+                          {Number(0).toFixed(1)}
+                        </p>
                       </div>
                     </div>
-                    <p className="label__token-mini">{Number(balance).toFixed(1)}</p>
-                    <p className="label__token-mini">{(Number(item.apr) * 100).toFixed(3)}%</p>
-                    {/* <p className="label__token-mini">Actions</p> */}
                   </div>
                 );
               })

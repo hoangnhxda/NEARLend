@@ -4,20 +4,26 @@ import "../App.css";
 import "../responsive.css";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
-import { _near, _walletConnection, _contract } from "../services/connect";
-import { DepositPopup, BorrowPopup, RegistFirstTime } from "./Popup";
+import {
+  DepositPopup,
+  BorrowPopup,
+  RegistFirstTime,
+  RequireLogin,
+} from "./Popup";
 import TokenList from "./token-list";
 
 function Home() {
-  const { contract, poolListToken, userBalance }: any =
+  const { contract, poolListToken, userBalance, isLogged }: any =
     hookState<any>(globalState);
   const contractState = contract.attach(Downgraded).get();
   const userBalanceState = userBalance.attach(Downgraded).get();
   const poolListTokenState = poolListToken.attach(Downgraded).get();
+  const isLoggedState = isLogged.attach(Downgraded).get();
 
   const [isShowPopupDeposit, setIsShowPopupDeposit] = useState(false);
   const [isShowPopupBorrow, setIsShowPopupBorrow] = useState(false);
   const [isShowPopupRegist, setIsShowPopupRegist] = useState(false);
+  const [isShowPopupRequireLogin, setIsShowPopupRequireLogin] = useState(false);
   const [tokenList, setTokenList] = useState([]);
   const [tokenId, setTokenId] = useState("");
   const [tokenChose, setTokenChose] = useState(null);
@@ -27,20 +33,25 @@ function Home() {
     setTokenId(item.tokenId);
     setTokenChose(item);
     if (userBalanceState === null) {
-      setIsShowPopupRegist(true);
-      // console.log("nullllll");
-      return;
+      if (!isLoggedState) {
+        return setIsShowPopupRequireLogin(true);
+      }
+      return setIsShowPopupRegist(true);
     }
   };
 
   const openPopupDeposit = (e: any, item: any) => {
     setUpPopup(e, item);
-    setIsShowPopupDeposit(true);
+    if (isLoggedState) {
+      setIsShowPopupDeposit(true);
+    }
   };
 
   const openPopupBorrow = (e: any, item: any) => {
     setUpPopup(e, item);
-    setIsShowPopupBorrow(true);
+    if (isLoggedState) {
+      setIsShowPopupBorrow(true);
+    }
   };
 
   const _handleClosePopupDeposit = () => {
@@ -54,26 +65,29 @@ function Home() {
   const _handleClosePopupRegist = () => {
     setIsShowPopupRegist(false);
   };
+  const _handleClosePopupRequire = () => {
+    setIsShowPopupRequireLogin(false);
+  };
+
+  const getTokenList = async () => {
+    if (contractState !== null) {
+      await contractState
+        .get_assets_paged({ from_index: 0, limit: 10 })
+        .then((res: any) => {
+          const fomat = res.map((item: any) => {
+            return {
+              tokenId: item[0],
+              ...item[1],
+            };
+          });
+          poolListToken.set(fomat);
+          return res;
+        })
+        .catch((err: any) => console.log(err));
+    }
+  };
 
   useEffect(() => {
-    const getTokenList = async () => {
-      if (contractState !== null) {
-        await contractState
-          .get_assets_paged({ from_index: 0, limit: 10 })
-          .then((res: any) => {
-            const fomat = res.map((item: any) => {
-              return {
-                tokenId: item[0],
-                ...item[1],
-              };
-            });
-            poolListToken.set(fomat);
-            return res;
-          })
-          .catch((err: any) => console.log(err));
-      }
-    };
-
     setTimeout(() => {
       getTokenList();
     }, 500);
@@ -103,6 +117,9 @@ function Home() {
       )}
       {isShowPopupRegist && (
         <RegistFirstTime setTurnOff={_handleClosePopupRegist} />
+      )}
+      {isShowPopupRequireLogin && (
+        <RequireLogin setTurnOff={_handleClosePopupRequire} />
       )}
       <div className="wrap-total">
         <div className="total deposit">

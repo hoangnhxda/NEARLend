@@ -69,6 +69,8 @@ const Deposit = ({ setTurnOff, token }: Props) => {
 
   const handleDeposit = async () => {
     // if(contractState === null || walletState === null) return;
+    if (userTokenBalance === 0)
+      return console.log(`You have 0 of ${token.tokenId}`);
     const amount = amountToken * 10 ** token.config.extra_decimals;
     const contractID = contractState.contractId;
     const tokenID = token.tokenId;

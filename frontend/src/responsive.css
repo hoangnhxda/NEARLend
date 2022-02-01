@@ -203,6 +203,7 @@
 
   .portforlio .token-list .side {
     width: 100%;
+    margin-bottom: 45px;
   }
   .portforlio .token-list::before {
     content: none;
