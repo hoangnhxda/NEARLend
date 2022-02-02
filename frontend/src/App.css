@@ -1231,6 +1231,10 @@ footer {
   opacity: 0.84;
 }
 
+.popup .popup-available-price {
+  font-size: 15px;
+}
+
 @keyframes popup {
   0% {
     transform: translate(-50%, 0%);

@@ -15,7 +15,7 @@ export const tokenFomat: any = {
     icon: aurora,
     decimals: 24,
   },
-  "nearlend.testnet": {
+  "nearlendtest.testnet": {
     name: "nearlend",
     symbol: "NEL",
     icon: nel,

@@ -254,55 +254,25 @@ impl Contract {
         account: &mut Account,
         asset_amount: &AssetAmount,
     ) -> Balance {
-
-        //log!("internal_borrow prepare asset");
         let mut asset = self.internal_unwrap_asset(&asset_amount.token_id);
         assert!(asset.config.can_borrow, "This asset can't be used borrowed");
-
-        //log!("internal_borrow prepare account_asset");
         let mut account_asset = account.internal_get_asset_or_default(&asset_amount.token_id);
-
-        //log!("internal_borrow prepare available_amount");
         let available_amount = asset.available_amount();
-
-        //log!("internal_borrow prepare max_borrow_shares");
         let max_borrow_shares = asset.borrowed.amount_to_shares(available_amount, false);
-
-        //log!("internal_borrow prepare borrowed_shares, amount");
         let (borrowed_shares, amount) =
             asset_amount_to_shares(&asset.borrowed, max_borrow_shares, &asset_amount, true);
-
         assert!(
             amount <= available_amount,
             "Borrow error: Exceeded available amount {} of {}",
             available_amount,
             &asset_amount.token_id
         );
-
-        //log!("internal_borrow prepare supplied_shares");
-        let supplied_shares: Shares = asset.supplied.amount_to_shares(amount, false);
-
-        //log!("internal_borrow asset.borrowed.deposit");
+        let borrowed_amount: Shares = asset.borrowed.amount_to_shares(amount, false);
         asset.borrowed.deposit(borrowed_shares, amount);
-
-        //log!("internal_borrow asset.supplied.deposit");
-        // asset.supplied.deposit(supplied_shares, amount);
-
-        //log!("internal_borrow self.internal_set_asset");
         self.internal_set_asset(&asset_amount.token_id, asset);
-
-        //log!("internal_borrow account.increase_borrowed");
         account.increase_borrowed(&asset_amount.token_id, borrowed_shares);
+        account_asset.deposit_shares(borrowed_amount);
 
-        //log!("internal_borrow account_asset.deposit_shares");
-        account_asset.deposit_shares(supplied_shares);
-
-        //log!("internal_borrow account.internal_set_asset");
-        account.internal_set_asset(&asset_amount.token_id, account_asset);
-
-        // account.internal_withdraw()
-
-        //log!("internal_borrow return");
         amount
     }
 

@@ -29,7 +29,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   const icon = tokenConfig && tokenConfig?.icon;
   const tokenName = tokenConfig && tokenConfig?.name;
   const tokenDecimals = tokenConfig && tokenConfig?.decimals;
-  const priceUsd = usdTokensState[tokenName]?.usd || 23;
+  const priceUsd = usdTokensState[tokenName]?.usd ?? 23;
 
   const marks = {
     0: "0%",
@@ -142,7 +142,10 @@ const Deposit = ({ setTurnOff, token }: Props) => {
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
             <p>
-              Available: {userTokenBalance.toFixed(1)}{" "}
+              Available:{" "}
+              <span className="popup-available-price">
+                {userTokenBalance.toString().slice(0, 4)}
+              </span>{" "}
               {shortName(token.tokenId)} ($
               {(userTokenBalance * priceUsd).toFixed(1)})
             </p>

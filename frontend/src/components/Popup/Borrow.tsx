@@ -24,6 +24,8 @@ const Borrow = ({ setTurnOff, token }: Props) => {
   const [amountTokenPercent, setAmountTokenPercent] = useState(0);
   const [userTokenBalance, setUserTokenBalance] = useState(0);
   const [shares, setShares] = useState(0);
+  const [available, setAvailable] = useState(0);
+  const [limitOfBorrow, setLimitOfBorrow] = useState(0);
   const [error, setError] = useState("");
 
   const tokenConfig = tokenFomat[token.tokenId];
@@ -82,17 +84,20 @@ const Borrow = ({ setTurnOff, token }: Props) => {
   }, [userTokenBalance]);
 
   useEffect(() => {
-    const rs = userBalanceState?.borrowed.find(
+    const borrowed = userBalanceState?.borrowed.find(
       (item: any) => item.token_id === token.tokenId
     );
-    if (!rs) return;
-    // let balanceBorrow = rs.balance;
-    let sharesBorrow = rs.shares;
+    const supplied = userBalanceState?.supplied.find(
+      (item: any) => item.token_id === token.tokenId
+    );
+    if (!borrowed && !supplied) return;
+    let suppliedBalance = supplied.balance;
+    let borrowedBalance = borrowed?.balance ?? 0;
+    let litmitOfBorrow: any;
 
-    // balanceBorrow = (balanceBorrow / 10 ** tokenDecimals).toFixed(2);
-    sharesBorrow = (sharesBorrow / 10 ** tokenDecimals).toFixed(2);
-
-    setShares(sharesBorrow);
+    litmitOfBorrow = (suppliedBalance - borrowedBalance) / 10 ** tokenDecimals;
+    setShares(Math.abs(litmitOfBorrow));
+    setAvailable(Math.abs(litmitOfBorrow));
   }, []);
 
   const _handleBorrow = () => {
@@ -100,8 +105,8 @@ const Borrow = ({ setTurnOff, token }: Props) => {
       return setError(`You have 0 of tokens`);
     } else if (amountToken === 0 || amountToken === null) {
       return setError(`You have to Enter amount of Tokens`);
-    } else if (amountToken > shares) {
-      return setError(`You out of limits for borrow`);
+    } else if (amountToken > available) {
+      return setError(`You out of Limits Available`);
     }
     return handleBorrow(token, amountToken, contractState);
   };
@@ -150,7 +155,10 @@ const Borrow = ({ setTurnOff, token }: Props) => {
         <div className="bg-white position-relative wrap-white">
           <div className="info bg-white pad-side-14">
             <p>
-              Available: {userTokenBalance.toFixed(1)}{" "}
+              Available:{" "}
+              <span className="popup-available-price">
+                {available.toString().slice(0, 4)}
+              </span>{" "}
               {shortName(token.tokenId)} ($
               {(userTokenBalance * priceUsd).toFixed(1)})
             </p>

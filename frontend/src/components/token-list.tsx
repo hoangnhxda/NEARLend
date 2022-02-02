@@ -24,7 +24,7 @@ function TokenList({ tokenList, _openPopupDeposit, _openPopupBorrow }: any) {
             const icon = tokenFomat[tokenId.toString()]?.icon;
             const tokenSymbol = tokenFomat[tokenId.toString()]?.symbol;
             const tokenName = tokenFomat[tokenId.toString()]?.name;
-            const priceUsd = usdTokensState && (usdTokensState[tokenName]?.usd || 23);
+            const priceUsd = usdTokensState && (usdTokensState[tokenName]?.usd ?? 23);
             const supplied: any = fomatBalance(
               item?.supplied.balance,
               item.config.extra_decimals
@@ -46,7 +46,7 @@ function TokenList({ tokenList, _openPopupDeposit, _openPopupBorrow }: any) {
                   />
                   <div>
                     <p className="top coin color-white fwb">{tokenSymbol}</p>
-                    <p className="color-space-gray">${priceUsd.toFixed(1)}</p>
+                    <p className="color-space-gray">${priceUsd?.toFixed(1)}</p>
                   </div>
                 </div>
                 <div className="mini deposit">

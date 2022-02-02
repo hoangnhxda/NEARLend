@@ -1,20 +1,20 @@
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 import { useEffect, useState } from "react";
-import { totalBalance, fomatBalance } from "../utils";
-import { tokenFomat } from "../utils/token";
+import { totalBalance } from "../utils";
+import PortfolioDeposit from "./PortfolioDeposit";
+import PortfolioBorrow from "./PortfolioBorrow";
 
-export default function Intro() {
+export default function Portfolio() {
   const { userBalance }: any = hookState<any>(globalState);
   const userBalanceState = userBalance.attach(Downgraded).get();
   const [account, setAccount] = useState<any>(null);
 
   useEffect(() => {
-    console.log("user balance: ", userBalanceState);
     setTimeout(() => {
-      setAccount(userBalance.attach(Downgraded).get());
+      setAccount(userBalanceState);
     }, 500);
-  }, [account, userBalance]);
+  }, [userBalanceState]);
 
   const _handToggleDiv = (e: any) => {
     e.preventDefault();
@@ -62,62 +62,10 @@ export default function Intro() {
               <p className="title">APY</p>
               <p className="title">Actions</p>
             </div>
-            {account?.supplied.length > 0 ? (
-              account?.supplied.map((item: any, idx: number) => {
-                // console.log(item);
-                const decimals = tokenFomat[item.token_id].decimals;
-                const icon = tokenFomat[item.token_id].icon;
-                const symbol = tokenFomat[item.token_id].symbol;
-                const balance = fomatBalance(item.balance, decimals);
-                const shares = fomatBalance(item.shares, decimals);
-                return (
-                  <div key={idx} onClick={_handToggleDiv} className="wrap-info">
-                    <div className="label label__token">
-                      <div className="label__token-mini token__logo">
-                        <img
-                          className="icon"
-                          src={icon}
-                          width={30}
-                          height={30}
-                          alt="Logo"
-                        />
-                        <div className="token__price">
-                          <p className="token_name">{symbol}</p>
-                          <p className="color-space-gray">$23</p>
-                        </div>
-                      </div>
-                      <p className="label__token-mini">
-                        {(Number(item.apr) * 100).toFixed(3)}%
-                      </p>
-                      <button className="button-basic">Withdraw</button>
-                    </div>
-                    <div className="label label__token__detail">
-                      <div className="token__detail__row">
-                        <p className="title">Available:</p>
-                        <p className="label__token-mini">
-                          {Number(shares).toFixed(1)}
-                        </p>
-                      </div>
-                      <div className="token__detail__row">
-                        <p className="title">Balance:</p>
-                        <p className="label__token-mini">
-                          {Number(balance).toFixed(1)}
-                        </p>
-                      </div>
-
-                      <div className="token__detail__row">
-                        <p className="title">Earned:</p>
-                        <p className="label__token-mini">
-                          {Number(0).toFixed(1)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="empty-account-line"></div>
-            )}
+            <PortfolioDeposit
+              items={account?.supplied}
+              handleToggle={_handToggleDiv}
+            />
           </div>
         </div>
         <div className="side">
@@ -131,61 +79,11 @@ export default function Intro() {
               <p className="title">APY</p>
               <p className="title">Actions</p>
             </div>
-            {account?.borrowed.length > 0 ? (
-              account?.borrowed.map((item: any, idx: number) => {
-                const decimals = tokenFomat[item.token_id].decimals;
-                const icon = tokenFomat[item.token_id].icon;
-                const symbol = tokenFomat[item.token_id].symbol;
-                const balance = fomatBalance(item.balance, decimals);
-                const shares = fomatBalance(item.shares, decimals);
-                return (
-                  <div key={idx} onClick={_handToggleDiv} className="wrap-info">
-                    <div className="label label__token">
-                      <div className="label__token-mini token__logo">
-                        <img
-                          className="icon"
-                          src={icon}
-                          width={30}
-                          height={30}
-                          alt="Logo"
-                        />
-                        <div className="token__price">
-                          <p className="token_name">{symbol}</p>
-                          <p className="color-space-gray">$23</p>
-                        </div>
-                      </div>
-                      <p className="label__token-mini">
-                        {(Number(item.apr) * 100).toFixed(3)}%
-                      </p>
-                      <button className="button-basic">Withdraw</button>
-                    </div>
-                    <div className="label label__token__detail">
-                      <div className="token__detail__row">
-                        <p className="title">Available:</p>
-                        <p className="label__token-mini">
-                          {Number(shares).toFixed(1)}
-                        </p>
-                      </div>
-                      <div className="token__detail__row">
-                        <p className="title">Balance:</p>
-                        <p className="label__token-mini">
-                          {Number(balance).toFixed(1)}
-                        </p>
-                      </div>
-
-                      <div className="token__detail__row">
-                        <p className="title">Earned:</p>
-                        <p className="label__token-mini">
-                          {Number(0).toFixed(1)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="empty-account-line"></div>
-            )}
+            <PortfolioBorrow
+              items={account?.borrowed}
+              supplies={account?.supplied}
+              handleToggle={_handToggleDiv}
+            />
           </div>
         </div>
       </div>

@@ -65,7 +65,7 @@ export const handleDeposit = async function (
   amountToken: number,
   contract: any
 ) {
-  const amount = amountToken * 10 ** token.config.extra_decimals;
+  const amount = amountToken * (10 ** token.config.extra_decimals);
   const contractID = contract.contractId;
   const tokenID = token.tokenId;
   const args = {

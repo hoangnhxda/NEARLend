@@ -137,7 +137,7 @@ export default function Header() {
               <Link to="/">Home</Link>
             </li>
             <li onClick={() => setIsLoginMore(false)}>
-              <Link to="/white-paper">Docs</Link>
+              <Link to="/white-paper">Whitepaper</Link>
             </li>
             {path === "/" ? (
               <>

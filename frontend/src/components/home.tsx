@@ -32,25 +32,27 @@ function Home() {
     e.preventDefault();
     setTokenId(item.tokenId);
     setTokenChose(item);
-    if (userBalanceState === null) {
-      if (!isLoggedState) {
-        return setIsShowPopupRequireLogin(true);
-      }
-      return setIsShowPopupRegist(true);
-    }
   };
 
   const openPopupDeposit = (e: any, item: any) => {
     setUpPopup(e, item);
-    if (isLoggedState) {
-      setIsShowPopupDeposit(true);
-    }
+    handleValidate("deposit");
   };
 
   const openPopupBorrow = (e: any, item: any) => {
     setUpPopup(e, item);
-    if (isLoggedState) {
-      setIsShowPopupBorrow(true);
+    handleValidate("borrow");
+  };
+
+  const handleValidate = (type: string) => {
+    if (!isLoggedState) {
+      return setIsShowPopupRequireLogin(true);
+    } else if (userBalanceState === null) {
+      return setIsShowPopupRegist(true);
+    } else if (isLoggedState) {
+      return type === "deposit"
+        ? setIsShowPopupDeposit(true)
+        : setIsShowPopupBorrow(true);
     }
   };
 
