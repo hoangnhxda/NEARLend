@@ -32,6 +32,44 @@
   /* .homepage .wrap-market .title {
     position: absolute;
   } */
+
+  #wrap-header-menu {
+    background-color: var(--origin-black)
+  }
+
+  #wrap-header-menu .hamburger {
+    font-size: 30px;
+    position: fixed;
+    top: 20px;
+    right: 30px;
+  }
+
+  #wrap-header-menu .container {
+    width: 100%;
+    /* justify-content: center; */
+    margin: auto;
+    display: block;
+    text-align: center;
+  }
+
+  #wrap-header-menu nav {
+    display: none;
+    min-height: 100vh;
+    margin-top: 24px;
+  }
+
+  #wrap-header-menu nav.active {
+    display: block;
+  }
+
+  #wrap-header-menu nav ul {
+    display: flex;
+    flex-direction: column;
+  }
+  #wrap-header-menu nav ul li {
+    margin: 12px;
+  }
+
   .homepage .wrap-market {
     max-height: 520px;
   }

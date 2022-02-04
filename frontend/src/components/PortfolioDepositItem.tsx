@@ -1,11 +1,18 @@
-import { fomatBalance } from "../utils";
+import { fomatBalanceWithDecimal } from "../utils";
 import { tokenFomat } from "../utils/token";
 
-export default function PortfolioDepositItem({ data, handleToggle }: any) {
+export default function PortfolioDepositItem({
+  data,
+  borrowed,
+  handleToggle,
+}: any) {
   const decimals = tokenFomat[data.token_id].decimals;
   const icon = tokenFomat[data.token_id].icon;
   const symbol = tokenFomat[data.token_id].symbol;
-  const balance = fomatBalance(data.balance, decimals);
+  const depositedBalance = data.balance;
+  const borrow = borrowed.find((f: any) => f.token_id === data.token_id);
+  const borrowedBalance = borrow.balance;
+  const available = +depositedBalance - +borrowedBalance;
 
   const _handleToggle = (e: any) => {
     handleToggle(e);
@@ -29,12 +36,21 @@ export default function PortfolioDepositItem({ data, handleToggle }: any) {
       <div className="label label__token__detail">
         <div className="token__detail__row">
           <p className="title">Deposited:</p>
-          <p className="label__token-mini">{balance}</p>
+          <p className="label__token-mini">
+            {fomatBalanceWithDecimal(depositedBalance, decimals)}
+          </p>
+        </div>
+
+        <div className="token__detail__row">
+          <p className="title">Available:</p>
+          <p className="label__token-mini">
+            {fomatBalanceWithDecimal(available, decimals)}
+          </p>
         </div>
 
         <div className="token__detail__row">
           <p className="title">Earned:</p>
-          <p className="label__token-mini">{(0).toString().slice(0, 4)}</p>
+          <p className="label__token-mini">{fomatBalanceWithDecimal(0, decimals)}</p>
         </div>
       </div>
     </div>

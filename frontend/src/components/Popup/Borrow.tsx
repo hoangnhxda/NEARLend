@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import iconShib from "../../images/icon-shib.png";
 import iconClose from "../../images/icon-close.png";
 import { InputNumber, Slider } from "antd";
-import { shortName } from "../../utils";
+import { shortName, shortBalance } from "../../utils";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../../state/globalStore";
 import { tokenFomat } from "../../utils/token";
@@ -25,7 +25,6 @@ const Borrow = ({ setTurnOff, token }: Props) => {
   const [userTokenBalance, setUserTokenBalance] = useState(0);
   const [shares, setShares] = useState(0);
   const [available, setAvailable] = useState(0);
-  const [limitOfBorrow, setLimitOfBorrow] = useState(0);
   const [error, setError] = useState("");
 
   const tokenConfig = tokenFomat[token.tokenId];
@@ -66,24 +65,6 @@ const Borrow = ({ setTurnOff, token }: Props) => {
   }, []);
 
   useEffect(() => {
-    const getBalanceTokenUser = async () => {
-      try {
-        const balance = await contractState.account.viewFunction(
-          token.tokenId,
-          "ft_balance_of",
-          {
-            account_id: walletState.getAccountId(),
-          }
-        );
-        setUserTokenBalance(+balance / 10 ** token.config.extra_decimals);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getBalanceTokenUser();
-  }, [userTokenBalance]);
-
-  useEffect(() => {
     const borrowed = userBalanceState?.borrowed.find(
       (item: any) => item.token_id === token.tokenId
     );
@@ -91,18 +72,22 @@ const Borrow = ({ setTurnOff, token }: Props) => {
       (item: any) => item.token_id === token.tokenId
     );
     if (!borrowed && !supplied) return;
-    let suppliedBalance = supplied.balance;
+    let suppliedBalance = supplied?.balance ?? 0;
+
     let borrowedBalance = borrowed?.balance ?? 0;
     let litmitOfBorrow: any;
+    litmitOfBorrow = suppliedBalance - borrowedBalance;
 
-    litmitOfBorrow = (suppliedBalance - borrowedBalance) / 10 ** tokenDecimals;
     setShares(Math.abs(litmitOfBorrow));
-    setAvailable(Math.abs(litmitOfBorrow));
+    setAvailable(Math.abs(litmitOfBorrow) / 10 ** token.config.extra_decimals);
+    setUserTokenBalance(
+      Math.abs(litmitOfBorrow) / 10 ** token.config.extra_decimals
+    );
   }, []);
 
   const _handleBorrow = () => {
-    if (userTokenBalance === 0) {
-      return setError(`You have 0 of tokens`);
+    if (available === 0) {
+      return setError(`You need to deposit before borrow`);
     } else if (amountToken === 0 || amountToken === null) {
       return setError(`You have to Enter amount of Tokens`);
     } else if (amountToken > available) {
@@ -157,13 +142,14 @@ const Borrow = ({ setTurnOff, token }: Props) => {
             <p>
               Available:{" "}
               <span className="popup-available-price">
-                {available.toString().slice(0, 4)}
-              </span>{" "}
-              {shortName(token.tokenId)} ($
-              {(userTokenBalance * priceUsd).toFixed(1)})
+                {shortBalance(available)}
+              </span>
+              <br />
+              ($
+              {shortBalance(+available * priceUsd)})
             </p>
             <p className="tar">
-              1 {shortName(token.tokenId)} = ${priceUsd.toFixed(2)}
+              1 {shortName(token.tokenId)} = ${shortBalance(priceUsd)}
             </p>
           </div>
           <div className="pad-side-14">
@@ -198,7 +184,7 @@ const Borrow = ({ setTurnOff, token }: Props) => {
 
           <p className="position-relative total bg-white">
             Total Borrow <span style={{ fontSize: 22 }}>&#8771;</span> $
-            {(amountToken * priceUsd).toFixed(1)}
+            {shortBalance(amountToken * priceUsd)}
           </p>
           <p className="position-relative rates-title fwb bg-white pad-side-14">
             Borrow Rates

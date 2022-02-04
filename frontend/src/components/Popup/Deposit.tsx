@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import iconClose from "../../images/icon-close.png";
 import { InputNumber, Slider } from "antd";
-import { shortName } from "../../utils";
+import { shortBalance, shortName } from "../../utils";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../../state/globalStore";
 import { tokenFomat } from "../../utils/token";
@@ -54,8 +54,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
             account_id: walletState.getAccountId(),
           }
         );
-        const fomatBalance = +balance / 10 ** token.config.extra_decimals;
-        setUserTokenBalance(fomatBalance);
+        setUserTokenBalance(balance / 10 ** token.config.extra_decimals);
       } catch (err) {
         console.log(err);
       }
@@ -144,13 +143,14 @@ const Deposit = ({ setTurnOff, token }: Props) => {
             <p>
               Available:{" "}
               <span className="popup-available-price">
-                {userTokenBalance.toString().slice(0, 4)}
-              </span>{" "}
-              {shortName(token.tokenId)} ($
-              {(userTokenBalance * priceUsd).toFixed(1)})
+                {shortBalance(userTokenBalance)}
+              </span>
+              <br />
+              ($
+              {shortBalance(+userTokenBalance * priceUsd)})
             </p>
             <p className="tar">
-              1 {shortName(token.tokenId)} = ${priceUsd.toFixed(2)}
+              1 {shortName(token.tokenId)} = ${shortBalance(priceUsd)}
             </p>
           </div>
           <div className="pad-side-14">
@@ -158,8 +158,8 @@ const Deposit = ({ setTurnOff, token }: Props) => {
               className="input-number"
               defaultValue={0}
               type="number"
-              // formatter={(value) =>
-              //   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              // formatter={(value:any) =>
+              //   `${shortBalance(value)}`
               // }
               value={amountToken}
               onChange={onChange}
@@ -183,7 +183,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
 
           <p className="position-relative total bg-white">
             Total Supply <span style={{ fontSize: 22 }}>&#8771;</span> $
-            {(amountToken * priceUsd).toFixed(1)}
+            {shortBalance(amountToken * priceUsd)}
           </p>
           <p className="position-relative rates-title fwb bg-white pad-side-14">
             Supply Rates

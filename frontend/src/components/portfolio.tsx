@@ -64,6 +64,7 @@ export default function Portfolio() {
             </div>
             <PortfolioDeposit
               items={account?.supplied}
+              borrowed={account?.borrowed}
               handleToggle={_handToggleDiv}
             />
           </div>

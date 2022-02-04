@@ -116,7 +116,8 @@ impl Asset {
     }
 
     pub fn available_amount(&self) -> Balance {
-        self.supplied.balance + self.reserved - self.borrowed.balance
+        // self.supplied.balance + self.reserved - self.borrowed.balance
+        self.supplied.balance - self.borrowed.balance
     }
 }
 

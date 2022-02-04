@@ -1,5 +1,6 @@
-import { fomatBalance } from "../utils";
+import { fomatBalanceWithDecimal } from "../utils";
 import { tokenFomat } from "../utils/token";
+import arrow_down_white from "../images/arrow_down_white.png";
 
 export default function PortfolioBorrowItem({
   data,
@@ -10,11 +11,11 @@ export default function PortfolioBorrowItem({
   const icon = tokenFomat[data.token_id].icon;
   const symbol = tokenFomat[data.token_id].symbol;
   const borrowedBalance = data.balance;
-  // const borrowedShares = fomatBalance(item.shares, decimals);
+  // const borrowedShares = fomatBalanceWithDecimal(item.shares, decimals);
   const supplied = supplies.find((f: any) => f.token_id === data.token_id);
   const suppliedBalance = supplied.balance;
   const availableBorrowed = +suppliedBalance - +borrowedBalance;
-
+  
   const _handleToggle = (e: any) => {
     handleToggle(e);
   };
@@ -33,18 +34,19 @@ export default function PortfolioBorrowItem({
           {(Number(data.apr) * 100).toFixed(3)}%
         </p>
         <button className="button-basic">Withdraw</button>
+        {/* <p className="arrow-down"><img alt="Arrow down" src={arrow_down_white} width={12} height={10} /></p> */}
       </div>
       <div className="label label__token__detail">
         <div className="token__detail__row">
           <p className="title">Borrowed:</p>
           <p className="label__token-mini">
-            {fomatBalance(borrowedBalance, decimals)}
+            {fomatBalanceWithDecimal(borrowedBalance, decimals)}
           </p>
         </div>
         <div className="token__detail__row">
           <p className="title">Available:</p>
           <p className="label__token-mini">
-            {fomatBalance(availableBorrowed, decimals)}
+            {fomatBalanceWithDecimal(availableBorrowed, decimals)}
           </p>
         </div>
       </div>

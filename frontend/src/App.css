@@ -545,7 +545,7 @@ footer {
   background-color: rgb(0 0 0 / 40%);
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 20px 40px;
   margin: 60px 20px 20px;
   font-size: 20px;
   border-radius: 5px;
@@ -586,6 +586,7 @@ footer {
   align-items: center;
   font-size: 14px;
   margin-top: 24px;
+  margin-bottom: 24px;
   pointer-events: none;
 }
 
@@ -593,6 +594,9 @@ footer {
   width: 100px;
   text-align: center;
   color: var(--space-gray);
+}
+.portforlio .token-list .wrap-info {
+  cursor: pointer;
 }
 .portforlio .token-list .wrap-info .label.label__token__detail {
   display: none;
@@ -632,6 +636,14 @@ footer {
 .portforlio .token__price p {
   text-align: left;
   /* word-break: break-all; */
+}
+
+.portforlio .token-list .side .detail .label.label__token{
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.portforlio .token-list .side .detail .label.label__token:hover {
+  /* background-color: #fff; */
 }
 
 .portforlio .label__token-mini {
@@ -1757,4 +1769,7 @@ footer {
 }
 .pad-side-14 {
   padding: 0 14px !important;
+}
+.pdf-not-work {
+  padding: 140px 20px 0;
 }

@@ -89,6 +89,7 @@ impl Contract {
                     account.add_affected_farm(FarmId::Borrowed(asset_amount.token_id.clone())); // add asset id to farm borrowed if not exist
                     let amount = self.internal_borrow(account, &asset_amount);
                     // self.internal_withdraw(account, &asset_amount);
+                    self.internal_ft_transfer(account_id, &asset_amount.token_id, amount);
                     log!(
                         "Account {} borrows {} of {}",
                         account_id,
