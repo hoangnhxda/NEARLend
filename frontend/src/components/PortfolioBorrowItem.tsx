@@ -1,6 +1,6 @@
 import { fomatBalanceWithDecimal } from "../utils";
 import { tokenFomat } from "../utils/token";
-import arrow_down_white from "../images/arrow_down_white.png";
+import { DownOutlined } from "@ant-design/icons";
 
 export default function PortfolioBorrowItem({
   data,
@@ -15,7 +15,7 @@ export default function PortfolioBorrowItem({
   const supplied = supplies.find((f: any) => f.token_id === data.token_id);
   const suppliedBalance = supplied.balance;
   const availableBorrowed = +suppliedBalance - +borrowedBalance;
-  
+
   const _handleToggle = (e: any) => {
     handleToggle(e);
   };
@@ -23,6 +23,9 @@ export default function PortfolioBorrowItem({
   return (
     <div onClick={_handleToggle} className="wrap-info">
       <div className="label label__token">
+        <p className="arrow-down">
+          <DownOutlined />
+        </p>
         <div className="label__token-mini token__logo">
           <img className="icon" src={icon} width={30} height={30} alt="Logo" />
           <div className="token__price">
@@ -34,7 +37,6 @@ export default function PortfolioBorrowItem({
           {(Number(data.apr) * 100).toFixed(3)}%
         </p>
         <button className="button-basic">Withdraw</button>
-        {/* <p className="arrow-down"><img alt="Arrow down" src={arrow_down_white} width={12} height={10} /></p> */}
       </div>
       <div className="label label__token__detail">
         <div className="token__detail__row">

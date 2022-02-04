@@ -17,15 +17,22 @@ export const shortName = (str: string) => {
   return str.slice(0, 6).toString() + ".." || "";
 };
 
-export const totalBalance = (arrayOject: any) => {
+export const getUsdOfToken = (tokenId: string, usdTokens?: any): number => {
+  const tokenName = tokenFomat[tokenId]?.name ?? "";
+  const { usd } = usdTokens[tokenName] ?? 23;
+  return usd;
+};
+
+export const totalBalance = (arrayOject: any, usdTokens?: any): string => {
   var result = arrayOject?.reduce((acc: any, item: any) => {
-    const decimals = tokenFomat[item.token_id]?.decimals;
-    if (!decimals) return 0;
-    const bal = item.balance / 10 ** decimals;
+    const tokeDecimals = tokenFomat[item.token_id]?.decimals;
+    const tokenName = tokenFomat[item.token_id]?.name ?? "";
+    const { usd } = usdTokens[tokenName] ?? 23;
+    if (!tokeDecimals) return acc;
+    const bal = (item.balance / 10 ** tokeDecimals) * usd;
     return acc + bal;
   }, 0);
-  // console.log("total-result", result);
-  return result || 0;
+  return result?.toFixed(2) ?? "0.00";
 };
 
 export const fomatBalanceWithDecimal = (

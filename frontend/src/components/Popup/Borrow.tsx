@@ -31,6 +31,8 @@ const Borrow = ({ setTurnOff, token }: Props) => {
   const icon = tokenConfig?.icon;
   const tokenName = tokenConfig?.name;
   const tokenDecimals = tokenConfig?.decimals;
+  const tokenSymbol = tokenConfig && tokenConfig?.symbol;
+
   const priceUsd = usdTokensState[tokenName]?.usd || 23;
 
   const marks = {
@@ -79,10 +81,8 @@ const Borrow = ({ setTurnOff, token }: Props) => {
     litmitOfBorrow = suppliedBalance - borrowedBalance;
 
     setShares(Math.abs(litmitOfBorrow));
-    setAvailable(Math.abs(litmitOfBorrow) / 10 ** token.config.extra_decimals);
-    setUserTokenBalance(
-      Math.abs(litmitOfBorrow) / 10 ** token.config.extra_decimals
-    );
+    setAvailable(Math.abs(litmitOfBorrow) / 10 ** tokenDecimals);
+    setUserTokenBalance(Math.abs(litmitOfBorrow) / 10 ** tokenDecimals);
   }, []);
 
   const _handleBorrow = () => {
@@ -138,7 +138,7 @@ const Borrow = ({ setTurnOff, token }: Props) => {
         <p className="icon-name">{tokenName}</p>
         <p className="value-percent">0.03%</p>
         <div className="bg-white position-relative wrap-white">
-          <div className="info bg-white pad-side-14">
+          <div className="info pad-side-14">
             <p>
               Available:{" "}
               <span className="popup-available-price">
@@ -149,7 +149,7 @@ const Borrow = ({ setTurnOff, token }: Props) => {
               {shortBalance(+available * priceUsd)})
             </p>
             <p className="tar">
-              1 {shortName(token.tokenId)} = ${shortBalance(priceUsd)}
+              1 {tokenSymbol} = ${shortBalance(priceUsd)}
             </p>
           </div>
           <div className="pad-side-14">

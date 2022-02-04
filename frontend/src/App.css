@@ -596,13 +596,23 @@ footer {
   color: var(--space-gray);
 }
 .portforlio .token-list .wrap-info {
+  position: relative;
   cursor: pointer;
+}
+.portforlio .token-list .wrap-info .arrow-down {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+}
+.portforlio .token-list .wrap-info.active .arrow-down {
+  transform: rotate(180deg);
 }
 .portforlio .token-list .wrap-info .label.label__token__detail {
   display: none;
 }
 .portforlio .token-list .wrap-info.active .label.label__token__detail {
   display: block;
+  margin-top: 0;
 }
 
 .portforlio .label.label__token__detail .token__detail__row {
@@ -639,8 +649,10 @@ footer {
 }
 
 .portforlio .token-list .side .detail .label.label__token{
+  position: relative;
   margin-top: 0;
   margin-bottom: 0;
+  padding-bottom: 20px;
 }
 .portforlio .token-list .side .detail .label.label__token:hover {
   /* background-color: #fff; */
@@ -1305,6 +1317,7 @@ footer {
 }
 .wrap-popup .popup .wrap-white {
   z-index: 9;
+  background-color: transparent;
 }
 
 .wrap-popup .popup .info {

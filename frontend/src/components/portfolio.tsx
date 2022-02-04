@@ -6,8 +6,9 @@ import PortfolioDeposit from "./PortfolioDeposit";
 import PortfolioBorrow from "./PortfolioBorrow";
 
 export default function Portfolio() {
-  const { userBalance }: any = hookState<any>(globalState);
+  const { userBalance, usdTokens }: any = hookState<any>(globalState);
   const userBalanceState = userBalance.attach(Downgraded).get();
+  const usdTokensState = usdTokens.attach(Downgraded).get();
   const [account, setAccount] = useState<any>(null);
 
   useEffect(() => {
@@ -28,10 +29,7 @@ export default function Portfolio() {
           <div className="total deposit">
             <p className="title">My Total Deposits</p>
             <p className="value">
-              $
-              {account?.supplied.length > 0
-                ? (totalBalance(account?.supplied) * 23).toFixed(1)
-                : 0}
+              ${totalBalance(account?.supplied, usdTokensState)}
             </p>
           </div>
           <div className="total deposit">
@@ -41,10 +39,7 @@ export default function Portfolio() {
           <div className="total borrow">
             <p className="title">My Total Borrows</p>
             <p className="value">
-              $
-              {account?.borrowed.length > 0
-                ? (totalBalance(account?.borrowed) * 23).toFixed(0)
-                : 0}
+              ${totalBalance(account?.borrowed, usdTokensState)}
             </p>
           </div>
         </div>
@@ -54,7 +49,7 @@ export default function Portfolio() {
         <div className="side">
           <div className="my-info">
             <h5>Deposited</h5>
-            <h5>$ {(totalBalance(account?.supplied) * 23).toFixed(0)}</h5>
+            <h5>${totalBalance(account?.supplied, usdTokensState)}</h5>
           </div>
           <div className="detail">
             <div className="label">
@@ -72,7 +67,7 @@ export default function Portfolio() {
         <div className="side">
           <div className="my-info">
             <h5>Borrowed</h5>
-            <h5>$ {(totalBalance(account?.borrowed) * 23).toFixed(0)}</h5>
+            <h5>${totalBalance(account?.borrowed, usdTokensState)}</h5>
           </div>
           <div className="detail">
             <div className="label">

@@ -1,5 +1,6 @@
 import { fomatBalanceWithDecimal } from "../utils";
 import { tokenFomat } from "../utils/token";
+import { DownOutlined } from "@ant-design/icons";
 
 export default function PortfolioDepositItem({
   data,
@@ -21,6 +22,9 @@ export default function PortfolioDepositItem({
   return (
     <div onClick={_handleToggle} className="wrap-info">
       <div className="label label__token">
+        <p className="arrow-down">
+          <DownOutlined />
+        </p>
         <div className="label__token-mini token__logo">
           <img className="icon" src={icon} width={30} height={30} alt="Logo" />
           <div className="token__price">
@@ -50,7 +54,9 @@ export default function PortfolioDepositItem({
 
         <div className="token__detail__row">
           <p className="title">Earned:</p>
-          <p className="label__token-mini">{fomatBalanceWithDecimal(0, decimals)}</p>
+          <p className="label__token-mini">
+            {fomatBalanceWithDecimal(0, decimals)}
+          </p>
         </div>
       </div>
     </div>
