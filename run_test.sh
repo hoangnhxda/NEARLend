@@ -18,7 +18,7 @@ near delete $CONTRACT_ID $ACCOUNT_ID
 
 near create-account $CONTRACT_ID --masterAccount $ACCOUNT_ID --initialBalance 10
 
-near deploy $CONTRACT_ID --accountId $ACCOUNT_ID --wasmFile ./res/burrowland.wasm
+near deploy $CONTRACT_ID --accountId $ACCOUNT_ID --wasmFile ./res/Nearlend.wasm
 
 near call $CONTRACT_ID new '{"config" : {"oracle_account_id": "'$ACCOUNT_ID'", "owner_id": "'$ACCOUNT_ID'", "booster_token_id": "'$BOOSTER_TOKEN_ID'", "booster_decimals": 24}}' --accountId $ACCOUNT_ID
 
