@@ -1,6 +1,11 @@
 #!/bin/bash
+TARGET="${CARGO_TARGET_DIR:-target}"
 set -e
 
-RUSTFLAGS='-C link-arg=-s' cargo build --target wasm32-unknown-unknown --release
-cp target/wasm32-unknown-unknown/release/NEARLend.wasm res/
+cd "$(dirname $0)"
 
+perl -i -pe 's/\["cdylib", "rlib"\]/\["cdylib"\]/' contract/Cargo.toml
+
+RUSTFLAGS='-C link-arg=-s' cargo build --all --target wasm32-unknown-unknown --release
+cp $TARGET/wasm32-unknown-unknown/release/test_oracle.wasm ./res/
+cp $TARGET/wasm32-unknown-unknown/release/contract.wasm ./res/Nearlend.wasm
