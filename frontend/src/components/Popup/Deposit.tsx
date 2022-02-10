@@ -30,8 +30,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   const tokenName = tokenConfig && tokenConfig?.name;
   const tokenDecimals = tokenConfig && tokenConfig?.decimals;
   const tokenSymbol = tokenConfig && tokenConfig?.symbol;
-  const priceUsd = usdTokensState[tokenName]?.usd ?? 23;
-
+  const priceUsd = (usdTokensState && usdTokensState[tokenName]?.usd) ?? 23;
   const marks = {
     0: "0%",
     25: "25%",

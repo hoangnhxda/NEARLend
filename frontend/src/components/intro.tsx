@@ -7,6 +7,9 @@ import cryptoNftLend from "../images/crypto-nft-lend.png";
 import crossChain from "../images/cross-chain.png";
 import daoGOV from "../images/dao.png";
 import logo from "../images/nearlend-content.png";
+import telegram from "../images/telegram.png";
+import twitter from "../images/twitter.png";
+import discord from "../images/discord.png";
 import PieChart from "../components/PieChart";
 
 export default function Intro() {
@@ -218,6 +221,38 @@ export default function Intro() {
           <h3 className="title">NEL Token Distribution</h3>
           <h3 className="tac">Total Supply – 1.000.000.000</h3>
           <PieChart />
+        </div>
+      </div>
+
+      <div className="social-media">
+        <div className="container">
+          <h3 className="title">Join Our Community</h3>
+          <div className="list-social">
+            <a
+              className="link"
+              href="https://twitter.com/NEARLend"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img alt="Twitter" src={twitter} />
+            </a>
+            <a
+              className="link"
+              href="https://discord.gg/pXvHhT9rwM"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img alt="Dicord" src={discord} />
+            </a>
+            <a
+              className="link"
+              href="https://t.me/+gYhnDfknkRdhMjQ1"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img alt="Telegram" src={telegram} />
+            </a>
+          </div>
         </div>
       </div>
 

@@ -10,10 +10,11 @@ export default function PortfolioDepositItem({
   const decimals = tokenFomat[data.token_id].decimals;
   const icon = tokenFomat[data.token_id].icon;
   const symbol = tokenFomat[data.token_id].symbol;
-  const depositedBalance = data.balance;
-  const borrow = borrowed.find((f: any) => f.token_id === data.token_id);
-  const borrowedBalance = borrow.balance;
-  const available = +depositedBalance - +borrowedBalance;
+  const depositedBalance = data?.balance ?? 0;
+  const borrowedBalance =
+    borrowed.find((f: any) => f.token_id === data.token_id)?.balance ?? 0;
+  const available =
+    borrowedBalance !== 0 ? +depositedBalance - +borrowedBalance : 0;
 
   const _handleToggle = (e: any) => {
     handleToggle(e);

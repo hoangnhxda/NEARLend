@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Link } from "react-router-dom";
 import white_paper_pdf from "../images/nearlend-whitepaper.pdf";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export default function NftDetail() {
   let navigate: any = useNavigate();
   const _goBack = () => {

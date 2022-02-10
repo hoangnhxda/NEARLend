@@ -15,6 +15,12 @@ export const tokenFomat: any = {
     icon: aurora,
     decimals: 24,
   },
+  "auroraf.token-factory.tokenhub.testnet": {
+    name: "aurora",
+    symbol: "Aurora",
+    icon: aurora,
+    decimals: 8,
+  },
   "nearlendtest.testnet": {
     name: "nearlend",
     symbol: "NEL",

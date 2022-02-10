@@ -32,9 +32,7 @@ const Borrow = ({ setTurnOff, token }: Props) => {
   const tokenName = tokenConfig?.name;
   const tokenDecimals = tokenConfig?.decimals;
   const tokenSymbol = tokenConfig && tokenConfig?.symbol;
-
-  const priceUsd = usdTokensState[tokenName]?.usd || 23;
-
+  const priceUsd = (usdTokensState && usdTokensState[tokenName]?.usd) ?? 23;
   const marks = {
     0: "0%",
     25: "25%",
@@ -42,6 +40,7 @@ const Borrow = ({ setTurnOff, token }: Props) => {
     75: "75%",
     100: "100%",
   };
+  
   function formatter(value: any) {
     // console.log(value)
     return `${value.toString()}%`;

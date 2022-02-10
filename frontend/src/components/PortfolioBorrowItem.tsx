@@ -10,10 +10,10 @@ export default function PortfolioBorrowItem({
   const decimals = tokenFomat[data.token_id].decimals;
   const icon = tokenFomat[data.token_id].icon;
   const symbol = tokenFomat[data.token_id].symbol;
-  const borrowedBalance = data.balance;
+  const borrowedBalance = data?.balance ?? 0;
   // const borrowedShares = fomatBalanceWithDecimal(item.shares, decimals);
-  const supplied = supplies.find((f: any) => f.token_id === data.token_id);
-  const suppliedBalance = supplied.balance;
+  const suppliedBalance =
+    supplies.find((f: any) => f.token_id === data.token_id)?.balance ?? 0;
   const availableBorrowed = +suppliedBalance - +borrowedBalance;
 
   const _handleToggle = (e: any) => {
