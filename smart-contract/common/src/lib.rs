@@ -10,14 +10,14 @@ pub const ONE_YOCTO: Balance = 1;
 
 const MAX_VALID_DECIMALS: u8 = 77;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct AssetOptionalPrice {
     pub asset_id: AssetId,
     pub price: Option<Price>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct PriceData {
     #[serde(with = "u64_dec_format")]
@@ -31,7 +31,7 @@ pub trait OraclePriceReceiver {
     fn oracle_on_call(&mut self, sender_id: AccountId, data: PriceData, msg: String);
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize, Clone, Copy)]
+#[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize, Clone, Copy, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Price {
     #[serde(with = "u128_dec_format")]

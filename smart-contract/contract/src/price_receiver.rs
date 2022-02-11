@@ -16,6 +16,7 @@ impl OraclePriceReceiver for Contract {
     fn oracle_on_call(&mut self, sender_id: AccountId, data: PriceData, msg: String) {
         assert_eq!(env::predecessor_account_id(), self.get_oracle_account_id());
 
+        log!("Data price: {:?}", data);
         let actions = match serde_json::from_str(&msg).expect("Can't parse PriceReceiverMsg") {
             PriceReceiverMsg::Execute { actions } => actions,
         };

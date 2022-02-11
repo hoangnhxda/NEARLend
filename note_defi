@@ -1,0 +1,21 @@
+1. Deposit
+    - có collateral: lending - cho vay có thế chấp
+    - ko collateral: farming - chỉ để pool ăn lãi suất (staking)
+
+2. Borrow
+    - cách tính total available được phép borrow tối đa là bao nhiêu ?
+
+
+Ví Dụ:
+1 NEAR = $5
+1 ETH = $2
+A: có 100 NEAR, $1000 USDT
+=> deposit: 10 NEAR 
+    -> ko collateral: 
+        10 NEAR nó sẽ tạo trong pool, không được dùng làm tài sản thế chấp để đi vay
+    -> có collateral: 
+        10 NEAR nó sẽ tạo trong pool, quy đôi(time khi mà ông A đi borrow) NEAR => USDT để làm tài sản thế chấp.
+
+=> borrow: vay 2 ETH => $4 , lãi suất theo APY (lãi suất gộp) = 10%/năm 
+    -> nếu ông A borrow 2 ETH thì sẽ bị chịu lãi suất 10%/năm
+    -> ông A sẽ toàn quyền sử dụng 2ETH làm gì thì làm :))
