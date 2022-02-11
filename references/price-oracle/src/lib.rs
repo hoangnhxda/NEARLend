@@ -12,7 +12,7 @@ use near_sdk::json_types::ValidAccountId;
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
     assert_one_yocto, env, ext_contract, near_bindgen, AccountId, Balance, BorshStorageKey,
-    Duration, Gas, PanicOnDefault, Promise, Timestamp,
+    Duration, Gas, PanicOnDefault, Promise, Timestamp, log
 };
 
 near_sdk::setup_alloc!();
@@ -43,7 +43,7 @@ pub struct Contract {
     pub recency_duration_sec: DurationSec,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct PriceData {
     #[serde(with = "u64_dec_format")]
@@ -127,10 +127,16 @@ impl Contract {
     }
 
     pub fn get_price_data(&self, asset_ids: Vec<AssetId>) -> PriceData {
+
+        log!("Asset Id => {:?}", asset_ids);
+
         let timestamp = env::block_timestamp();
         let timestamp_cut = timestamp.saturating_sub(to_nano(self.recency_duration_sec));
         let min_num_recent_reports = std::cmp::max(1, (self.oracles.len() + 1) / 2) as usize;
+        log!("Min_num_recent_reports Id => {}", min_num_recent_reports);
 
+        log!("Timestamp => {:?}", timestamp);
+        log!("Timestamp_cut => {:?}", timestamp_cut);
         PriceData {
             timestamp,
             recency_duration_sec: self.recency_duration_sec,
@@ -138,6 +144,12 @@ impl Contract {
                 .into_iter()
                 .map(|asset_id| {
                     let asset = self.internal_get_asset(&asset_id);
+                    log!("Asset get price => {:?}", asset);
+                    let asset_clone = asset.clone();
+                    let prices = asset_clone.and_then(|asset| {
+                        asset.median_price(timestamp_cut, min_num_recent_reports)
+                    });
+                    log!("Prices get in asset clone => {:?}", prices);
                     AssetOptionalPrice {
                         asset_id,
                         price: asset.and_then(|asset| {
@@ -185,6 +197,7 @@ impl Contract {
     pub fn report_prices(&mut self, prices: Vec<AssetPrice>) {
         assert!(!prices.is_empty());
         let oracle_id = env::predecessor_account_id();
+        log!("Oracle id = {:?}", oracle_id);
         let timestamp = env::block_timestamp();
 
         // Oracle stats
@@ -224,6 +237,7 @@ impl Contract {
 
         let sender_id = env::predecessor_account_id();
         let price_data = self.get_price_data(asset_ids);
+        log!("Price data = {:?}", price_data);
         let remaining_gas = env::prepaid_gas() - env::used_gas();
         assert!(remaining_gas >= GAS_FOR_PROMISE);
 

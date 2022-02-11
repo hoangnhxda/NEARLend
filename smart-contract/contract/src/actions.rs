@@ -83,7 +83,7 @@ impl Contract {
                 }
                 Action::Borrow(asset_amount) => {
                     need_number_check = true;
-                    need_risk_check = false;
+                    need_risk_check = true;
                     account.add_affected_farm(FarmId::Supplied(asset_amount.token_id.clone()));
                     account.add_affected_farm(FarmId::Borrowed(asset_amount.token_id.clone()));
                     let amount = self.internal_borrow(account, &asset_amount);

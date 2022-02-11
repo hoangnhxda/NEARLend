@@ -2,13 +2,13 @@ use crate::*;
 
 pub type AssetId = String;
 
-#[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize)]
+#[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize, Debug, Clone)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Asset {
     pub reports: Vec<Report>,
 }
 
-#[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize, Clone)]
+#[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize, Clone, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Report {
     pub oracle_id: AccountId,
@@ -24,7 +24,7 @@ pub struct AssetPrice {
     pub price: Price,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct AssetOptionalPrice {
     pub asset_id: AssetId,
@@ -77,6 +77,7 @@ impl Asset {
             .iter()
             .filter(|rp| rp.timestamp >= timestamp_cut)
             .collect();
+        log!("==> recent_reports {}", recent_reports.len());
         if recent_reports.len() < min_num_recent_reports {
             return None;
         }

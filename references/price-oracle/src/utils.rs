@@ -4,7 +4,7 @@ use std::cmp::Ordering;
 const MAX_U128_DECIMALS: u8 = 38;
 const MAX_VALID_DECIMALS: u8 = 77;
 
-#[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize, Clone, Copy)]
+#[derive(BorshSerialize, BorshDeserialize, Serialize, Deserialize, Clone, Copy, Debug)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Price {
     #[serde(with = "u128_dec_format")]
