@@ -42,7 +42,7 @@ echo "################### CREATE ACCOUNT ###################"
 near create-account $CONTRACT_ID --masterAccount $ACCOUNT_ID --initialBalance 10
 
 echo "################### CREATE CONTRACT ###################"
-near deploy $CONTRACT_ID --accountId $ACCOUNT_ID --wasmFile ../res/burrowland.wasm
+near deploy $CONTRACT_ID --accountId $ACCOUNT_ID --wasmFile ../res/nearlend.wasm
 
 ###################### End B1: Deploy Nearland contract #####################
 
