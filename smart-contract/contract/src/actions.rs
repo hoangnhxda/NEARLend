@@ -1,6 +1,6 @@
 use crate::*;
 
-const MAX_NUM_ASSETS: usize = 8;
+const MAX_NUM_ASSETS: usize = 10;
 
 #[derive(Deserialize)]
 #[cfg_attr(not(target_arch = "wasm32"), derive(Debug, Serialize))]
@@ -9,10 +9,10 @@ pub struct AssetAmount {
     pub token_id: TokenId,
     /// The amount of tokens intended to be used for the action.
     /// If `None`, then the maximum amount will be tried.
-    pub amount: Option<WrappedBalance>,
+    pub amount: Option<U128>,
     /// The maximum amount of tokens that can be used for the action.
     /// If `None`, then the maximum `available` amount will be used.
-    pub max_amount: Option<WrappedBalance>,
+    pub max_amount: Option<U128>,
 }
 
 #[derive(Deserialize)]
@@ -25,7 +25,7 @@ pub enum Action {
     Borrow(AssetAmount),
     Repay(AssetAmount),
     Liquidate {
-        account_id: ValidAccountId,
+        account_id: AccountId,
         in_assets: Vec<AssetAmount>,
         out_assets: Vec<AssetAmount>,
     },
@@ -36,11 +36,10 @@ impl Contract {
         &mut self,
         account_id: &AccountId,
         account: &mut Account,
-        storage: &mut Storage,
         actions: Vec<Action>,
         prices: Prices,
     ) {
-        let mut need_risk_check = false;  // check account.borrowed.is_empty()
+        let mut need_risk_check = false;
         let mut need_number_check = false;
         for action in actions {
             match action {
@@ -82,14 +81,12 @@ impl Contract {
                         asset_amount.token_id
                     );
                 }
-                Action::Borrow(asset_amount) => { // Action borrow
-                    need_number_check = true; // is NaN ?
-                    need_risk_check = false; // check account.borrowed.is_empty()
-                    account.add_affected_farm(FarmId::Supplied(asset_amount.token_id.clone())); // add asset id to farm supplied if not exist
-                    account.add_affected_farm(FarmId::Borrowed(asset_amount.token_id.clone())); // add asset id to farm borrowed if not exist
+                Action::Borrow(asset_amount) => {
+                    need_number_check = true;
+                    need_risk_check = false;
+                    account.add_affected_farm(FarmId::Supplied(asset_amount.token_id.clone()));
+                    account.add_affected_farm(FarmId::Borrowed(asset_amount.token_id.clone()));
                     let amount = self.internal_borrow(account, &asset_amount);
-                    // self.internal_withdraw(account, &asset_amount);
-                    self.internal_ft_transfer(account_id, &asset_amount.token_id, amount);
                     log!(
                         "Account {} borrows {} of {}",
                         account_id,
@@ -116,17 +113,15 @@ impl Contract {
                     out_assets,
                 } => {
                     assert_ne!(
-                        account_id,
-                        liquidation_account_id.as_ref(),
+                        account_id, &liquidation_account_id,
                         "Can't liquidate yourself"
                     );
                     assert!(!in_assets.is_empty() && !out_assets.is_empty());
                     self.internal_liquidate(
                         account_id,
                         account,
-                        storage,
                         &prices,
-                        liquidation_account_id.as_ref(),
+                        &liquidation_account_id,
                         in_assets,
                         out_assets,
                     );
@@ -140,7 +135,7 @@ impl Contract {
             assert!(self.compute_max_discount(account, &prices) == BigDecimal::zero());
         }
 
-        // self.internal_account_apply_affected_farms(account, true);
+        self.internal_account_apply_affected_farms(account, true);
     }
 
     pub fn internal_deposit(
@@ -149,25 +144,15 @@ impl Contract {
         token_id: &TokenId,
         amount: Balance,
     ) -> Shares {
-        //log!("prepare asset");
         let mut asset = self.internal_unwrap_asset(token_id);
-
-        //log!("prepare account_asset");
         let mut account_asset = account.internal_get_asset_or_default(token_id);
 
-        //log!("prepare shares");
         let shares: Shares = asset.supplied.amount_to_shares(amount, false);
 
-        //log!("prepare account_asset.deposit_shares");
         account_asset.deposit_shares(shares);
-
-        //log!("prepare internal_set_asset");
         account.internal_set_asset(&token_id, account_asset);
 
-        //log!("asset.supplied.deposit");
         asset.supplied.deposit(shares, amount);
-
-        //log!("self.internal_set_asset");
         self.internal_set_asset(token_id, asset);
 
         shares
@@ -256,23 +241,33 @@ impl Contract {
         asset_amount: &AssetAmount,
     ) -> Balance {
         let mut asset = self.internal_unwrap_asset(&asset_amount.token_id);
-        assert!(asset.config.can_borrow, "This asset can't be used borrowed");
+        assert!(asset.config.can_borrow, "Thi asset can't be used borrowed");
+
         let mut account_asset = account.internal_get_asset_or_default(&asset_amount.token_id);
+
         let available_amount = asset.available_amount();
         let max_borrow_shares = asset.borrowed.amount_to_shares(available_amount, false);
+
         let (borrowed_shares, amount) =
             asset_amount_to_shares(&asset.borrowed, max_borrow_shares, &asset_amount, true);
+
         assert!(
             amount <= available_amount,
             "Borrow error: Exceeded available amount {} of {}",
             available_amount,
             &asset_amount.token_id
         );
-        let borrowed_amount: Shares = asset.borrowed.amount_to_shares(amount, false);
+
+        let supplied_shares: Shares = asset.supplied.amount_to_shares(amount, false);
+
         asset.borrowed.deposit(borrowed_shares, amount);
+        asset.supplied.deposit(supplied_shares, amount);
         self.internal_set_asset(&asset_amount.token_id, asset);
+
         account.increase_borrowed(&asset_amount.token_id, borrowed_shares);
-        account_asset.deposit_shares(borrowed_amount);
+
+        account_asset.deposit_shares(supplied_shares);
+        account.internal_set_asset(&asset_amount.token_id, account_asset);
 
         amount
     }
@@ -322,14 +317,12 @@ impl Contract {
         &mut self,
         account_id: &AccountId,
         account: &mut Account,
-        storage: &mut Storage,
         prices: &Prices,
         liquidation_account_id: &AccountId,
         in_assets: Vec<AssetAmount>,
         out_assets: Vec<AssetAmount>,
     ) {
-        let (mut liquidation_account, mut liquidation_storage) =
-            self.internal_unwrap_account_with_storage(liquidation_account_id);
+        let mut liquidation_account = self.internal_unwrap_account(liquidation_account_id);
 
         let max_discount = self.compute_max_discount(&liquidation_account, &prices);
         assert!(
@@ -342,7 +335,6 @@ impl Contract {
 
         for asset_amount in in_assets {
             let asset = self.internal_unwrap_asset(&asset_amount.token_id);
-            account.add_affected_farm(FarmId::Supplied(asset_amount.token_id.clone()));
             liquidation_account.add_affected_farm(FarmId::Borrowed(asset_amount.token_id.clone()));
             let mut account_asset = account.internal_unwrap_asset(&asset_amount.token_id);
             let amount =
@@ -359,7 +351,6 @@ impl Contract {
 
         for asset_amount in out_assets {
             let asset = self.internal_unwrap_asset(&asset_amount.token_id);
-            account.add_affected_farm(FarmId::Supplied(asset_amount.token_id.clone()));
             liquidation_account.add_affected_farm(FarmId::Supplied(asset_amount.token_id.clone()));
             let mut account_asset = account.internal_get_asset_or_default(&asset_amount.token_id);
             let amount = self.internal_decrease_collateral(
@@ -380,7 +371,9 @@ impl Contract {
         let discounted_collateral_taken = collateral_taken_sum * (BigDecimal::one() - max_discount);
         assert!(
             discounted_collateral_taken <= borrowed_repaid_sum,
-            "Not enough balances repaid"
+            "Not enough balances repaid: discounted collateral {} > borrowed repaid sum {}",
+            discounted_collateral_taken,
+            borrowed_repaid_sum
         );
 
         let new_max_discount = self.compute_max_discount(&liquidation_account, &prices);
@@ -390,36 +383,7 @@ impl Contract {
         );
 
         self.internal_account_apply_affected_farms(&mut liquidation_account, true);
-
-        // We have to adjust the initial_storage_usage for the acting account to not double count
-        // the bytes from the liquidation account. As well as potentially cover the extra bytes
-        // required by the liquidation account that might be added due to farms.
-        let current_storage_usage = env::storage_usage();
-        if current_storage_usage > liquidation_storage.initial_storage_usage {
-            let required_bytes = current_storage_usage - liquidation_storage.initial_storage_usage;
-            let available_bytes = liquidation_storage.available_bytes();
-            if available_bytes < required_bytes {
-                let extra_bytes = required_bytes - available_bytes;
-                log!(
-                    "Account {} has to cover extra storage of {} bytes for liquidation account {}",
-                    account_id,
-                    extra_bytes,
-                    liquidation_account_id,
-                );
-                liquidation_storage.initial_storage_usage += extra_bytes;
-                storage.initial_storage_usage += available_bytes;
-            } else {
-                storage.initial_storage_usage += required_bytes;
-            }
-        } else {
-            let released_bytes = liquidation_storage.initial_storage_usage - current_storage_usage;
-            storage.initial_storage_usage -= released_bytes;
-        }
-        self.internal_set_account(
-            liquidation_account_id,
-            liquidation_account,
-            liquidation_storage,
-        );
+        self.internal_set_account(liquidation_account_id, liquidation_account);
 
         log!(
             "Account {} liquidates account {}: takes {} for repaying {}",
@@ -509,17 +473,11 @@ impl Contract {
     /// Executes a given list actions on behalf of the predecessor account.
     /// - Requires one yoctoNEAR.
     #[payable]
-    pub fn execute(&mut self, actions: Vec<Action>) { // execute message from ft_transfer_call 
-        assert_one_yocto(); // need have exactly 1 Yocto Near
-        let account_id = env::predecessor_account_id(); // get account from function call
-        let (mut account, mut storage) = self.internal_unwrap_account_with_storage(&account_id); 
-        self.internal_execute(        // ===> Internal execute
-            &account_id,
-            &mut account,
-            &mut storage,
-            actions,
-            Prices::new(),
-        );
-        self.internal_set_account(&account_id, account, storage);    // ===> Internal set Storage for Account
+    pub fn execute(&mut self, actions: Vec<Action>) {
+        assert_one_yocto();
+        let account_id = env::predecessor_account_id();
+        let mut account = self.internal_unwrap_account(&account_id);
+        self.internal_execute(&account_id, &mut account, actions, Prices::new());
+        self.internal_set_account(&account_id, account);
     }
 }

@@ -4,8 +4,8 @@ use near_contract_standards::fungible_token::receiver::FungibleTokenReceiver;
 use near_sdk::json_types::U128;
 use near_sdk::{is_promise_success, serde_json, PromiseOrValue};
 
-const GAS_FOR_FT_TRANSFER: Gas = 10 * TGAS;
-const GAS_FOR_AFTER_FT_TRANSFER: Gas = 20 * TGAS;
+const GAS_FOR_FT_TRANSFER: Gas = Gas(Gas::ONE_TERA.0 * 10);
+const GAS_FOR_AFTER_FT_TRANSFER: Gas = Gas(Gas::ONE_TERA.0 * 20);
 
 #[derive(Deserialize)]
 #[cfg_attr(not(target_arch = "wasm32"), derive(Debug, Serialize))]
@@ -23,7 +23,7 @@ impl FungibleTokenReceiver for Contract {
     /// - Requires to be called by the fungible token account.
     fn ft_on_transfer(
         &mut self,
-        sender_id: ValidAccountId,
+        sender_id: AccountId,
         amount: U128,
         msg: String,
     ) -> PromiseOrValue<U128> {
@@ -34,9 +34,7 @@ impl FungibleTokenReceiver for Contract {
             "Deposits for this asset are not enabled"
         );
 
-        //let amount = amount.0 * 10u128.pow(asset.config.extra_decimals as u32);
-
-        let amount = amount.0;
+        let amount = amount.0 * 10u128.pow(asset.config.extra_decimals as u32);
 
         // TODO: We need to be careful that only whitelisted tokens can call this method with a
         //     given set of actions. Or verify which actions are possible to do.
@@ -52,7 +50,7 @@ impl FungibleTokenReceiver for Contract {
                     self.internal_set_asset(&token_id, asset);
                     log!(
                         "Account {} deposits to reserve {} of {}",
-                        sender_id.as_ref(),
+                        sender_id,
                         amount,
                         token_id
                     );
@@ -61,21 +59,13 @@ impl FungibleTokenReceiver for Contract {
             }
         };
 
-        let (mut account, mut storage) =
-            self.internal_unwrap_account_with_storage(sender_id.as_ref());
+        let mut account = self.internal_unwrap_account(&sender_id);
         account.add_affected_farm(FarmId::Supplied(token_id.clone()));
         self.internal_deposit(&mut account, &token_id, amount);
         log!("Account {} deposits {} of {}", sender_id, amount, token_id);
-        self.internal_execute(
-            sender_id.as_ref(),
-            &mut account,
-            &mut storage,
-            actions,
-            Prices::new(),
-        );
-        log!("Execute actions done");
-        self.internal_set_account(sender_id.as_ref(), account, storage);
-        log!("internal_set_account done -> ft_on_transfer return");
+        self.internal_execute(&sender_id, &mut account, actions, Prices::new());
+        self.internal_set_account(&sender_id, account);
+
         PromiseOrValue::Value(U128(0))
     }
 }
@@ -87,14 +77,13 @@ impl Contract {
         token_id: &TokenId,
         amount: Balance,
     ) -> Promise {
-        // let asset = self.internal_unwrap_asset(token_id);
-        // let ft_amount = amount / 10u128.pow(asset.config.extra_decimals as u32);
-        let ft_amount = amount;
+        let asset = self.internal_unwrap_asset(token_id);
+        let ft_amount = amount / 10u128.pow(asset.config.extra_decimals as u32);
         ext_fungible_token::ft_transfer(
             account_id.clone(),
             ft_amount.into(),
             None,
-            token_id,
+            token_id.clone(),
             ONE_YOCTO,
             GAS_FOR_FT_TRANSFER,
         )
@@ -102,7 +91,7 @@ impl Contract {
             account_id.clone(),
             token_id.clone(),
             amount.into(),
-            &env::current_account_id(),
+            env::current_account_id(),
             NO_DEPOSIT,
             GAS_FOR_AFTER_FT_TRANSFER,
         ))
@@ -131,7 +120,7 @@ impl ExtSelf for Contract {
     ) -> bool {
         let promise_success = is_promise_success();
         if !promise_success {
-            let (mut account, storage) = self.internal_unwrap_account_with_storage(&account_id);
+            let mut account = self.internal_unwrap_account(&account_id);
             account.add_affected_farm(FarmId::Supplied(token_id.clone()));
             self.internal_deposit(&mut account, &token_id, amount.0);
             log!(
@@ -140,7 +129,7 @@ impl ExtSelf for Contract {
                 amount.0,
                 token_id
             );
-            self.internal_set_account(&account_id, account, storage);
+            self.internal_set_account(&account_id, account);
         }
         promise_success
     }

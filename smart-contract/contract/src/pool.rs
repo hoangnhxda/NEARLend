@@ -50,7 +50,6 @@ impl Pool {
     }
 
     pub fn deposit(&mut self, shares: Shares, amount: Balance) {
-        log!("Account to pool share {}, amount {}", shares.0, amount);
         self.shares.0 += shares.0;
         self.balance += amount;
     }

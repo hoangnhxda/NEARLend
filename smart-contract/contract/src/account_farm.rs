@@ -50,12 +50,12 @@ impl From<AccountFarm> for VAccountFarm {
 }
 
 impl Contract {
-    pub fn internal_account_farm_claim( 
+    pub fn internal_account_farm_claim(
         &self,
-        account: &Account, // Claim for which account
-        farm_id: &FarmId, // Claim in which farmId
-        asset_farm: &AssetFarm, // Claim for which asset
-    ) -> ( // ==> result
+        account: &Account,
+        farm_id: &FarmId,
+        asset_farm: &AssetFarm,
+    ) -> (
         AccountFarm,
         Vec<(TokenId, Balance)>,
         Vec<(TokenId, Balance)>,
@@ -63,7 +63,7 @@ impl Contract {
         let mut new_rewards = vec![];
         let mut inactive_rewards = vec![];
         let block_timestamp = env::block_timestamp();
-        let mut account_farm: AccountFarm = account // get AccountFarm from farm_id
+        let mut account_farm: AccountFarm = account
             .farms
             .get(farm_id)
             .map(|v| v.into())
@@ -71,17 +71,17 @@ impl Contract {
                 block_timestamp: 0,
                 rewards: HashMap::new(),
             });
-        if account_farm.block_timestamp != block_timestamp { // different timestamp --> get reward, else return empty
+        if account_farm.block_timestamp != block_timestamp {
             account_farm.block_timestamp = block_timestamp;
             let mut old_rewards = std::mem::take(&mut account_farm.rewards);
-            for ( // loop all AssetFarmReward
+            for (
                 token_id,
                 AssetFarmReward {
                     reward_per_share, ..
                 },
             ) in &asset_farm.rewards
             {
-                let boosted_shares = if let Some(AccountFarmReward { 
+                let boosted_shares = if let Some(AccountFarmReward {
                     boosted_shares,
                     last_reward_per_share,
                 }) = old_rewards.remove(token_id)
@@ -91,11 +91,11 @@ impl Contract {
                     if amount > 0 {
                         new_rewards.push((token_id.clone(), amount));
                     }
-                    boosted_shares // return boosted_shares as reward
+                    boosted_shares
                 } else {
-                    0 // reward 0
+                    0
                 };
-                account_farm.rewards.insert( // insert new reward
+                account_farm.rewards.insert(
                     token_id.clone(),
                     AccountFarmReward {
                         boosted_shares,
@@ -105,7 +105,7 @@ impl Contract {
             }
             for (
                 token_id,
-                AccountFarmReward { // loop all AccountReward 
+                AccountFarmReward {
                     boosted_shares,
                     last_reward_per_share,
                 },
@@ -120,7 +120,7 @@ impl Contract {
                 let amount = diff.round_mul_u128(boosted_shares);
                 inactive_rewards.push((token_id.clone(), boosted_shares));
                 if amount > 0 {
-                    new_rewards.push((token_id, amount)); // insert all boosted shared as new reward
+                    new_rewards.push((token_id, amount));
                 }
             }
         }
@@ -202,11 +202,13 @@ impl Contract {
                 asset_farm_reward.boosted_shares -= boosted_shares;
                 asset_farm.internal_set_inactive_asset_farm_reward(&token_id, asset_farm_reward);
             }
+            account.storage_tracker.start();
             if shares > 0 {
                 account.farms.insert(&farm_id, &account_farm.into());
             } else {
                 account.farms.remove(&farm_id);
             }
+            account.storage_tracker.stop();
             self.internal_set_asset_farm(&farm_id, asset_farm);
         }
     }
@@ -217,10 +219,9 @@ impl Contract {
     /// Claims all unclaimed farm rewards.
     pub fn account_farm_claim_all(&mut self) {
         let account_id = env::predecessor_account_id();
-        let (mut account, storage) =
-            self.internal_unwrap_account_with_storage(&env::predecessor_account_id());
+        let mut account = self.internal_unwrap_account(&env::predecessor_account_id());
         account.add_all_affected_farms();
         self.internal_account_apply_affected_farms(&mut account, false);
-        self.internal_set_account(&account_id, account, storage);
+        self.internal_set_account(&account_id, account);
     }
 }

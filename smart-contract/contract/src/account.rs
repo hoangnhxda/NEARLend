@@ -19,6 +19,11 @@ pub struct Account {
     #[borsh_skip]
     #[serde(skip_serializing)]
     pub affected_farms: Vec<FarmId>,
+
+    /// Tracks changes in storage usage by persistent collections in this account.
+    #[borsh_skip]
+    #[serde(skip)]
+    pub storage_tracker: StorageTracker,
 }
 
 #[derive(BorshSerialize, BorshDeserialize)]
@@ -53,6 +58,7 @@ impl Account {
                 account_id: account_id.clone(),
             }),
             affected_farms: vec![],
+            storage_tracker: Default::default(),
         }
     }
 
@@ -80,7 +86,7 @@ impl Account {
                 self.collateral.swap_remove(index);
             }
         } else {
-            env::panic(b"Not enough collateral balance");
+            env::panic_str("Not enough collateral balance");
         }
     }
 
@@ -108,7 +114,7 @@ impl Account {
                 self.borrowed.swap_remove(index);
             }
         } else {
-            env::panic(b"Not enough borrowed balance");
+            env::panic_str("Not enough borrowed balance");
         }
     }
 
@@ -192,29 +198,20 @@ impl Contract {
         self.accounts.get(account_id).map(|o| o.into())
     }
 
-    pub fn internal_unwrap_account_with_storage(
-        &self,
-        account_id: &AccountId,
-    ) -> (Account, Storage) {
-        (
-            self.internal_unwrap_account(account_id),
-            self.internal_unwrap_storage(account_id),
-        )
-    }
-
     pub fn internal_unwrap_account(&self, account_id: &AccountId) -> Account {
         self.internal_get_account(account_id)
             .expect("Account is not registered")
     }
 
-    pub fn internal_set_account(
-        &mut self,
-        account_id: &AccountId,
-        account: Account,
-        storage: Storage,
-    ) {
-        self.accounts.insert(account_id, &account.into()); // Replace Account if exist
-        self.internal_set_storage(account_id, storage); // Replace Storage if exist
+    pub fn internal_set_account(&mut self, account_id: &AccountId, mut account: Account) {
+        let mut storage = self.internal_unwrap_storage(account_id);
+        storage
+            .storage_tracker
+            .consume(&mut account.storage_tracker);
+        storage.storage_tracker.start();
+        self.accounts.insert(account_id, &account.into());
+        storage.storage_tracker.stop();
+        self.internal_set_storage(account_id, storage);
     }
 }
 
@@ -223,8 +220,8 @@ impl Contract {
     /// Returns detailed information about an account for a given account_id.
     /// The information includes all supplied assets, collateral and borrowed.
     /// Each asset includes the current balance and the number of shares.
-    pub fn get_account(&self, account_id: ValidAccountId) -> Option<AccountDetailedView> {
-        self.internal_get_account(account_id.as_ref())
+    pub fn get_account(&self, account_id: AccountId) -> Option<AccountDetailedView> {
+        self.internal_get_account(&account_id)
             .map(|account| self.account_into_detailed_view(account))
     }
 
@@ -238,5 +235,10 @@ impl Contract {
         (from_index..std::cmp::min(values.len(), limit))
             .map(|index| values.get(index).unwrap().into())
             .collect()
+    }
+
+    /// Returns the number of accounts
+    pub fn get_num_accounts(&self) -> u32 {
+        self.accounts.len() as _
     }
 }
