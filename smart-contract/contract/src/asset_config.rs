@@ -77,8 +77,18 @@ impl AssetConfig {
         if total_supplied_balance == 0 {
             BigDecimal::one()
         } else {
+            // utilization = (supplied + reserved) / borrowed
+            // total_supplied_balance  = self.supplied.balance + self.reserved
             let pos = BigDecimal::from(borrowed_balance).div_u128(total_supplied_balance);
+
             let target_utilization = BigDecimal::from_ratio(self.target_utilization);
+
+            // if utilization <= target_utilization, 
+            //     r = target_utilization_r * (utilization / target_utilization)
+            // if utilization > target_utilization, 
+            //     r = target_utilization_r + (max_utilization_r - target_utilization_r) 
+            //         * (utilization - target_utilization) / (1 - target_utilization)
+
             if pos < target_utilization {
                 BigDecimal::one()
                     + pos * (BigDecimal::from(self.target_utilization_rate) - BigDecimal::one())

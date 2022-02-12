@@ -1,9 +1,9 @@
 #!/bin/bash
 
-export MAIN_ACCOUNT=lam-test1.testnet
+export MAIN_ACCOUNT=lam-test6.testnet
 export NEAR_ENV=testnet
 export OWNER_ID=$MAIN_ACCOUNT
-export ORACLE_ID=priceoracle.testnet
+export ORACLE_ID=priceoracle.$MAIN_ACCOUNT
 export ACCOUNT_ID=$MAIN_ACCOUNT
 export CONTRACT_ID=nearlend.$MAIN_ACCOUNT
 export BOOSTER_TOKEN_ID=ref.fakes.testnet

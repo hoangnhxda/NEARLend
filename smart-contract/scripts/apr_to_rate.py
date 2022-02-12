@@ -16,3 +16,5 @@ print("R ** n: %s" % (res ** n,))
 
 round_res = round(res * (Decimal(10) ** Decimal(27)))
 print("rate: %s" % (round_res, ))
+
+

@@ -77,3 +77,7 @@ near view $CONTRACT_ID get_account '{"account_id": "'$ACCOUNT_ID'"}'
 near view $CONTRACT_ID get_assets_paged '{"from_index": 0, "limit": 10}'
 
 ###################### End B4: Thực hiện Borrow 1 DAI #####################
+
+
+near view nearlend.lam-test6.testnet get_account '{"account_id": "lam-test6.testnet"}' 
+near view nearlend.lam-test6.testnet get_assets_paged '{"from_index": 0, "limit": 10}'

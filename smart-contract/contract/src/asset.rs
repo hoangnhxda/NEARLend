@@ -61,6 +61,8 @@ impl Asset {
 
     pub fn get_borrow_apr(&self) -> BigDecimal {
         let rate = self.get_rate();
+        // 1 + APR = r ** MS_PER_YEAR
+        // APR = r ** MS_PER_YEAR - 1
         rate.pow(MS_PER_YEAR) - BigDecimal::one()
     }
 
@@ -74,8 +76,14 @@ impl Asset {
             return borrow_apr;
         }
 
+        // interest(lãi suất) =  APR(borrow)* borrowed.balanced(tài sản đang mượn)
         let interest = borrow_apr.round_mul_u128(self.borrowed.balance);
+
+        log!("interest: {}", interest);
+        // tổng lãi suất  
         let supply_interest = ratio(interest, MAX_RATIO - self.config.reserve_ratio);
+        log!("supply_interest: {}", supply_interest);
+        log!("supply_apr: {}", BigDecimal::from(supply_interest).div_u128(self.supplied.balance));
         BigDecimal::from(supply_interest).div_u128(self.supplied.balance)
     }
 
