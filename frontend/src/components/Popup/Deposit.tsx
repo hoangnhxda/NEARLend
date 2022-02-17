@@ -6,13 +6,14 @@ import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../../state/globalStore";
 import { tokenFomat } from "../../utils/token";
 import { handleDeposit } from "../../services/connect";
+import { Switch } from "antd";
 
 type Props = {
-  setTurnOff: Function;
+  togglePopup: Function;
   tokenId?: string;
   token: any;
 };
-const Deposit = ({ setTurnOff, token }: Props) => {
+const Deposit = ({ togglePopup, token }: Props) => {
   const { contract, wallet, usdTokens, userBalance }: any =
     hookState<any>(globalState);
   const contractState = contract.attach(Downgraded).get();
@@ -24,6 +25,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
   const [userTokenBalance, setUserTokenBalance] = useState(0);
   const [shares, setShares] = useState(0);
   const [error, setError] = useState("");
+  const [isCollateral, setIsCollateral] = useState(false);
 
   const tokenConfig = token && tokenFomat[token?.tokenId];
   const icon = tokenConfig && tokenConfig?.icon;
@@ -39,10 +41,37 @@ const Deposit = ({ setTurnOff, token }: Props) => {
     100: "100%",
   };
 
+  function _onChangeCollateral(checked: boolean) {
+    setIsCollateral(checked);
+  }
+
   // should debounce
   function formatter(value: any) {
     return `${value.toString()}%`;
   }
+
+  const _handleDeposit = () => {
+    if (userTokenBalance === 0) {
+      return setError(`You have 0 of tokens`);
+    } else if (amountToken === 0 || amountToken === null) {
+      return setError(`You have to Enter amount of Tokens`);
+    } else if (amountToken > userTokenBalance) {
+      return setError(`The token you have lower than value that you deposit`);
+    } else if (amountToken < 0) {
+      return setError(`You can not deposit with Negative number`);
+    }
+    return handleDeposit(token, amountToken, contractState, isCollateral);
+  };
+
+  const onChange = (e: any) => {
+    setAmountToken(e);
+    setAmountTokenPercent((e / userTokenBalance) * 100);
+  };
+
+  const sliderOnChange = (e: any) => {
+    setAmountToken((e / 100) * userTokenBalance);
+    setAmountTokenPercent(e);
+  };
 
   useEffect(() => {
     const getBalanceTokenUser = async () => {
@@ -89,31 +118,10 @@ const Deposit = ({ setTurnOff, token }: Props) => {
     setShares(sharesDeposit);
   }, []);
 
-  const _handleDeposit = () => {
-    if (userTokenBalance === 0) {
-      return setError(`You have 0 of tokens`);
-    } else if (amountToken === 0 || amountToken === null) {
-      return setError(`You have to Enter amount of Tokens`);
-    } else if (amountToken > userTokenBalance) {
-      return setError(`The token you have lower than value that you deposit`);
-    }
-    return handleDeposit(token, amountToken, contractState);
-  };
-
-  const onChange = (e: any) => {
-    setAmountToken(e);
-    setAmountTokenPercent((e / userTokenBalance) * 100);
-  };
-
-  const sliderOnChange = (e: any) => {
-    setAmountToken((e / 100) * userTokenBalance);
-    setAmountTokenPercent(e);
-  };
-
   return (
     <div className="wrap-popup">
       <div className="popup">
-        <p className="icon-close" onClick={() => setTurnOff()}>
+        <p className="icon-close" onClick={() => togglePopup()}>
           <img alt="icon-close" src={iconClose} width={12} height={12} />
         </p>
         <div className="Ocean">
@@ -200,8 +208,7 @@ const Deposit = ({ setTurnOff, token }: Props) => {
             <div className="left">Use as Collateral</div>
             <div className="right fwb">
               <label className="switch">
-                <input className="input-slider" type="checkbox" />
-                <span className="slider round"></span>
+                <Switch defaultChecked={false} onChange={_onChangeCollateral} />
               </label>
             </div>
           </div>

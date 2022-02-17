@@ -1,29 +1,36 @@
 import { fomatBalanceWithDecimal } from "../utils";
 import { tokenFomat } from "../utils/token";
 import { DownOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { Downgraded, useHookstate } from "@hookstate/core";
+import globalState from "../state/globalStore";
 
 export default function PortfolioBorrowItem({
-  data,
-  handleToggle,
-  supplies,
+  borrowed,
+  supplied,
 }: any) {
-  const decimals = tokenFomat[data.token_id].decimals;
-  const icon = tokenFomat[data.token_id].icon;
-  const symbol = tokenFomat[data.token_id].symbol;
-  const borrowedBalance = data?.balance ?? 0;
-  // const borrowedShares = fomatBalanceWithDecimal(item.shares, decimals);
-  const suppliedBalance =
-    supplies.find((f: any) => f.token_id === data.token_id)?.balance ?? 0;
-  const availableBorrowed = +suppliedBalance - +borrowedBalance;
+  const { contract, wallet, usdTokens, userBalance }: any =
+    useHookstate<any>(globalState);
+  const userBalanceState = userBalance.attach(Downgraded).get();
+  const [isShowDetail, setIsShowDetail] = useState(false);
+  const decimals = tokenFomat[borrowed.token_id].decimals;
+  const icon = tokenFomat[borrowed.token_id].icon;
+  const symbol = tokenFomat[borrowed.token_id].symbol;
+  const borrowedBalance = borrowed?.balance ?? 0;
+  const collateral =
+    userBalanceState?.collateral?.find(
+      (item: any) => item.token_id === borrowed.token_id
+    )?.balance ?? 0;
 
   const _handleToggle = (e: any) => {
-    handleToggle(e);
+    e.preventDefault();
+    setIsShowDetail((prev) => !prev);
   };
 
   return (
-    <div onClick={_handleToggle} className="wrap-info">
-      <div className="label label__token">
-        <p className="arrow-down">
+    <div className="wrap-info active">
+      <div className="label label__token" onClick={_handleToggle}>
+        <p className={`arrow-down ${isShowDetail ? "active" : ""}`}>
           <DownOutlined />
         </p>
         <div className="label__token-mini token__logo">
@@ -34,24 +41,26 @@ export default function PortfolioBorrowItem({
           </div>
         </div>
         <p className="label__token-mini">
-          {(Number(data.apr) * 100).toFixed(3)}%
+          {(Number(borrowed.apr) * 100).toFixed(3)}%
         </p>
         <button className="button-basic">Withdraw</button>
       </div>
-      <div className="label label__token__detail">
-        <div className="token__detail__row">
-          <p className="title">Borrowed:</p>
-          <p className="label__token-mini">
-            {fomatBalanceWithDecimal(borrowedBalance, decimals)}
-          </p>
+      {isShowDetail && (
+        <div className="label label__token__detail">
+          <div className="token__detail__row">
+            <p className="title">Borrowed:</p>
+            <p className="label__token-mini">
+              {fomatBalanceWithDecimal(borrowedBalance, decimals)}
+            </p>
+          </div>
+          <div className="token__detail__row">
+            <p className="title">Available:</p>
+            <p className="label__token-mini">
+              {fomatBalanceWithDecimal(collateral, decimals)}
+            </p>
+          </div>
         </div>
-        <div className="token__detail__row">
-          <p className="title">Available:</p>
-          <p className="label__token-mini">
-            {fomatBalanceWithDecimal(availableBorrowed, decimals)}
-          </p>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

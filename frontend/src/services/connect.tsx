@@ -2,9 +2,9 @@ import * as nearAPI from "near-api-js";
 import { contractName, nearConfig } from "../utils";
 const { connect, WalletConnection, keyStores } = nearAPI;
 const keyStore = new keyStores.BrowserLocalStorageKeyStore();
-const GAS = 200000000000000;
-const ONE_OCTO = 1;
-const ONE_OCTO_STRING = "100000000000000000000000";
+export const GAS = 200000000000000;
+export const ONE_OCTO = 1;
+export const ONE_OCTO_STRING = "100000000000000000000000";
 
 export const _near = async function () {
   return await connect({
@@ -63,24 +63,36 @@ export const handleDepositFirstTime = async function (
 export const handleDeposit = async function (
   token: any,
   amountToken: number,
-  contract: any
+  contract: any,
+  isCollateral: boolean
 ) {
-  const amount = amountToken * (10 ** token.config.extra_decimals);
-  const contractID = contract.contractId;
-  const tokenID = token.tokenId;
-  const args = {
-    receiver_id: contractID,
-    amount: amount.toLocaleString("fullwide", { useGrouping: false }),
-    msg: "",
-  };
+  try {
+    const amount = amountToken * 10 ** token.config.extra_decimals;
+    if (amount < 0) return console.log("cannot deposit");
+    const contractID = contract.contractId;
+    const tokenID = token.tokenId;
+    const msg = isCollateral
+      ? `{"Execute": {"actions": [{"IncreaseCollateral": {"token_id": "${tokenID}", "amount": "${amount.toLocaleString(
+          "fullwide",
+          { useGrouping: false }
+        )}"}}]}}`
+      : "";
+    const args = {
+      receiver_id: contractID,
+      amount: amount.toLocaleString("fullwide", { useGrouping: false }),
+      msg,
+    };
 
-  return await contract.account.functionCall(
-    tokenID,
-    "ft_transfer_call",
-    args,
-    GAS,
-    ONE_OCTO
-  );
+    return await contract.account.functionCall(
+      tokenID,
+      "ft_transfer_call",
+      args,
+      GAS,
+      ONE_OCTO
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const handleBorrow = async function (
@@ -89,7 +101,8 @@ export const handleBorrow = async function (
   contract: any
 ) {
   try {
-    let amount = amountToken * 10 ** token.config.extra_decimals;
+    const decimals = 10 ** token.config.extra_decimals;
+    const amount = amountToken * decimals;
     let amountToString = amount.toLocaleString("fullwide", {
       useGrouping: false,
     });
@@ -116,7 +129,9 @@ export const handleBorrow = async function (
 
 /* 
  @Example Code
- @Do not delete
+ @##### DO NOT DELETE
+ @##### DO NOT DELETE
+ @##### DO NOT DELETE
 */
 // 1 - deposit to pool for first time User login
 // await contract.storage_deposit(

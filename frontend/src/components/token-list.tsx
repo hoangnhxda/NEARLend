@@ -4,7 +4,7 @@ import { tokenFomat } from "../utils/token";
 import { useState as hookState, Downgraded } from "@hookstate/core";
 import globalState from "../state/globalStore";
 
-function TokenList({ tokenList, _openPopupDeposit, _openPopupBorrow }: any) {
+function TokenList({ tokenList, _openPopupDeposit, _openPopupBorrow, _handleTogglePopupRequire }: any) {
   const { usdTokens }: any = hookState<any>(globalState);
   const usdTokensState = usdTokens.attach(Downgraded).get();
 
@@ -15,6 +15,10 @@ function TokenList({ tokenList, _openPopupDeposit, _openPopupBorrow }: any) {
   const openPopupBorrow = (e: any, item: any) => {
     _openPopupBorrow(e, item);
   };
+
+  const _handleClaimTokens = (item:any) => {
+    _handleTogglePopupRequire(item)
+  }
 
   return (
     <>
@@ -47,6 +51,9 @@ function TokenList({ tokenList, _openPopupDeposit, _openPopupBorrow }: any) {
                   <div>
                     <p className="top coin color-white fwb">{tokenSymbol}</p>
                     <p className="color-space-gray">${priceUsd?.toFixed(1)}</p>
+                  </div>
+                  <div className="btn-claim" onClick={()=>_handleClaimTokens(item)}>
+                    <button className="button-basic">Claim</button>
                   </div>
                 </div>
                 <div className="mini deposit">

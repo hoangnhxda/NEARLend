@@ -1,20 +1,15 @@
 import PortfolioDepositItem from "./PortfolioDepositItem";
 
-export default function PortfolioDeposit({ items, borrowed, handleToggle }: any) {
-  const _handleToggle = (e: any) => {
-    handleToggle(e);
-  };
-
+export default function PortfolioDeposit({ supplied, borrowed }: any) {
   return (
     <div>
-      {items && items.length > 0 ? (
-        items.map((item: any, idx: number) =>
+      {supplied && supplied.length > 0 ? (
+        supplied.map((item: any, idx: number) =>
           item ? (
             <PortfolioDepositItem
               key={idx}
-              data={item}
+              supplied={item}
               borrowed={borrowed}
-              handleToggle={_handleToggle}
             />
           ) : null
         )

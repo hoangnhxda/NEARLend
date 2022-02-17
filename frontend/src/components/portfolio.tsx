@@ -58,9 +58,8 @@ export default function Portfolio() {
               <p className="title">Actions</p>
             </div>
             <PortfolioDeposit
-              items={account?.supplied}
+              supplied={account?.supplied}
               borrowed={account?.borrowed}
-              handleToggle={_handToggleDiv}
             />
           </div>
         </div>
@@ -76,9 +75,8 @@ export default function Portfolio() {
               <p className="title">Actions</p>
             </div>
             <PortfolioBorrow
-              items={account?.borrowed}
-              supplies={account?.supplied}
-              handleToggle={_handToggleDiv}
+              borrowed={account?.borrowed}
+              supplied={account?.supplied}
             />
           </div>
         </div>

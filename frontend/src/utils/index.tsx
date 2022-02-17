@@ -27,7 +27,7 @@ export const totalBalance = (arrayOject: any, usdTokens?: any): string => {
   var result = arrayOject?.reduce((acc: any, item: any) => {
     const tokeDecimals = tokenFomat[item.token_id]?.decimals;
     const tokenName = tokenFomat[item.token_id]?.name ?? "";
-    const { usd } = usdTokens[tokenName] ?? 23;
+    const { usd } = usdTokens[tokenName] || { usd: 23 };
     if (!tokeDecimals) return acc;
     const bal = (item.balance / 10 ** tokeDecimals) * usd;
     return acc + bal;
